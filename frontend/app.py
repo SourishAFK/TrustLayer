@@ -18,6 +18,11 @@ import io
 import json
 import os
 import re
+import sys
+
+# Ensure the repo root is on sys.path so `backend` is importable when Streamlit
+# Cloud runs this file from the frontend/ subdirectory.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import requests
 import streamlit as st
