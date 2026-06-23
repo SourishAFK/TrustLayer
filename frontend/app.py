@@ -19,6 +19,7 @@ import json
 import os
 import re
 import sys
+import urllib.parse
 
 # Ensure the repo root is on sys.path so `backend` is importable when Streamlit
 # Cloud runs this file from the frontend/ subdirectory.
@@ -455,6 +456,14 @@ def render_result(data: dict) -> None:
 
     st.markdown(header + stats + indicators_block + alt_block + intent_block,
                 unsafe_allow_html=True)
+
+    tweet = (
+        f"I just tested an AI response for sycophancy — scored {score}/100 {data['verdict']} "
+        f"on TrustLayer. Try it yourself: https://strustlayer.streamlit.app "
+        f"#AISycophancy #AITrust"
+    )
+    twitter_url = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(tweet)}"
+    st.link_button("𝕏  Share on X", twitter_url)
 
 
 # --------------------------------------------------------------------------- #
