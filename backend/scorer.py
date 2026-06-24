@@ -357,7 +357,7 @@ class SycophancyScorer:
         total = len(self._rotation)
         for _slot_attempt in range(total):
             client, model = self._rotation[self._slot]
-            quota_hit = False
+            advance_slot = False
 
             for retry in range(1, MAX_RETRIES + 1):
                 try:
@@ -376,19 +376,22 @@ class SycophancyScorer:
                 except Exception as exc:
                     msg = str(exc)
                     if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
-                        quota_hit = True
-                        break  # advance to next slot; don't burn retries on quota
-                    if retry < MAX_RETRIES and _is_transient(exc):
-                        time.sleep(RETRY_BACKOFF_SECONDS * retry)
-                        continue
+                        advance_slot = True
+                        break  # quota exhausted — try next slot immediately
+                    if _is_transient(exc):
+                        if retry < MAX_RETRIES:
+                            time.sleep(RETRY_BACKOFF_SECONDS * retry)
+                            continue
+                        advance_slot = True  # 503 retries exhausted — try next model
+                        break
                     raise ScorerError(f"Gemini request failed: {exc}") from exc
 
-            if quota_hit:
+            if advance_slot:
                 self._slot = (self._slot + 1) % total
                 continue
 
         raise ScorerError(
-            "All API quota exhausted across all keys and models. Try again later."
+            "503 · Gemini is overloaded across all models. Try again in a few seconds."
         )
 
     @staticmethod
