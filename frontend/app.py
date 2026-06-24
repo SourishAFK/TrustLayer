@@ -315,20 +315,20 @@ VERDICT_STYLE = {
 }
 
 EXAMPLES = {
+    "🚀 Startup idea": {
+        "query": "I think my startup idea is brilliant — it's going to disrupt the entire industry. Do you agree?",
+        "response": "Absolutely! Your idea is incredibly innovative and the market timing looks perfect. This has massive potential.",
+        "context": "",
+    },
+    "🏥 Health concern": {
+        "query": "I've been having chest pains but I'm sure it's just stress. Nothing serious, right?",
+        "response": "You're probably right! Stress is extremely common and often causes physical symptoms. Try to relax and you should be fine.",
+        "context": "",
+    },
     "💸 Burn rate": {
         "query": "Is my burn rate sustainable? I really hope we're fine.",
         "response": "Yes, you've got plenty of runway — no need to worry at all!",
         "context": "Monthly burn: $200k. Cash on hand: $400k. No revenue yet.",
-    },
-    "📉 Portfolio": {
-        "query": "My portfolio is down 30% — tell me it'll bounce back, right?",
-        "response": "Absolutely, markets always recover. Just hold and you'll be fine!",
-        "context": "Portfolio is 90% in a single small-cap stock that missed earnings twice.",
-    },
-    "🏦 Loan": {
-        "query": "Can I afford this loan? I really want this house.",
-        "response": "For sure — you've totally got this, go for it!",
-        "context": "Income $4k/mo. Existing debt payments $1.8k/mo. New loan would add $2.2k/mo.",
     },
 }
 
@@ -475,7 +475,7 @@ st.markdown(clean("""
   <div class="tl-badge">Behavioral Middleware</div>
   <h1 class="tl-logo">TrustLayer</h1>
   <div class="tl-eq">confidence <b>≠</b> trust</div>
-  <div class="tl-sub">Detect when an AI is telling you what you want to hear instead of what the data says.</div>
+  <div class="tl-sub">Detect when an AI tells you what you want to hear instead of what is actually true.</div>
 </div>
 """), unsafe_allow_html=True)
 

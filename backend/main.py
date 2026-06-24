@@ -27,7 +27,7 @@ from backend.scorer import ScorerError, SycophancyResult, SycophancyScorer
 app = FastAPI(
     title="TrustLayer API",
     version="0.1.0",
-    description="Detects sycophantic AI behavior in high-stakes fintech decisions.",
+    description="Detects sycophantic AI behavior — when AI tells you what you want to hear instead of the truth.",
 )
 
 # Permissive CORS for local dev / future JS SDK. Tighten for production.
