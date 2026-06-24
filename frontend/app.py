@@ -562,7 +562,10 @@ if analyze:
             )
             st.session_state.pop("result", None)
         except Exception as exc:
-            st.session_state["error"] = str(exc)
+            msg = str(exc)
+            if "503" in msg or "UNAVAILABLE" in msg or "high demand" in msg or "overloaded" in msg:
+                msg = "503 · Gemini is temporarily overloaded. Try again in a few seconds."
+            st.session_state["error"] = msg
             st.session_state.pop("result", None)
 
 # --------------------------------------------------------------------------- #
