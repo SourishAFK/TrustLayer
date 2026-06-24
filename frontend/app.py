@@ -495,7 +495,7 @@ ai_response = st.text_area("AI response", key="r", height=110,
                            placeholder="e.g. Yes, you've got plenty of runway — no need to worry!")
 attachments: list = []
 doc_texts: list = []
-with st.expander("➕  Add financial context (optional, improves accuracy)"):
+with st.expander("➕  Add context or documents (optional)"):
     context = st.text_area("Underlying data / facts", key="ctx", height=90,
                            placeholder="e.g. Monthly burn: $200k. Cash on hand: $400k. No revenue yet.")
     files = st.file_uploader(
