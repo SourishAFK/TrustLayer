@@ -319,28 +319,71 @@ class SycophancyScorer:
         # On a 429 we advance one slot; on 503 we retry the same slot.
         all_keys = [key] + (fallback_keys or [])
         models = [model_name] + [m for m in (fallback_models or []) if m != model_name]
+        clients = {k: genai.Client(api_key=k) for k in all_keys}
+        # MODEL-MAJOR ordering: the primary (fastest) model appears on every key
+        # before any slower model. So when a bucket saturates, the first spill is
+        # the SAME fast model on the next key — not a slower fallback model.
         self._rotation: list[tuple[genai.Client, str]] = [
-            (genai.Client(api_key=k), m)
-            for k in all_keys
+            (clients[k], m)
             for m in models
+            for k in all_keys
         ]
         self._slot = 0  # index into _rotation; advances on quota exhaustion
+        self.last_model_used: Optional[str] = None  # model that served the last call
 
-        # Client-side rate limiting for free-tier RPM caps.
-        rpm = DEFAULT_MAX_RPM if max_rpm is None else max_rpm
-        self._min_interval = (60.0 / rpm + RPM_SAFETY_MARGIN) if rpm and rpm > 0 else 0.0
-        self._last_call_ts = 0.0
+        # Client-side rate limiting for free-tier RPM caps. Each (key, model)
+        # slot is a SEPARATE quota bucket, so we rate-limit PER SLOT with a
+        # SLIDING WINDOW: a slot may serve up to `rpm` calls in any rolling 60s.
+        # This lets the two calls of a single score (intent + honesty) fire
+        # back-to-back with no artificial delay, and only blocks once a bucket
+        # is genuinely saturated — instead of the old fixed 12.5s-per-call wait
+        # that made scoring take ~60s.
+        self._rpm_cap = rpm if (rpm := (DEFAULT_MAX_RPM if max_rpm is None else max_rpm)) and rpm > 0 else 0
+        self._call_history: list[list[float]] = [[] for _ in range(len(self._rotation))]
 
     # -- Gemini plumbing ---------------------------------------------------- #
 
-    def _throttle(self) -> None:
-        """Block just long enough to respect the configured RPM cap."""
-        if self._min_interval <= 0:
-            return
-        wait = self._min_interval - (time.monotonic() - self._last_call_ts)
-        if wait > 0:
-            time.sleep(wait)
-        self._last_call_ts = time.monotonic()
+    def _has_capacity(self, slot: int) -> bool:
+        """True if this slot's bucket can take another call within its 60s window."""
+        if self._rpm_cap <= 0:
+            return True
+        hist = self._call_history[slot]
+        cutoff = time.monotonic() - 60.0
+        while hist and hist[0] < cutoff:
+            hist.pop(0)
+        return len(hist) < self._rpm_cap
+
+    def _record_call(self, slot: int) -> None:
+        """Stamp a call against this slot's sliding window."""
+        if self._rpm_cap > 0:
+            self._call_history[slot].append(time.monotonic())
+
+    def _acquire_slot(self, start: int) -> int:
+        """Pick the first slot at/after `start` (cyclically) that has RPM
+        capacity, recording the call against it.
+
+        Scanning begins at the FRONT of the rotation (the fastest models) on
+        every fresh call, so we keep using the fastest available bucket instead
+        of sticking on a slow fallback we previously spilled onto. If every
+        bucket is saturated, wait just long enough on `start`'s bucket.
+        """
+        total = len(self._rotation)
+        if self._rpm_cap > 0:
+            for offset in range(total):
+                slot = (start + offset) % total
+                if self._has_capacity(slot):
+                    self._slot = slot
+                    self._record_call(slot)
+                    return slot
+            # Everything saturated — wait on the start bucket.
+            hist = self._call_history[start]
+            if hist:
+                wait = 60.0 - (time.monotonic() - hist[0]) + RPM_SAFETY_MARGIN
+                if wait > 0:
+                    time.sleep(wait)
+        self._slot = start
+        self._record_call(start)
+        return start
 
     def _call_gemini_json(self, contents) -> dict:
         """Call Gemini expecting a JSON object back; parse and return it.
@@ -349,19 +392,21 @@ class SycophancyScorer:
         with multimodal `types.Part`s (images / PDFs).
 
         Rotation strategy:
+        - Pick a slot with RPM capacity (spreads load across buckets, avoids waits).
         - 429 RESOURCE_EXHAUSTED → advance to next (key, model) slot and retry.
         - 503 transient overload → retry same slot up to MAX_RETRIES times.
         - Other errors (auth, parse, safety) → fail immediately.
         - All slots exhausted → raise with a clear user-facing message.
         """
         total = len(self._rotation)
+        start = 0  # always prefer the fastest models (front of rotation) first
         for _slot_attempt in range(total):
-            client, model = self._rotation[self._slot]
+            slot = self._acquire_slot(start)
+            client, model = self._rotation[slot]
             advance_slot = False
 
             for retry in range(1, MAX_RETRIES + 1):
                 try:
-                    self._throttle()
                     response = client.models.generate_content(
                         model=model,
                         contents=contents,
@@ -370,7 +415,9 @@ class SycophancyScorer:
                             response_mime_type="application/json",
                         ),
                     )
-                    return self._parse_json(self._extract_text(response))
+                    result = self._parse_json(self._extract_text(response))
+                    self.last_model_used = model
+                    return result
                 except ScorerError:
                     raise  # parse / safety / empty — not transient
                 except Exception as exc:
@@ -387,7 +434,7 @@ class SycophancyScorer:
                     raise ScorerError(f"Gemini request failed: {exc}") from exc
 
             if advance_slot:
-                self._slot = (self._slot + 1) % total
+                start = (slot + 1) % total  # skip the failed slot, keep scanning
                 continue
 
         raise ScorerError(

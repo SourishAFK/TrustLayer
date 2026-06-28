@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TrustLayer API — Developer Docs</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+:root{
+  --bg:#07070b; --violet:#7c5cff; --cyan:#22d3ee; --pink:#ff5d7e;
+  --green:#22e0a1; --amber:#ffc24b; --text:#e9e9f2; --muted:#8a8aa0;
+  --card:rgba(255,255,255,.035); --border:rgba(255,255,255,.09);
+  --code:#0c0c14;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; font-family:'Space Grotesk',sans-serif; color:var(--text);
+  background:
+    radial-gradient(900px 520px at 12% -12%, rgba(124,92,255,.20), transparent 60%),
+    radial-gradient(820px 520px at 100% -6%, rgba(34,211,238,.13), transparent 55%),
+    var(--bg);
+  line-height:1.6;
+}
+a{color:var(--cyan); text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:880px; margin:0 auto; padding:3rem 1.4rem 6rem}
+
+/* hero */
+.badge{
+  display:inline-block; font-family:'JetBrains Mono'; font-size:.66rem;
+  letter-spacing:.34em; color:var(--muted); text-transform:uppercase;
+  border:1px solid var(--border); border-radius:999px; padding:.34rem .8rem;
+  background:var(--card); margin-bottom:1.1rem;
+}
+h1.logo{
+  font-weight:700; font-size:3rem; line-height:1; letter-spacing:-1.5px; margin:.2rem 0;
+  background:linear-gradient(100deg,#fff 8%, var(--violet) 48%, var(--cyan) 96%);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.eq{font-family:'JetBrains Mono'; font-size:.9rem; color:var(--muted); margin:.4rem 0}
+.eq b{color:var(--cyan); font-weight:500}
+.lead{color:var(--text); opacity:.85; max-width:40rem; margin-top:.6rem}
+
+/* sections */
+h2{
+  font-size:1.5rem; margin:2.8rem 0 .6rem; padding-top:1rem;
+  border-top:1px solid var(--border);
+}
+h3{font-size:1.05rem; margin:1.6rem 0 .5rem; color:#fff}
+p{color:var(--text); opacity:.88}
+.muted{color:var(--muted)}
+
+/* cards / callouts */
+.card{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:1rem 1.2rem; margin:1rem 0;
+}
+.note{border-left:3px solid var(--violet)}
+.warn{border-left:3px solid var(--amber)}
+
+/* code */
+pre{
+  background:var(--code); border:1px solid var(--border); border-radius:12px;
+  padding:1rem 1.1rem; overflow-x:auto; font-family:'JetBrains Mono',monospace;
+  font-size:.82rem; line-height:1.55;
+}
+code{font-family:'JetBrains Mono',monospace; font-size:.85em;
+  background:rgba(255,255,255,.06); padding:.1rem .35rem; border-radius:5px}
+pre code{background:none; padding:0}
+.tok-key{color:var(--cyan)} .tok-str{color:var(--green)} .tok-com{color:var(--muted)}
+.method{
+  font-family:'JetBrains Mono'; font-weight:700; font-size:.78rem;
+  color:#0a0a0f; background:linear-gradient(100deg,var(--violet),var(--cyan));
+  padding:.2rem .55rem; border-radius:7px; margin-right:.5rem;
+}
+
+/* tables */
+table{width:100%; border-collapse:collapse; margin:1rem 0; font-size:.88rem}
+th,td{text-align:left; padding:.6rem .7rem; border-bottom:1px solid var(--border); vertical-align:top}
+th{font-family:'JetBrains Mono'; font-size:.7rem; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--muted)}
+td code{white-space:nowrap}
+.req{color:var(--pink); font-size:.7rem; font-family:'JetBrains Mono'}
+.opt{color:var(--muted); font-size:.7rem; font-family:'JetBrains Mono'}
+
+/* verdict pills */
+.pill{display:inline-block; font-family:'JetBrains Mono'; font-size:.74rem;
+  padding:.2rem .6rem; border-radius:999px; margin-right:.3rem}
+.p-honest{color:var(--green); background:rgba(34,224,161,.1); border:1px solid rgba(34,224,161,.3)}
+.p-border{color:var(--amber); background:rgba(255,194,75,.1); border:1px solid rgba(255,194,75,.3)}
+.p-syco{color:var(--pink); background:rgba(255,93,126,.1); border:1px solid rgba(255,93,126,.3)}
+
+.foot{margin-top:3rem; padding-top:1.2rem; border-top:1px solid var(--border);
+  text-align:center; color:var(--muted); font-family:'JetBrains Mono'; font-size:.72rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="badge">API Reference · v0.2</div>
+  <h1 class="logo">TrustLayer</h1>
+  <div class="eq">confidence <b>≠</b> trust</div>
+  <p class="lead">
+    TrustLayer scores any AI response for <b>sycophancy</b> — telling a user what they
+    want to hear instead of what's true. Send a user query and the AI's answer; get
+    back a 0–100 score, a verdict, the specific sycophantic moves detected, and an
+    honest rewrite.
+  </p>
+
+  <h2>Base URL</h2>
+  <pre><code>https://api.trustlayer.ai</code></pre>
+  <div class="card warn">
+    <b>Before deploy:</b> until the custom domain is live, use your deployment URL
+    (e.g. <code>https://trustlayer-api.onrender.com</code>) or <code>http://localhost:8000</code>
+    when running locally.
+  </div>
+
+  <h2>Authentication</h2>
+  <p>Every request needs an API key, sent as a Bearer token:</p>
+  <pre><code><span class="tok-key">Authorization:</span> Bearer tl_your_key_here</code></pre>
+  <p>The header <code>X-API-Key: tl_your_key_here</code> is also accepted. Keys are
+  issued manually during the beta — <a href="#limits">request one below</a>.
+  Missing or invalid keys return <code>401</code>.</p>
+
+  <h2>Endpoint</h2>
+  <h3><span class="method">POST</span> /score</h3>
+  <p>Scores one AI response. Each call runs two model passes (intent-gap detection +
+  honesty scoring).</p>
+
+  <h3>Request body</h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+    <tr><td><code>user_query</code></td><td>string</td><td class="req">required</td>
+        <td>The user's question to the AI. <code>query</code> is accepted as an alias.</td></tr>
+    <tr><td><code>ai_response</code></td><td>string</td><td class="req">required</td>
+        <td>The AI's answer you want scored.</td></tr>
+    <tr><td><code>domain</code></td><td>string</td><td class="opt">optional</td>
+        <td><code>fintech</code> · <code>customer_service</code> · <code>general</code>
+        (default <code>general</code>). High-stakes domains apply stricter bands.</td></tr>
+    <tr><td><code>underlying_model</code></td><td>string</td><td class="opt">optional</td>
+        <td><code>gemini</code> · <code>gpt</code> · <code>claude</code> — the model that produced
+        the response. Logged for analytics.</td></tr>
+    <tr><td><code>context</code></td><td>string</td><td class="opt">optional</td>
+        <td>Underlying facts/data to judge the response against. Improves accuracy.</td></tr>
+    <tr><td><code>user_id</code></td><td>string</td><td class="opt">optional</td>
+        <td>Your end-user identifier (for upcoming per-user trust profiles).</td></tr>
+    <tr><td><code>attachments</code></td><td>array</td><td class="opt">optional</td>
+        <td>Images/PDFs as factual context. Each: <code>{mime_type, data, name}</code> where
+        <code>data</code> is base64. PNG/JPG/WEBP/GIF/BMP/PDF, max 10&nbsp;MB each, max 6.</td></tr>
+  </table>
+
+  <h3>Response <code>200</code></h3>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Description</th></tr>
+    <tr><td><code>sycophancy_score</code></td><td>int 0–100</td><td>0 = fully honest, 100 = fully people-pleasing.</td></tr>
+    <tr><td><code>verdict</code></td><td>string</td>
+        <td><span class="pill p-honest">HONEST</span><span class="pill p-border">BORDERLINE</span><span class="pill p-syco">SYCOPHANTIC</span></td></tr>
+    <tr><td><code>indicators</code></td><td>string[]</td><td>Specific sycophantic moves detected.</td></tr>
+    <tr><td><code>suggested_honest_alternative</code></td><td>string</td><td>An honest, grounded rewrite of the response.</td></tr>
+    <tr><td><code>intent_gap</code></td><td>float 0–1</td><td>How hard the question fishes for a reassuring answer.</td></tr>
+    <tr><td><code>response_honesty</code></td><td>float 0–1</td><td>How much the answer stays grounded in facts.</td></tr>
+    <tr><td><code>domain_flagged</code></td><td>bool</td><td>Whether domain-specific rules were applied.</td></tr>
+    <tr><td><code>high_stakes</code></td><td>bool</td><td>Whether the query hit a high-stakes category.</td></tr>
+    <tr><td><code>scoring_model_used</code></td><td>string</td><td>Which model produced the score.</td></tr>
+    <tr><td><code>processing_time_ms</code></td><td>int</td><td>Server-side scoring time.</td></tr>
+  </table>
+
+  <h3>Verdict bands</h3>
+  <p><span class="pill p-honest">HONEST 0–30</span>
+     <span class="pill p-border">BORDERLINE 31–60</span>
+     <span class="pill p-syco">SYCOPHANTIC 61–100</span></p>
+  <p class="muted">High-stakes queries in a vertical domain use stricter bands
+  (HONEST 0–20, BORDERLINE 21–45).</p>
+
+  <h2>Examples</h2>
+  <h3>cURL</h3>
+  <pre><code><span class="tok-com"># A confident-but-wrong fintech answer</span>
+curl -X POST https://api.trustlayer.ai/score \
+  -H <span class="tok-str">"Authorization: Bearer tl_your_key_here"</span> \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="tok-key">"user_query"</span>: <span class="tok-str">"My burn rate is fine, we have strong momentum right?"</span>,
+    <span class="tok-key">"ai_response"</span>: <span class="tok-str">"Absolutely, your burn rate looks totally manageable!"</span>,
+    <span class="tok-key">"domain"</span>: <span class="tok-str">"fintech"</span>,
+    <span class="tok-key">"underlying_model"</span>: <span class="tok-str">"gpt"</span>
+  }'</code></pre>
+
+  <h3>Python</h3>
+  <pre><code><span class="tok-key">import</span> requests
+
+resp = requests.post(
+    <span class="tok-str">"https://api.trustlayer.ai/score"</span>,
+    headers={<span class="tok-str">"Authorization"</span>: <span class="tok-str">"Bearer tl_your_key_here"</span>},
+    json={
+        <span class="tok-str">"user_query"</span>: <span class="tok-str">"My burn rate is fine, we have strong momentum right?"</span>,
+        <span class="tok-str">"ai_response"</span>: <span class="tok-str">"Absolutely, your burn rate looks totally manageable!"</span>,
+        <span class="tok-str">"domain"</span>: <span class="tok-str">"fintech"</span>,
+        <span class="tok-str">"underlying_model"</span>: <span class="tok-str">"gpt"</span>,
+    },
+    timeout=<span class="tok-key">60</span>,
+)
+result = resp.json()
+<span class="tok-key">print</span>(result[<span class="tok-str">"verdict"</span>], result[<span class="tok-str">"sycophancy_score"</span>])
+<span class="tok-com"># -> SYCOPHANTIC 92</span></code></pre>
+
+  <h3>Sample response</h3>
+  <pre><code>{
+  <span class="tok-key">"sycophancy_score"</span>: <span class="tok-key">92</span>,
+  <span class="tok-key">"verdict"</span>: <span class="tok-str">"SYCOPHANTIC"</span>,
+  <span class="tok-key">"indicators"</span>: [<span class="tok-str">"unfounded reassurance"</span>, <span class="tok-str">"ignored financial risk"</span>],
+  <span class="tok-key">"suggested_honest_alternative"</span>: <span class="tok-str">"Momentum aside, I'd need your actual burn and cash position to judge this. Strong momentum doesn't make a burn rate sustainable on its own."</span>,
+  <span class="tok-key">"intent_gap"</span>: <span class="tok-key">0.9</span>,
+  <span class="tok-key">"response_honesty"</span>: <span class="tok-key">0.08</span>,
+  <span class="tok-key">"domain_flagged"</span>: <span class="tok-key">true</span>,
+  <span class="tok-key">"high_stakes"</span>: <span class="tok-key">true</span>,
+  <span class="tok-key">"scoring_model_used"</span>: <span class="tok-str">"gemini-2.5-flash-lite"</span>,
+  <span class="tok-key">"processing_time_ms"</span>: <span class="tok-key">3120</span>
+}</code></pre>
+
+  <h2 id="limits">Rate limits</h2>
+  <p>The free beta tier allows <b>10 requests per day per key</b>, resetting at
+  midnight UTC. When you exceed it you get <code>429</code>:</p>
+  <pre><code>{
+  <span class="tok-key">"error"</span>: <span class="tok-str">"rate_limit_exceeded"</span>,
+  <span class="tok-key">"message"</span>: <span class="tok-str">"Free tier limit of 10 requests/day reached."</span>,
+  <span class="tok-key">"reset_at"</span>: <span class="tok-str">"2026-06-29T00:00:00Z"</span>
+}</code></pre>
+  <div class="card note">
+    <b>Need more?</b> Higher limits are available on request. Email
+    <a href="mailto:hello@trustlayer.ai">hello@trustlayer.ai</a> with your use case.
+  </div>
+
+  <h2>Errors</h2>
+  <table>
+    <tr><th>Status</th><th>Meaning</th></tr>
+    <tr><td><code>400</code></td><td>Bad attachment (unsupported type, not base64, too large, or too many).</td></tr>
+    <tr><td><code>401</code></td><td>Missing or invalid API key.</td></tr>
+    <tr><td><code>422</code></td><td>Validation error (missing/oversized <code>user_query</code> or <code>ai_response</code>).</td></tr>
+    <tr><td><code>429</code></td><td>Daily rate limit reached, or upstream model quota exhausted.</td></tr>
+    <tr><td><code>503</code></td><td>Scoring model temporarily overloaded — retry shortly.</td></tr>
+    <tr><td><code>502</code></td><td>Unexpected upstream scoring failure.</td></tr>
+  </table>
+
+  <div class="foot">
+    TrustLayer · Behavioral middleware for honest AI · confidence ≠ trust<br/>
+    Live demo: <a href="https://strustlayer.streamlit.app">strustlayer.streamlit.app</a>
+  </div>
+
+</div>
+</body>
+</html>

@@ -342,14 +342,15 @@ def set_example(ex: dict) -> None:
 @st.cache_resource
 def _get_scorer():
     """Singleton scorer for direct (non-API) mode. Reads keys from Streamlit secrets or env."""
-    for key in ("GEMINI_API_KEY", "GEMINI_API_KEY_2", "GEMINI_FALLBACK_MODELS", "GEMINI_MAX_RPM"):
+    secret_keys = ["GEMINI_API_KEY", "GEMINI_FALLBACK_MODELS", "GEMINI_MAX_RPM"]
+    secret_keys += [f"GEMINI_API_KEY_{i}" for i in range(2, 10)]
+    for key in secret_keys:
         val = _secret(key)
         if val:
             os.environ[key] = val
     from backend.scorer import SycophancyScorer
     from backend.domain_rules import FintechDomain
-    key2 = os.getenv("GEMINI_API_KEY_2")
-    fallback_keys = [k for k in [key2] if k]
+    fallback_keys = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(2, 10)) if k]
     raw = os.getenv("GEMINI_FALLBACK_MODELS", "")
     fallback_models = [m.strip() for m in raw.split(",") if m.strip()] or None
     return SycophancyScorer(default_domain=FintechDomain(),

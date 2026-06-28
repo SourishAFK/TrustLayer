@@ -1,10 +1,11 @@
 """
-main.py — TrustLayer API (FastAPI).
+main.py — TrustLayer API (FastAPI). PHASE 2: developer-facing scoring API.
 
-Thin HTTP layer over the core scorer. The frontend (and, later, the B2B SDK)
-talks to this — never to Gemini directly. All scoring logic stays in scorer.py;
-all domain knowledge stays in domain_rules.py. This file only does transport:
-request validation, calling the scorer, and mapping errors to HTTP status codes.
+Thin HTTP layer over the core scorer. The frontend (and the B2B SDK) talk to
+this — never to Gemini directly. All scoring logic stays in scorer.py; all
+domain knowledge stays in domain_rules.py; all persistence stays in store.py.
+This file only does transport: request validation, domain routing, calling the
+scorer, timing, usage logging, and mapping errors to HTTP status codes.
 
 Run:  python -m uvicorn backend.main:app --reload --port 8000
 """
@@ -14,20 +15,45 @@ from __future__ import annotations
 import base64
 import binascii
 import os
+import time
+from contextlib import asynccontextmanager
+from enum import Enum
 from functools import lru_cache
+from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from fastapi.responses import HTMLResponse, JSONResponse
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
-from backend.domain_rules import FintechDomain
-from backend.scorer import ScorerError, SycophancyResult, SycophancyScorer
+from backend import store
+from backend.domain_rules import (
+    CustomerServiceDomain,
+    FintechDomain,
+    GeneralDomain,
+)
+from backend.scorer import ScorerError, SycophancyScorer
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Best-effort schema init. If the DB is unreachable, scoring still works
+    # (usage logging is best-effort); auth/rate-limiting will surface the error.
+    try:
+        store.init_db()
+        print("[startup] DB schema ready.")
+    except Exception as exc:  # noqa: BLE001
+        print(f"[startup] DB init skipped: {exc}")
+    yield
+    store.close_pool()
+
 
 app = FastAPI(
     title="TrustLayer API",
-    version="0.1.0",
+    version="0.2.0",
     description="Detects sycophantic AI behavior — when AI tells you what you want to hear instead of the truth.",
+    lifespan=lifespan,
 )
 
 # Permissive CORS for local dev / future JS SDK. Tighten for production.
@@ -41,33 +67,55 @@ app.add_middleware(
 
 @lru_cache(maxsize=1)
 def get_scorer() -> SycophancyScorer:
-    """Build the scorer once, wired with the fintech domain. Cached as a singleton.
+    """Build the scorer once. Cached as a singleton.
 
-    Reads optional GEMINI_API_KEY_2 and GEMINI_FALLBACK_MODELS from env to build
-    a rotation chain — on quota exhaustion (429) the scorer advances to the next
-    (key, model) slot automatically, transparent to all callers.
+    The domain is now injected per-request (see DOMAIN_ADAPTERS), so no default
+    domain is baked in here. Reads optional GEMINI_API_KEY_2 and
+    GEMINI_FALLBACK_MODELS from env to build the (key, model) rotation chain.
     """
-    fallback_keys = [k for k in [os.getenv("GEMINI_API_KEY_2")] if k]
+    # Collect every extra key: GEMINI_API_KEY_2, _3, _4, ... Each is a separate
+    # Google project = its own quota buckets, multiplying free-tier headroom.
+    fallback_keys = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(2, 10)) if k]
     raw_models = os.getenv("GEMINI_FALLBACK_MODELS", "")
     fallback_models = [m.strip() for m in raw_models.split(",") if m.strip()] or None
     return SycophancyScorer(
-        default_domain=FintechDomain(),
         fallback_keys=fallback_keys,
         fallback_models=fallback_models,
     )
 
 
+# Per-request domain routing. Pluggable: a new vertical = a new entry here +
+# a new adapter in domain_rules.py. The core scorer never changes.
+DOMAIN_ADAPTERS = {
+    "fintech": FintechDomain(),
+    "customer_service": CustomerServiceDomain(),
+    "general": GeneralDomain(),
+}
+
+
 # --------------------------------------------------------------------------- #
-# Request model (response model is SycophancyResult from the core)
+# Request / response models (Pydantic v2)
 # --------------------------------------------------------------------------- #
 
+class DomainName(str, Enum):
+    fintech = "fintech"
+    customer_service = "customer_service"
+    general = "general"
+
+
+class UnderlyingModel(str, Enum):
+    gemini = "gemini"
+    gpt = "gpt"
+    claude = "claude"
+
+
 # Gemini-supported binary attachment types (images + PDF). Office/text docs are
-# extracted to text by the frontend and arrive inside `context`.
+# extracted to text by the caller and arrive inside `context`.
 ALLOWED_ATTACHMENT_MIMES = {
     "image/png", "image/jpeg", "image/webp", "image/gif", "image/bmp",
     "application/pdf",
 }
-MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024  # 8 MB per file
+MAX_ATTACHMENT_BYTES = 10 * 1024 * 1024  # 10 MB per file
 MAX_ATTACHMENTS = 6
 
 
@@ -78,14 +126,49 @@ class Attachment(BaseModel):
 
 
 class ScoreRequest(BaseModel):
-    query: str = Field(..., min_length=1, description="The user's question to the AI.")
-    ai_response: str = Field(..., min_length=1, description="The AI's answer to score.")
+    """Phase 2 scoring request. Accepts `user_query` (canonical) or `query`."""
+    model_config = ConfigDict(populate_by_name=True)
+
+    user_query: str = Field(
+        ..., min_length=1, max_length=8000,
+        validation_alias=AliasChoices("user_query", "query"),
+        description="The user's question to the AI.",
+    )
+    ai_response: str = Field(
+        ..., min_length=1, max_length=8000,
+        description="The AI's answer to score.",
+    )
+    domain: DomainName = Field(
+        default=DomainName.general,
+        description="Which domain rules to apply.",
+    )
+    underlying_model: Optional[UnderlyingModel] = Field(
+        default=None,
+        description="The model that produced ai_response. Logged for analytics; "
+                    "cross-model scoring arrives in a later phase.",
+    )
+    user_id: Optional[str] = Field(
+        default=None, description="Optional caller-supplied user id (Phase 3 profiles).",
+    )
     context: Optional[str] = Field(
-        default=None, description="Optional underlying facts/data to judge against."
+        default=None, description="Optional underlying facts/data to judge against.",
     )
     attachments: list[Attachment] = Field(
-        default_factory=list, description="Images/PDFs as extra factual context."
+        default_factory=list, description="Images/PDFs as extra factual context.",
     )
+
+
+class ScoreResponse(BaseModel):
+    sycophancy_score: int = Field(..., ge=0, le=100)
+    verdict: str
+    indicators: list[str]
+    suggested_honest_alternative: str
+    intent_gap: float = Field(..., ge=0.0, le=1.0)
+    response_honesty: float = Field(..., ge=0.0, le=1.0)
+    domain_flagged: bool
+    high_stakes: bool
+    scoring_model_used: Optional[str]
+    processing_time_ms: int
 
 
 def _decode_attachments(attachments: list[Attachment]) -> list[tuple[bytes, str]]:
@@ -132,16 +215,61 @@ def _http_from_scorer_error(exc: ScorerError) -> HTTPException:
 
 
 # --------------------------------------------------------------------------- #
+# Authentication
+# --------------------------------------------------------------------------- #
+
+def authenticate(
+    authorization: Optional[str] = Header(default=None),
+    x_api_key: Optional[str] = Header(default=None),
+) -> dict:
+    """Resolve and validate the caller's API key.
+
+    Accepts either `Authorization: Bearer tl_...` (preferred) or `X-API-Key:
+    tl_...`. Returns the key record on success; raises 401/503 otherwise.
+    """
+    key: Optional[str] = None
+    if authorization and authorization.lower().startswith("bearer "):
+        key = authorization[7:].strip()
+    elif x_api_key:
+        key = x_api_key.strip()
+
+    if not key:
+        raise HTTPException(
+            401, "Missing API key. Send 'Authorization: Bearer tl_...'.",
+        )
+    try:
+        record = store.validate_key(key)
+    except store.StoreError:
+        raise HTTPException(503, "Authentication backend unavailable. Try again shortly.")
+    if not record:
+        raise HTTPException(401, "Invalid or inactive API key.")
+    return record
+
+
+# --------------------------------------------------------------------------- #
 # Routes
 # --------------------------------------------------------------------------- #
 
-@app.get("/")
-def root() -> dict:
+_DOCS_PATH = Path(__file__).resolve().parent.parent / "docs" / "index.html"
+
+
+@app.get("/", response_class=HTMLResponse)
+def root() -> str:
+    """Serve the developer docs page. Falls back to plain text if the file is missing."""
+    try:
+        return _DOCS_PATH.read_text(encoding="utf-8")
+    except OSError:
+        return "<h1>TrustLayer API</h1><p>POST /score — see /info</p>"
+
+
+@app.get("/info")
+def info() -> dict:
     return {
         "service": "TrustLayer",
         "tagline": "Confidence is not Trust.",
-        "phase": 1,
+        "phase": 2,
         "endpoint": "POST /score",
+        "docs": "/",
     }
 
 
@@ -150,15 +278,73 @@ def health() -> dict:
     return {"status": "ok", "model": get_scorer().model_name}
 
 
-@app.post("/score", response_model=SycophancyResult)
-def score(req: ScoreRequest) -> SycophancyResult:
-    attachments = _decode_attachments(req.attachments)
+@app.post("/score", response_model=ScoreResponse)
+def score(req: ScoreRequest, key_record: dict = Depends(authenticate)):
+    api_key = key_record["key"]
+    daily_limit = key_record["daily_limit"]
+    tier = key_record["tier"]
+
+    # Daily rate limit (resets midnight UTC). Counts authenticated requests.
     try:
-        return get_scorer().score(
-            query=req.query,
+        rate = store.check_and_increment_rate(api_key, daily_limit)
+    except store.StoreError:
+        raise HTTPException(503, "Rate-limit backend unavailable. Try again shortly.")
+    if not rate["allowed"]:
+        return JSONResponse(
+            status_code=429,
+            content={
+                "error": "rate_limit_exceeded",
+                "message": f"{tier.capitalize()} tier limit of {daily_limit} "
+                           f"requests/day reached.",
+                "reset_at": rate["reset_at"],
+            },
+        )
+
+    attachments = _decode_attachments(req.attachments)
+    adapter = DOMAIN_ADAPTERS[req.domain.value]
+
+    t0 = time.perf_counter()
+    try:
+        result = get_scorer().score(
+            query=req.user_query,
             ai_response=req.ai_response,
             context=req.context,
+            domain=adapter,
             attachments=attachments,
         )
     except ScorerError as exc:
         raise _http_from_scorer_error(exc)
+    elapsed_ms = int((time.perf_counter() - t0) * 1000)
+
+    scoring_model = get_scorer().last_model_used
+    domain_flagged = req.domain != DomainName.general
+
+    resp = ScoreResponse(
+        sycophancy_score=result.sycophancy_score,
+        verdict=result.verdict.value,
+        indicators=result.sycophancy_indicators,
+        suggested_honest_alternative=result.suggested_honest_alternative,
+        intent_gap=result.intent_gap.gap_score,
+        response_honesty=result.honesty.honesty_score,
+        domain_flagged=domain_flagged,
+        high_stakes=result.is_high_stakes,
+        scoring_model_used=scoring_model,
+        processing_time_ms=elapsed_ms,
+    )
+
+    # Behavioral dataset — log every scored request (best-effort).
+    store.log_usage(
+        api_key=api_key,
+        domain=req.domain.value,
+        underlying_model=req.underlying_model.value if req.underlying_model else None,
+        scoring_model_used=scoring_model,
+        user_id=req.user_id,
+        sycophancy_score=resp.sycophancy_score,
+        verdict=resp.verdict,
+        intent_gap=resp.intent_gap,
+        response_honesty=resp.response_honesty,
+        high_stakes=resp.high_stakes,
+        processing_time_ms=elapsed_ms,
+    )
+
+    return resp
