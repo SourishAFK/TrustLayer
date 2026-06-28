@@ -8,3 +8,5 @@ requests
 python-docx
 openpyxl
 Pillow
+psycopg[binary]
+psycopg_pool

@@ -1,0 +1,10 @@
+# API-only dependencies (FastAPI backend). Lean, for fast cloud builds.
+# The full requirements.txt (which adds Streamlit, Pillow, docx/xlsx) is for the
+# frontend / local dev.
+fastapi
+uvicorn[standard]
+google-genai
+python-dotenv
+pydantic
+psycopg[binary]
+psycopg_pool
