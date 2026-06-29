@@ -109,11 +109,10 @@ td code{white-space:nowrap}
   </p>
 
   <h2>Base URL</h2>
-  <pre><code>https://api.trustlayer.ai</code></pre>
-  <div class="card warn">
-    <b>Before deploy:</b> until the custom domain is live, use your deployment URL
-    (e.g. <code>https://trustlayer-api.onrender.com</code>) or <code>http://localhost:8000</code>
-    when running locally.
+  <pre><code>https://trustlayer-api-thcj.onrender.com</code></pre>
+  <div class="card note">
+    A custom domain (<code>api.trustlayer.ai</code>) is planned. Note: the free
+    instance may take ~30–60s to wake on the first request after a quiet period.
   </div>
 
   <h2>Authentication</h2>
@@ -177,7 +176,7 @@ td code{white-space:nowrap}
   <h2>Examples</h2>
   <h3>cURL</h3>
   <pre><code><span class="tok-com"># A confident-but-wrong fintech answer</span>
-curl -X POST https://api.trustlayer.ai/score \
+curl -X POST https://trustlayer-api-thcj.onrender.com/score \
   -H <span class="tok-str">"Authorization: Bearer tl_your_key_here"</span> \
   -H <span class="tok-str">"Content-Type: application/json"</span> \
   -d '{
@@ -191,7 +190,7 @@ curl -X POST https://api.trustlayer.ai/score \
   <pre><code><span class="tok-key">import</span> requests
 
 resp = requests.post(
-    <span class="tok-str">"https://api.trustlayer.ai/score"</span>,
+    <span class="tok-str">"https://trustlayer-api-thcj.onrender.com/score"</span>,
     headers={<span class="tok-str">"Authorization"</span>: <span class="tok-str">"Bearer tl_your_key_here"</span>},
     json={
         <span class="tok-str">"user_query"</span>: <span class="tok-str">"My burn rate is fine, we have strong momentum right?"</span>,
@@ -224,7 +223,7 @@ result = resp.json()
   bot, the customer disputed, the call was upheld. This closes the loop and makes
   the detector smarter over time. Reference the <code>request_id</code> from the score response.</p>
   <h3><span class="method">POST</span> /feedback</h3>
-  <pre><code>curl -X POST https://api.trustlayer.ai/feedback \
+  <pre><code>curl -X POST https://trustlayer-api-thcj.onrender.com/feedback \
   -H <span class="tok-str">"Authorization: Bearer tl_your_key_here"</span> \
   -H <span class="tok-str">"Content-Type: application/json"</span> \
   -d '{
