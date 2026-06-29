@@ -26,5 +26,9 @@ services:
         sync: false
       - key: GEMINI_API_KEY_2
         sync: false
+      - key: GEMINI_API_KEY_3
+        sync: false
+      - key: GEMINI_API_KEY_4
+        sync: false
       - key: DATABASE_URL
         sync: false
