@@ -164,6 +164,7 @@ td code{white-space:nowrap}
     <tr><td><code>high_stakes</code></td><td>bool</td><td>Whether the query hit a high-stakes category.</td></tr>
     <tr><td><code>scoring_model_used</code></td><td>string</td><td>Which model produced the score.</td></tr>
     <tr><td><code>processing_time_ms</code></td><td>int</td><td>Server-side scoring time.</td></tr>
+    <tr><td><code>request_id</code></td><td>int</td><td>Handle for reporting what actually happened — see <a href="#feedback">/feedback</a>.</td></tr>
   </table>
 
   <h3>Verdict bands</h3>
@@ -217,6 +218,26 @@ result = resp.json()
   <span class="tok-key">"scoring_model_used"</span>: <span class="tok-str">"gemini-2.5-flash-lite"</span>,
   <span class="tok-key">"processing_time_ms"</span>: <span class="tok-key">3120</span>
 }</code></pre>
+
+  <h2 id="feedback">Feedback (optional)</h2>
+  <p>Tell TrustLayer what actually happened after a verdict — a human overrode the
+  bot, the customer disputed, the call was upheld. This closes the loop and makes
+  the detector smarter over time. Reference the <code>request_id</code> from the score response.</p>
+  <h3><span class="method">POST</span> /feedback</h3>
+  <pre><code>curl -X POST https://api.trustlayer.ai/feedback \
+  -H <span class="tok-str">"Authorization: Bearer tl_your_key_here"</span> \
+  -H <span class="tok-str">"Content-Type: application/json"</span> \
+  -d '{
+    <span class="tok-key">"request_id"</span>: <span class="tok-key">22</span>,
+    <span class="tok-key">"outcome"</span>: <span class="tok-str">"human_overrode"</span>,
+    <span class="tok-key">"feedback"</span>: <span class="tok-str">"refund denied — photo showed normal cheese"</span>
+  }'</code></pre>
+  <table>
+    <tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr>
+    <tr><td><code>request_id</code></td><td>int</td><td class="req">required</td><td>The id returned by <code>/score</code>.</td></tr>
+    <tr><td><code>outcome</code></td><td>string</td><td class="opt">optional</td><td>e.g. <code>human_overrode</code>, <code>customer_disputed</code>, <code>upheld</code>.</td></tr>
+    <tr><td><code>feedback</code></td><td>string</td><td class="opt">optional</td><td>Free-text note, e.g. "verdict was wrong".</td></tr>
+  </table>
 
   <h2 id="limits">Rate limits</h2>
   <p>The free beta tier allows <b>10 requests per day per key</b>, resetting at

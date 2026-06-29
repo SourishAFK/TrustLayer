@@ -169,6 +169,19 @@ class ScoreResponse(BaseModel):
     high_stakes: bool
     scoring_model_used: Optional[str]
     processing_time_ms: int
+    # Handle for reporting real-world ground truth later via POST /feedback.
+    request_id: Optional[int] = None
+
+
+class FeedbackRequest(BaseModel):
+    request_id: int = Field(..., description="The request_id returned by /score.")
+    feedback: Optional[str] = Field(
+        default=None, description="Free-text correction, e.g. 'verdict was wrong'.",
+    )
+    outcome: Optional[str] = Field(
+        default=None,
+        description="What actually happened, e.g. 'human_overrode', 'customer_disputed', 'upheld'.",
+    )
 
 
 def _decode_attachments(attachments: list[Attachment]) -> list[tuple[bytes, str]]:
@@ -332,8 +345,10 @@ def score(req: ScoreRequest, key_record: dict = Depends(authenticate)):
         processing_time_ms=elapsed_ms,
     )
 
-    # Behavioral dataset — log every scored request (best-effort).
-    store.log_usage(
+    # Behavioral dataset — log every scored request (best-effort). Raw text
+    # features (query/response/context) are only stored when the key opts in.
+    log_inputs = bool(key_record.get("log_inputs"))
+    log_id = store.log_usage(
         api_key=api_key,
         domain=req.domain.value,
         underlying_model=req.underlying_model.value if req.underlying_model else None,
@@ -345,6 +360,29 @@ def score(req: ScoreRequest, key_record: dict = Depends(authenticate)):
         response_honesty=resp.response_honesty,
         high_stakes=resp.high_stakes,
         processing_time_ms=elapsed_ms,
+        user_query=req.user_query if log_inputs else None,
+        ai_response=req.ai_response if log_inputs else None,
+        context=req.context if log_inputs else None,
+        attachment_count=len(attachments),
+        indicators=resp.indicators,
+        suggested_alternative=resp.suggested_honest_alternative,
     )
+    resp.request_id = log_id
 
     return resp
+
+
+@app.post("/feedback")
+def feedback(req: FeedbackRequest, key_record: dict = Depends(authenticate)) -> dict:
+    """Report what actually happened for a previously scored request.
+
+    This is the ground-truth signal that lets a future in-house model surpass
+    the current scorer: e.g. outcome='human_overrode' or feedback='verdict wrong'.
+    """
+    try:
+        updated = store.record_feedback(req.request_id, req.feedback, req.outcome)
+    except store.StoreError:
+        raise HTTPException(503, "Feedback backend unavailable. Try again shortly.")
+    if not updated:
+        raise HTTPException(404, f"No scored request with id {req.request_id}.")
+    return {"ok": True, "request_id": req.request_id}
