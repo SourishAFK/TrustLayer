@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trustlayer"
+version = "0.1.0"
+description = "TrustLayer Python SDK — detect AI sycophancy in one line."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "TrustLayer" }]
+keywords = ["ai", "llm", "sycophancy", "trust", "evaluation", "guardrails"]
+dependencies = ["requests>=2.25"]
+
+[project.urls]
+Homepage = "https://strustlayer.streamlit.app"
+Docs = "https://trustlayer-api-thcj.onrender.com/"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["trustlayer*"]
