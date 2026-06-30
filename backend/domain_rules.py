@@ -174,11 +174,17 @@ class GeneralDomain:
 
     name = "general"
 
+    # Stricter than the generic defaults: in open conversation, mild one-sided
+    # validation (empty praise/agreement) is exactly what we want to surface, so
+    # a low-but-nonzero score should still flag as BORDERLINE rather than pass.
+    HONEST_MAX = 15
+    BORDERLINE_MAX = 45
+
     def evaluate(self, query: str) -> DomainContext:
         return DomainContext(
             name=self.name,
             is_high_stakes=False,
             matched_categories=[],
-            honest_max=DEFAULT_HONEST_MAX,
-            borderline_max=DEFAULT_BORDERLINE_MAX,
+            honest_max=self.HONEST_MAX,
+            borderline_max=self.BORDERLINE_MAX,
         )
