@@ -16,11 +16,65 @@ Confidence ≠ Trust. Proven with ML system where accuracy collapsed 87.38% → 
 
 ---
 
-## What Sycophancy Means Here
-AI telling users what they want to hear instead of what facts/data say. Three forms:
-1. Sycophancy — agreeing to please
-2. Capitulation — caving under pressure
-3. Strategic self-presentation — appearing honest while managing own reputation
+## The Complete Vision: A Behavioral Audit Layer for AI Trust
+
+TrustLayer's long-term product is a **behavioral audit layer** that scores *any* AI
+interaction across **four dimensions of trust** and returns a single **Trust Score
+(0–100)** with a per-dimension breakdown. Sycophancy detection (today's product) is
+the first module of the first dimension — Honesty.
+
+> **Trust = Honesty × Competence × Consistency × Alignment**
+
+An AI can be confident and still untrustworthy in four distinct ways: it can lie to
+please you (**Honesty**), be confidently wrong (**Competence**), contradict itself
+(**Consistency**), or act against your interest (**Alignment**). TrustLayer audits all
+four. This is the moat: not a point tool, but the trust-infrastructure layer for the
+entire AI industry.
+
+### The Four Dimensions & 16 Failure Modes
+
+**1. Honesty failures** — the AI optimizes for your approval or its own image over the truth.
+
+| # | Failure mode | Definition | Phase |
+|---|---|---|---|
+| 1 | Sycophancy | Agreeing/validating to please, regardless of evidence | 1 ✅ |
+| 2 | Capitulation | Caving or reversing under pressure, persistence, or threats | 2 ✅ |
+| 3 | Strategic self-presentation | Managing its own reputation — appearing honest/safe while shading the truth | 3 |
+| 4 | Comprehension sycophancy | Claiming to understand intent ("got it!") while demonstrably failing to act on it — false competence signaling dressed as helpfulness | 3 |
+
+> _Comprehension sycophancy example: a user repeats the same request four times; the AI says "got it" each time but keeps missing the point._
+
+**2. Competence failures** — the AI is wrong on the merits, regardless of intent. (This is the `confidence ≠ trust` dimension.)
+
+| # | Failure mode | Definition | Phase |
+|---|---|---|---|
+| 5 | Overconfidence / miscalibration | Stated confidence not matching actual correctness | 4 |
+| 6 | Hallucination / fabrication | Inventing facts, sources, numbers, or details | 4 |
+| 7 | Reasoning errors | Logical, mathematical, or causal mistakes | 4 |
+| 8 | Knowledge gaps / staleness | Answering beyond its knowledge or with outdated information | 4 |
+
+**3. Consistency failures** — the AI contradicts itself or behaves unstably.
+
+| # | Failure mode | Definition | Phase |
+|---|---|---|---|
+| 9 | Self-contradiction | Asserting X and not-X within or across turns | 5 |
+| 10 | Context drift | Losing earlier facts, constraints, or commitments mid-conversation | 5 |
+| 11 | Prompt sensitivity | Materially different answers to the same question phrased differently | 5 |
+| 12 | Persona / stance instability | Values, tone, or positions shifting without reason | 5 |
+
+**4. Alignment failures** — the AI acts against your true interest, instructions, or safety.
+
+| # | Failure mode | Definition | Phase |
+|---|---|---|---|
+| 13 | Instruction violation | Ignoring or overriding explicit user constraints | 6 |
+| 14 | Manipulation / dark patterns | Steering the user toward the AI's or a third party's interest | 6 |
+| 15 | Goal misgeneralization | Optimizing the literal request over the intended outcome | 6 |
+| 16 | Unsafe / harmful guidance | Advice that creates real-world risk; ignoring duty of care in high-stakes contexts | 6 |
+
+### The Overall Trust Score (Phase 7)
+Once all four dimensions ship, every interaction gets a unified **Trust Score (0–100)**
+plus a four-axis breakdown (Honesty / Competence / Consistency / Alignment). That unified
+score is the behavioral audit layer no one has built — and the acquisition thesis.
 
 ---
 
@@ -146,14 +200,32 @@ Never let a model judge itself:
 
 ---
 
-## Phase Roadmap
-- ✅ **Phase 1 (COMPLETE):** Public sycophancy detector tool
-- 🔄 **Phase 2 (NEXT):** REST API — proper POST /score endpoint, SDK, developer docs
-- **Phase 3:** User trust profiles, interaction logging
-- **Phase 4:** Python + JS SDK for B2B sales
-- **Phase 5:** Analytics dashboard showing trust improvement over time
-- **Phase 6:** Multi-domain + research paper
-- **Phase 7:** Series A or acquisition
+## Phase Roadmap (detection capability + platform)
+Each phase adds a **detection dimension** and a **platform deliverable**. The four
+trust dimensions roll out across the phases; Phase 7 unifies them into one Trust Score.
+
+| Phase | Detection capability | Platform / delivery |
+|---|---|---|
+| 1 ✅ | **Honesty:** Sycophancy | Public detector tool |
+| 2 ✅ | **Honesty:** Capitulation (+ customer-service domain) | REST API — auth, rate limiting, usage logging, docs, deployed (Render) |
+| 3 🔄 | **Honesty (complete):** Strategic self-presentation + **Comprehension sycophancy** | User trust profiles, interaction logging |
+| 4 | **Competence** dimension (overconfidence, hallucination, reasoning errors, knowledge gaps) | Python + JS SDK |
+| 5 | **Consistency** dimension (self-contradiction, context drift, prompt sensitivity, persona instability) | Analytics dashboard — Trust Score trends |
+| 6 | **Alignment** dimension (instruction violation, manipulation, goal misgeneralization, unsafe guidance) | Multi-domain + research paper |
+| 7 | **Unified Trust Score** across all four dimensions | Series A / acquisition |
+
+**Current status:** Phase 1 ✅ and Phase 2 ✅ shipped (API live on Render). Phase 3 is next —
+completing the Honesty dimension with strategic self-presentation and comprehension sycophancy.
+
+### Phase 3 detection module — Comprehension sycophancy
+- **Definition:** AI claiming to understand user intent while demonstrably failing to act on
+  it — false competence signaling dressed as helpfulness.
+- **Signal:** repeated/restated requests + affirmations ("got it", "understood") that are not
+  reflected in the AI's subsequent actions or outputs.
+- **Example:** user repeats the same request 4 times; the AI says "got it" each time but keeps
+  missing the point.
+- Sits at the Honesty↔Competence boundary: the *claim* of understanding is an honesty failure;
+  the *missed intent* is what makes it measurable.
 
 ---
 
@@ -207,7 +279,7 @@ POST /score
 Fine-tuned sycophancy detection model trained on accumulated real interaction data. Every analysis run today is a future training example. Log everything.
 
 ## Competitive Positioning
-Not a hallucination detector. Not a fact checker. Specifically: detects when AI prioritizes user approval over truth. The infrastructure layer nobody has built yet.
+**Today (Honesty dimension):** not a hallucination detector or fact checker — it detects when an AI prioritizes user approval or its own image over truth. **Long-term:** the four-dimension behavioral audit layer — Honesty, Competence (which *includes* hallucination + calibration), Consistency, Alignment — unified into one Trust Score. The trust-infrastructure layer nobody has built yet.
 
 ---
 
