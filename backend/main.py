@@ -386,3 +386,178 @@ def feedback(req: FeedbackRequest, key_record: dict = Depends(authenticate)) -> 
     if not updated:
         raise HTTPException(404, f"No scored request with id {req.request_id}.")
     return {"ok": True, "request_id": req.request_id}
+
+
+# --------------------------------------------------------------------------- #
+# Public chat (TrustLayer Chat frontend) — generation + verification in one call.
+# The static frontend holds no keys: Gemini runs here, scoring runs in-process.
+# Identity comes from TRUSTLAYER_CHAT_KEY env (a normal tl_ key, so the existing
+# rate limiter + logging gates apply); without it, an in-memory daily cap guards.
+# --------------------------------------------------------------------------- #
+
+class ChatMessage(BaseModel):
+    role: str = Field(..., pattern="^(user|assistant)$")
+    content: str = Field(default="", max_length=8000)
+    image_b64: Optional[str] = None
+    image_mime: Optional[str] = None
+
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage] = Field(..., min_length=1)
+
+
+class ChatResponse(BaseModel):
+    reply: str
+    original: Optional[str] = None
+    replaced: bool = False
+    verdict: Optional[str] = None
+    score: Optional[int] = None
+    request_id: Optional[int] = None
+    unverified: bool = False
+    processing_time_ms: int = 0
+
+
+class ChatFeedbackRequest(BaseModel):
+    request_id: int
+    outcome: str = Field(..., max_length=40)
+
+
+_PUBLIC_CHAT_FALLBACK_LIMIT = 500
+_public_chat_counter = {"day": None, "count": 0}
+
+
+def _public_chat_allowed() -> bool:
+    """In-memory daily cap used only when TRUSTLAYER_CHAT_KEY isn't configured."""
+    import datetime as _dt
+    today = _dt.datetime.now(_dt.timezone.utc).date()
+    if _public_chat_counter["day"] != today:
+        _public_chat_counter["day"] = today
+        _public_chat_counter["count"] = 0
+    _public_chat_counter["count"] += 1
+    return _public_chat_counter["count"] <= _PUBLIC_CHAT_FALLBACK_LIMIT
+
+
+def _decode_chat_image(msg: ChatMessage) -> Optional[bytes]:
+    if not msg.image_b64:
+        return None
+    try:
+        raw = base64.b64decode(msg.image_b64, validate=True)
+    except (binascii.Error, ValueError):
+        raise HTTPException(400, "Image is not valid base64.")
+    if len(raw) > MAX_ATTACHMENT_BYTES:
+        raise HTTPException(400, "Image too large (max 10 MB).")
+    return raw or None
+
+
+@app.post("/chat", response_model=ChatResponse)
+def chat(req: ChatRequest) -> ChatResponse:
+    from backend.chat import generate_chat_reply
+
+    # --- identity + rate limiting ---
+    chat_key = os.getenv("TRUSTLAYER_CHAT_KEY")
+    key_record = None
+    if chat_key:
+        try:
+            key_record = store.validate_key(chat_key)
+        except store.StoreError:
+            key_record = None
+    if key_record:
+        try:
+            rate = store.check_and_increment_rate(chat_key, key_record["daily_limit"])
+            if not rate["allowed"]:
+                return JSONResponse(  # type: ignore[return-value]
+                    status_code=429,
+                    content={"error": "rate_limit_exceeded",
+                             "message": "The chat's daily budget is used up. "
+                                        "It resets at midnight UTC.",
+                             "reset_at": rate["reset_at"]},
+                )
+        except store.StoreError:
+            pass
+    elif not _public_chat_allowed():
+        raise HTTPException(429, "The chat's daily budget is used up. Try tomorrow.")
+
+    # --- decode messages (images included) ---
+    msgs: list[dict] = []
+    for m in req.messages:
+        msgs.append({
+            "role": m.role, "content": m.content,
+            "image_bytes": _decode_chat_image(m),
+            "image_mime": m.image_mime,
+        })
+    last_user = next((m for m in reversed(msgs) if m["role"] == "user"), None)
+    if last_user is None or not (last_user["content"] or last_user["image_bytes"]):
+        raise HTTPException(400, "The last user message is empty.")
+
+    t0 = time.perf_counter()
+
+    # --- 1) generate naturally ---
+    try:
+        reply = generate_chat_reply(msgs)
+    except Exception:
+        raise HTTPException(503, "The model is overloaded right now — try again shortly.")
+
+    # --- 2) verify honesty in-process (fail open, never break the chat) ---
+    resp = ChatResponse(reply=reply, unverified=True)
+    try:
+        attachments = None
+        if last_user["image_bytes"]:
+            attachments = [(last_user["image_bytes"],
+                            last_user["image_mime"] or "image/jpeg")]
+        result = get_scorer().score(
+            query=last_user["content"] or "(image)",
+            ai_response=reply,
+            domain=DOMAIN_ADAPTERS["general"],
+            attachments=attachments,
+        )
+        elapsed_ms = int((time.perf_counter() - t0) * 1000)
+        resp.unverified = False
+        resp.verdict = result.verdict.value
+        resp.score = result.sycophancy_score
+        alt = (result.suggested_honest_alternative or "").strip()
+        if result.verdict.value in ("SYCOPHANTIC", "BORDERLINE") and alt:
+            resp.original = reply
+            resp.reply = alt
+            resp.replaced = True
+
+        identity = chat_key if key_record else "public-chat"
+        log_inputs = bool(key_record.get("log_inputs")) if key_record else True
+        log_id = store.log_usage(
+            api_key=identity,
+            domain="general",
+            underlying_model="gemini",
+            scoring_model_used=get_scorer().last_model_used,
+            user_id=None,
+            sycophancy_score=result.sycophancy_score,
+            verdict=result.verdict.value,
+            intent_gap=result.intent_gap.gap_score,
+            response_honesty=result.honesty.honesty_score,
+            high_stakes=result.is_high_stakes,
+            processing_time_ms=elapsed_ms,
+            user_query=(last_user["content"] if log_inputs else None),
+            ai_response=(reply if log_inputs else None),
+            context=None,
+            attachment_count=1 if last_user["image_bytes"] else 0,
+            indicators=result.sycophancy_indicators,
+            suggested_alternative=alt,
+        )
+        resp.request_id = log_id
+    except ScorerError:
+        pass  # fail open: unverified reply, visibly labeled by the frontend
+    except Exception:
+        pass
+
+    resp.processing_time_ms = int((time.perf_counter() - t0) * 1000)
+    return resp
+
+
+@app.post("/chat/feedback")
+def chat_feedback(req: ChatFeedbackRequest) -> dict:
+    """Thumbs up/down from the public chat — human ground truth, no auth needed."""
+    try:
+        updated = store.record_feedback(req.request_id, None, req.outcome)
+    except store.StoreError:
+        raise HTTPException(503, "Feedback backend unavailable.")
+    if not updated:
+        raise HTTPException(404, f"No scored request with id {req.request_id}.")
+    return {"ok": True}

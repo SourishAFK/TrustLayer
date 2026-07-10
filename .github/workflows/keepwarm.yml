@@ -1,0 +1,14 @@
+name: keep-warm
+# Pings the Render API every 10 minutes so the free instance never cold-starts
+# in front of a user. GitHub Actions cron is best-effort (may drift a few min).
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: ping API health
+        run: curl -fsS -m 90 https://trustlayer-api-thcj.onrender.com/health || true
