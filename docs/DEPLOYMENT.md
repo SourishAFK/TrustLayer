@@ -1,0 +1,145 @@
+# Deploying and operating TrustLayer 2.0
+
+This is the operator's handbook for the verification API (`/v1/verify`,
+`/v1/verify/stream`, `/v1/status`, `/v1/reports/{id}`) alongside the original
+endpoints. Security controls and residual risks are in [SECURITY.md](SECURITY.md);
+the design is in [ARCHITECTURE.md](ARCHITECTURE.md).
+
+## 1. What runs where
+
+```text
+Browser / SDK ──HTTPS──> FastAPI (uvicorn, backend.main:app)
+                           ├── Postgres (API keys, daily quotas, usage, optional stored reports)
+                           ├── Search: Brave (keyed), Wikipedia + OpenAlex (free, need a contact)
+                           ├── AI judges: Anthropic and/or Gemini (keyed, optional)
+                           └── Web pages: fetched through the SSRF-safe fetcher (GET only)
+```
+
+Nothing else is required. Without any provider keys the service still runs every
+deterministic check and labels everything it could not research UNVERIFIED.
+
+## 2. Configuration
+
+Copy `.env.example` (locally) or set the same variables on the host. Every
+option is documented there; these are the ones that matter in production:
+
+| Variable | Recommendation |
+| --- | --- |
+| `DATABASE_URL` | Required for authenticated routes (keys and quotas fail **closed** without it). |
+| `GEMINI_API_KEY`, `ANTHROPIC_API_KEY` | At least one, or claims can be searched but never assessed. Both enable cross-family judging ("never let a model judge itself"). |
+| `BRAVE_SEARCH_API_KEY` | Strongly recommended for market/startup research; Wikipedia and OpenAlex rarely cover young companies. |
+| `TRUSTLAYER_CONTACT` | Required for Wikipedia (Wikimedia rejects agents without contact info). Use a public project URL or a role mailbox. |
+| `TRUSTLAYER_CORS_ORIGINS` | Set to your frontend origins; the default `*` is for local development. |
+| `TRUSTLAYER_QUICK_MAX_COST_USD`, `TRUSTLAYER_DEEP_MAX_COST_USD` | Your per-request spend ceilings (defaults $0.10 / $1.00). |
+| `TRUSTLAYER_MAX_CONCURRENT_VERIFICATIONS` | Per process; default 4, keep ≤ ~30 with uvicorn's default threadpool. |
+| `TRUSTLAYER_REPORT_RETENTION_HOURS` | `0` (default) stores nothing. Set e.g. `72` to let users reopen or share reports; they expire automatically. |
+| `TRUSTLAYER_PUBLIC_CHAT_LOG_INPUTS` | **Decide explicitly.** `true` keeps the original behavior (keyless public chat stores raw text for training); set `false` unless users are told and consent. |
+
+Invalid budget, retention, freshness, port or claim-cap values make the verify
+routes return **503 "Verification configuration is invalid."** — a deliberate
+fail-closed. `GET /v1/status` shows the active limits and provider *names*.
+
+## 3. Deploy on Render
+
+1. Push the repository; in Render choose **New → Blueprint** and select it.
+   `render.yaml` defines the API service and non-secret defaults (including
+   `TRUSTLAYER_CONTACT`).
+2. In the dashboard set the secrets marked `sync: false`: `DATABASE_URL`,
+   `GEMINI_API_KEY` (and `_2.._4`), `ANTHROPIC_API_KEY`, `BRAVE_SEARCH_API_KEY`.
+3. Deploy. The build installs `requirements-api.txt`; startup creates or migrates
+   tables idempotently (including `verification_reports`).
+4. Create caller keys with the existing admin CLI: `python -m backend.admin --help`.
+5. Smoke test:
+   ```bash
+   curl https://<host>/v1/status
+   curl -X POST https://<host>/v1/verify -H "Authorization: Bearer tl_..." \
+        -H "Content-Type: application/json" \
+        -d '{"response_text": "The Eiffel Tower was completed in 1889.", "mode": "quick"}'
+   ```
+   Expect `status`, per-claim verdicts with quoted evidence, `usage` and `privacy`.
+
+The health check stays `/health` (it builds the legacy scorer, so it needs a
+Gemini key). The React workbench is optional: build `frontend/web` and the API
+serves it at `/workbench/`; the blueprint itself is API-only.
+
+## 4. Costs
+
+Costs are estimates the service computes from `budget.SEARCH_PRICES` and
+`budget.MODEL_PRICES` (override with `TRUSTLAYER_PRICE_*`); every report carries
+`usage.estimated_cost_usd` and its `cost_basis`.
+
+| Item | Price basis (Oct 2026, verify against your plan) |
+| --- | --- |
+| Brave Search API | about $5 per 1,000 requests; $5 of free credit per month |
+| Wikipedia, OpenAlex, doi.org | free public APIs (rate-limited; be polite) |
+| Gemini 2.5 Flash-Lite judge | about $0.10 / $0.40 per million input / output tokens (free tier: $0) |
+| Claude Opus 5.5 judge (default Anthropic model) | $4 / $20 per million tokens; set `ANTHROPIC_MODEL=claude-haiku-5-5` ($0.10 / $0.50) to trade depth for cost |
+
+Measured live (October 14, 2026, Quick Check, 3 claims, Gemini Flash-Lite +
+Wikipedia): 3 model calls, 3,744 tokens, 3 searches, **≈ $0.0007**, 11 s. Deep
+Investigation multiplies searches, page reads and model calls (up to the caps).
+The per-request cost cap is enforced before each paid call, so a run cannot
+exceed it; the daily key quota bounds requests per customer.
+
+## 5. Monitoring
+
+Each verification writes one JSON line to stdout via the `trustlayer.audit`
+logger — counts, timings, cost, exhausted limits, per-engine status, report id
+and a 12-character owner hash; never text or keys (abridged example):
+
+```json
+{"event": "verification", "report_id": "…", "mode": "quick", "status": "partial", "owner": "c3c50f2daa3b",
+ "claims": 3, "supported": 2, "contradicted": 1, "investigated": 3, "checks_incomplete": 0,
+ "duration_ms": 10994.0, "model_calls": 3, "search_calls": 3, "cost_usd": 0.000736,
+ "exhausted": [], "stored": false, "engines": {"evidence": "completed", "citations": "not_applicable"}}
+```
+
+Ship stdout to your log platform and alert on:
+
+- rising share of `"engines": {...: "failed"}` (a provider or code fault);
+- frequent `exhausted` (budgets too tight, or abuse);
+- HTTP 503 "capacity is busy" (scale out or raise the concurrency cap);
+- `stored: false` while retention is on (database write failures);
+- error logs naming exception types from `backend.verification.*`.
+
+## 6. Runbook
+
+| Symptom | Likely cause | Action |
+| --- | --- | --- |
+| Every claim UNVERIFIED, "No AI provider is configured" | Judge keys missing or rejected | Check `GET /v1/status` → `ai_providers`; rotate keys; reports stay honest meanwhile |
+| "AI call(s) failed" in incomplete checks | Provider outage or rate limit | Nothing breaks; add a second provider (`TRUSTLAYER_LLM_PROVIDERS`) |
+| Wikipedia never searched | `TRUSTLAYER_CONTACT` unset or invalid | Set a public URL or mailbox |
+| Citations shown as `blocked` | Private/odd-port links or robots.txt | Expected; the fetcher refuses internal targets and honors robots |
+| 503 "configuration is invalid" | A bad env value | Fix the value named in your change log; `/v1/status` also returns 503 until fixed |
+| 503 "capacity is busy" | Concurrency cap reached | Scale instances or raise the cap carefully |
+| 401/503 on every request | Database unreachable | Auth and quotas fail closed by design; restore the database |
+| A customer asks to delete a report | Retention on | `DELETE /v1/reports/{id}` with their key, or delete the row by id |
+| Suspected bad verdict | Policy or engine issue | Retrieve the report, inspect `evidence`, `checks`, `missing_evidence`; add the case to `evaluation/verification` before fixing |
+
+Rollback: redeploy the previous commit. The schema migration is additive
+(`CREATE TABLE IF NOT EXISTS`), so older builds keep working against the new tables.
+
+## 7. Pilot protocol (Level 5 exit gate)
+
+Goal: three external users investigate real AI outputs without crashes,
+fabricated evidence or hidden verification failures.
+
+1. **Consent and scope.** Tell each pilot what is sent to which providers (the
+   report's `privacy` block lists them), that documents are only shared with AI
+   when they tick the box, and how long reports are kept. Use retention ≤ 72 h.
+2. **Setup.** One `tl_` key per pilot with a modest daily limit; production keys
+   for at least one judge and Brave; `TRUSTLAYER_CONTACT` set.
+3. **Tasks.** Each pilot verifies at least five of their own AI outputs, including
+   one startup/market research answer with competitor and statistics claims, one
+   with citations, and one in Deep mode.
+4. **Review every report** (with the pilot's permission): for each SUPPORTED or
+   CONTRADICTED claim, open each evidence URL and confirm the quote is on the
+   page and says what the verdict implies. Any fabricated or misread evidence is
+   a **stop-ship** bug: add it to the evaluation set, fix, re-run the benchmark.
+5. **Hidden-failure audit.** For every claim left UNVERIFIED, confirm the report
+   says why (`missing_evidence`, `incomplete_checks`). A silent gap is a bug.
+6. **Exit.** Pass when all reports from three pilots are reviewed with zero
+   fabricated evidence, zero unexplained gaps and zero crashes; record findings
+   in `CHANGELOG.md`. Delete pilot reports after the review.
+
+This protocol has **not been run yet**; it requires real external users.

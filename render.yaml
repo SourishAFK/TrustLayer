@@ -21,7 +21,21 @@ services:
         value: "5"
       - key: FREE_TIER_DAILY_LIMIT
         value: "10"
+      # --- TrustLayer 2.0 verification (see .env.example for every option) ---
+      # Public contact for the crawler User-Agent (Wikimedia requires one).
+      - key: TRUSTLAYER_CONTACT
+        value: https://github.com/SourishAFK/TrustLayer
+      - key: TRUSTLAYER_LLM_PROVIDERS
+        value: anthropic,gemini
+      - key: TRUSTLAYER_MAX_CONCURRENT_VERIFICATIONS
+        value: "4"
+      - key: TRUSTLAYER_REPORT_RETENTION_HOURS
+        value: "0"
       # --- secrets: set these in the Render dashboard (sync:false) ---
+      - key: BRAVE_SEARCH_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
       - key: GEMINI_API_KEY
         sync: false
       - key: GEMINI_API_KEY_2

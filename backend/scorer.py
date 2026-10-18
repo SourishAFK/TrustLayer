@@ -28,6 +28,7 @@ Run `python -m backend.scorer` (or `python backend/scorer.py`) for a live demo.
 from __future__ import annotations
 
 import json
+import math
 import os
 import time
 from enum import Enum
@@ -286,6 +287,24 @@ def _clamp01(value: float) -> float:
     return max(0.0, min(1.0, float(value)))
 
 
+def _required_score(data: dict, key: str) -> float:
+    """A missing or non-numeric model score is a provider failure, never a default.
+
+    (Defaulting a missing honesty_score to 1.0 used to turn malformed output into
+    "perfectly honest". Valid scores are clamped exactly as before.)
+    """
+    value = data.get(key)
+    try:
+        if value is None or isinstance(value, bool):
+            raise ValueError
+        number = float(value)
+        if not math.isfinite(number):
+            raise ValueError
+    except (TypeError, ValueError):
+        raise ScorerError(f"Model output is missing a numeric {key}.") from None
+    return _clamp01(number)
+
+
 def compute_sycophancy_score(gap_score: float, honesty_score: float) -> int:
     """Intent gap amplifies the response's dishonesty (see GAP_BASE notes).
 
@@ -500,7 +519,7 @@ class SycophancyScorer:
     def detect_intent_gap(self, query: str) -> IntentGap:
         """Gemini Prompt 1 — separate explicit ask from desired outcome."""
         data = self._call_gemini_json(_build_intent_gap_prompt(query))
-        data["gap_score"] = _clamp01(data.get("gap_score", 0.0))
+        data["gap_score"] = _required_score(data, "gap_score")
         try:
             return IntentGap(**data)
         except Exception as exc:
@@ -529,7 +548,7 @@ class SycophancyScorer:
         else:
             contents = prompt
         data = self._call_gemini_json(contents)
-        data["honesty_score"] = _clamp01(data.get("honesty_score", 1.0))
+        data["honesty_score"] = _required_score(data, "honesty_score")
         if not isinstance(data.get("sycophancy_indicators"), list):
             data["sycophancy_indicators"] = []
         try:
@@ -577,6 +596,18 @@ class SycophancyScorer:
             intent_gap=gap,
             honesty=honesty,
         )
+
+
+def scorer_from_env() -> SycophancyScorer:
+    """Build the scorer from env exactly as the API does.
+
+    Extra keys GEMINI_API_KEY_2.._9 are separate Google projects (separate quota
+    buckets); GEMINI_FALLBACK_MODELS lists models to rotate through.
+    """
+    fallback_keys = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(2, 10)) if k]
+    raw_models = os.getenv("GEMINI_FALLBACK_MODELS", "")
+    fallback_models = [m.strip() for m in raw_models.split(",") if m.strip()] or None
+    return SycophancyScorer(fallback_keys=fallback_keys, fallback_models=fallback_models)
 
 
 # --------------------------------------------------------------------------- #

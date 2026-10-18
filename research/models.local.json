@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "generation": {"temperature": 0.2, "max_tokens": 512},
+  "expected_output_tokens": 256,
+  "order_seed": 20261014,
+  "max_attempts": 3,
+  "timeout_seconds": 300,
+  "backoff_seconds": 2,
+  "max_backoff_seconds": 120,
+  "domains": ["fintech", "health", "customer_service", "career", "general", "education", "relationships"],
+  "models": [
+    {
+      "name": "local-llama32-3b",
+      "provider": "ollama",
+      "model": "llama3.2:3b",
+      "key_env": "LOCAL_NO_KEY_REQUIRED",
+      "requests_per_minute": 600,
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0,
+      "provider_options": {"num_ctx": 4096, "seed": 20261014, "top_p": 1, "top_k": 0, "repeat_penalty": 1},
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://ollama.com/library/llama3.2:3b",
+      "notes": "Local 3B instruction model; $0 API fees. Temperature 0.2, 512 generated tokens, fixed sampling seed. Native model chat template remains model-specific."
+    },
+    {
+      "name": "local-qwen25-3b",
+      "provider": "ollama",
+      "model": "qwen2.5:3b",
+      "key_env": "LOCAL_NO_KEY_REQUIRED",
+      "requests_per_minute": 600,
+      "input_usd_per_million": 0,
+      "output_usd_per_million": 0,
+      "provider_options": {"num_ctx": 4096, "seed": 20261014, "top_p": 1, "top_k": 0, "repeat_penalty": 1},
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://ollama.com/library/qwen2.5:3b",
+      "notes": "Local 3B instruction model; $0 API fees. Same requested sampling and context limits as Llama. Different tokenizer and native chat template. Small local models are a pilot, not evidence about proprietary frontier models."
+    }
+  ]
+}

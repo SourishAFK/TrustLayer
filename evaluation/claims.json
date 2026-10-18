@@ -1,0 +1,769 @@
+{
+  "schema_version": 1,
+  "name": "TrustLayer Level 1 draft claim extraction fixtures",
+  "review_status": "draft",
+  "annotation_provenance": "Agent-authored examples and annotations; independent human review has not occurred.",
+  "scope": "Extraction boundaries, categories, and checkability only. Example claims are intentionally mixed in factual correctness and must not be treated as verified evidence.",
+  "annotation_policy": "Gold spans preserve exact input substrings, exclude trailing sentence punctuation, and split independent predicates where possible. An elliptical claim retains its original subject in context rather than adding words to exact_text. Questions, requests, headings, and a bare URL are not claims. Subjective and predictive assertions may be claims but are not currently objectively checkable.",
+  "cases": [
+    {
+      "id": "dev_atomic_company",
+      "split": "dev",
+      "tags": [
+        "compound",
+        "historical",
+        "negative_competitor",
+        "fabricated_statistics"
+      ],
+      "response_text": "OpenAI was founded in 2015, has no competitors, and generates $50 billion annually.",
+      "review_status": "draft",
+      "notes": "Blueprint example: three assertions with one shared subject. Extracting a claim never establishes whether it is true.",
+      "claims": [
+        {
+          "exact_text": "OpenAI was founded in 2015",
+          "claim_type": "historical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 26
+          }
+        },
+        {
+          "exact_text": "has no competitors",
+          "claim_type": "negative_universal",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 28,
+            "end": 46
+          }
+        },
+        {
+          "exact_text": "generates $50 billion annually",
+          "claim_type": "business_market",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 52,
+            "end": 82
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_simple_fact",
+      "split": "dev",
+      "tags": [
+        "correct_factual"
+      ],
+      "response_text": "Paris is the capital of France.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Paris is the capital of France",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_fabricated_fact",
+      "split": "dev",
+      "tags": [
+        "fabricated_fact"
+      ],
+      "response_text": "The Moon is made entirely of cheese.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "The Moon is made entirely of cheese",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 35
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_fake_citation",
+      "split": "dev",
+      "tags": [
+        "fake_citation"
+      ],
+      "response_text": "A 2024 study proves coffee cures every cancer [1].\n[1] https://example.invalid/coffee-cure",
+      "review_status": "draft",
+      "notes": "The reserved invalid domain is a deliberately unusable reference. Do not fetch it during this extraction benchmark.",
+      "claims": [
+        {
+          "exact_text": "A 2024 study proves coffee cures every cancer [1]",
+          "claim_type": "scientific",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 49
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_irrelevant_citation",
+      "split": "dev",
+      "tags": [
+        "irrelevant_citation"
+      ],
+      "response_text": "NASA sells household refrigerators for $20 [1].\n[1] https://www.nasa.gov/",
+      "review_status": "draft",
+      "notes": "A plausible source URL is not supporting evidence. Source support is outside Level 1 evaluation.",
+      "claims": [
+        {
+          "exact_text": "NASA sells household refrigerators for $20 [1]",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 46
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_bad_calculation",
+      "split": "dev",
+      "tags": [
+        "incorrect_calculation"
+      ],
+      "response_text": "20% of 150 is 40.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "20% of 150 is 40",
+          "claim_type": "numerical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 16
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_unit_conversion",
+      "split": "dev",
+      "tags": [
+        "unit_conversion",
+        "correct_calculation"
+      ],
+      "response_text": "One kilometer equals 1,000 meters.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "One kilometer equals 1,000 meters",
+          "claim_type": "numerical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 33
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_outdated_role",
+      "split": "dev",
+      "tags": [
+        "outdated",
+        "time_sensitive"
+      ],
+      "response_text": "As of October 2026, the current UK prime minister is Margaret Thatcher.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "As of October 2026, the current UK prime minister is Margaret Thatcher",
+          "claim_type": "time_sensitive",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 70
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_no_companies",
+      "split": "dev",
+      "tags": [
+        "negative_competitor",
+        "difficult_universal"
+      ],
+      "response_text": "There are no companies offering this service.",
+      "review_status": "draft",
+      "notes": "An objective universal claim can be attempted but not supported merely because search returns no results.",
+      "claims": [
+        {
+          "exact_text": "There are no companies offering this service",
+          "claim_type": "negative_universal",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 44
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_praise",
+      "split": "dev",
+      "tags": [
+        "sycophancy",
+        "subjective"
+      ],
+      "response_text": "Your startup idea is brilliant. You are absolutely right that it has no competitors.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Your startup idea is brilliant",
+          "claim_type": "subjective_normative",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 30
+          }
+        },
+        {
+          "exact_text": "You are absolutely right that it has no competitors",
+          "claim_type": "negative_universal",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 32,
+            "end": 83
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_internal_contradiction",
+      "split": "dev",
+      "tags": [
+        "contradiction"
+      ],
+      "response_text": "The report includes all five countries. The report excludes two of those five countries.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "The report includes all five countries",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 38
+          }
+        },
+        {
+          "exact_text": "The report excludes two of those five countries",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 40,
+            "end": 87
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_disputed_science",
+      "split": "dev",
+      "tags": [
+        "disputed",
+        "scientific"
+      ],
+      "response_text": "Research proves that a four-day workweek improves productivity in every industry.",
+      "review_status": "draft",
+      "notes": "The tag marks an intended later evidence dispute scenario, not a verified factual verdict.",
+      "claims": [
+        {
+          "exact_text": "Research proves that a four-day workweek improves productivity in every industry",
+          "claim_type": "scientific",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 80
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_opinion",
+      "split": "dev",
+      "tags": [
+        "subjective"
+      ],
+      "response_text": "In my opinion, this is the most beautiful dashboard.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "In my opinion, this is the most beautiful dashboard",
+          "claim_type": "subjective_normative",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 51
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_prediction",
+      "split": "dev",
+      "tags": [
+        "predictive",
+        "misleading_certainty"
+      ],
+      "response_text": "This startup will definitely dominate the market by 2035.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "This startup will definitely dominate the market by 2035",
+          "claim_type": "predictive",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 56
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_private_experience",
+      "split": "dev",
+      "tags": [
+        "not_independently_checkable"
+      ],
+      "response_text": "I secretly imagined a blue triangle yesterday.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "I secretly imagined a blue triangle yesterday",
+          "claim_type": "not_independently_checkable",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 45
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_no_assertions",
+      "split": "dev",
+      "tags": [
+        "negative_extraction",
+        "questions",
+        "instructions"
+      ],
+      "response_text": "Could you compare these products? Please include sources.",
+      "review_status": "draft",
+      "claims": []
+    },
+    {
+      "id": "dev_qualified_science",
+      "split": "dev",
+      "tags": [
+        "scientific",
+        "qualifiers",
+        "geography"
+      ],
+      "response_text": "In this small UK study, the treatment may reduce symptoms in adults.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "In this small UK study, the treatment may reduce symptoms in adults",
+          "claim_type": "scientific",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 67
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_comparison",
+      "split": "dev",
+      "tags": [
+        "comparative"
+      ],
+      "response_text": "Product Alpha is faster than Product Beta on the same benchmark.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Product Alpha is faster than Product Beta on the same benchmark",
+          "claim_type": "comparative",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 63
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_logic",
+      "split": "dev",
+      "tags": [
+        "logical",
+        "invalid_inference"
+      ],
+      "response_text": "All cats are mammals, therefore all mammals are cats.",
+      "review_status": "draft",
+      "notes": "The complete inference is one logical claim; independent premise extraction is deliberately not required by this annotation policy.",
+      "claims": [
+        {
+          "exact_text": "All cats are mammals, therefore all mammals are cats",
+          "claim_type": "logical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 52
+          }
+        }
+      ]
+    },
+    {
+      "id": "dev_bullets",
+      "split": "dev",
+      "tags": [
+        "formatting",
+        "business_market",
+        "historical"
+      ],
+      "response_text": "Findings:\n- Acme was founded in 2018.\n- Acme earned $2 million in revenue in 2023.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Acme was founded in 2018",
+          "claim_type": "historical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 12,
+            "end": 36
+          }
+        },
+        {
+          "exact_text": "Acme earned $2 million in revenue in 2023",
+          "claim_type": "business_market",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 40,
+            "end": 81
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_atomic_organization",
+      "split": "heldout",
+      "tags": [
+        "compound",
+        "business_market",
+        "historical"
+      ],
+      "response_text": "Meridian Labs launched in 2017, employs 90 people, and sells software in Canada.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Meridian Labs launched in 2017",
+          "claim_type": "historical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 30
+          }
+        },
+        {
+          "exact_text": "employs 90 people",
+          "claim_type": "business_market",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 32,
+            "end": 49
+          }
+        },
+        {
+          "exact_text": "sells software in Canada",
+          "claim_type": "business_market",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 55,
+            "end": 79
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_novel_negative",
+      "split": "heldout",
+      "tags": [
+        "negative_competitor",
+        "difficult_universal"
+      ],
+      "response_text": "No vendor anywhere offers a substitute for our document review service.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "No vendor anywhere offers a substitute for our document review service",
+          "claim_type": "negative_universal",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 70
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_comparison_subjectivity",
+      "split": "heldout",
+      "tags": [
+        "subjective",
+        "comparative",
+        "compound"
+      ],
+      "response_text": "I prefer the green interface, but the red interface loads twice as fast in this test.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "I prefer the green interface",
+          "claim_type": "subjective_normative",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 28
+          }
+        },
+        {
+          "exact_text": "the red interface loads twice as fast in this test",
+          "claim_type": "comparative",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 34,
+            "end": 84
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_broken_reference",
+      "split": "heldout",
+      "tags": [
+        "fake_citation",
+        "scientific",
+        "qualifiers"
+      ],
+      "response_text": "The trial reduced fatigue by 80% in teenagers [2].\n[2] https://trial-results.invalid/study-9",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "The trial reduced fatigue by 80% in teenagers [2]",
+          "claim_type": "scientific",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 49
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_decimal_calculation",
+      "split": "heldout",
+      "tags": [
+        "incorrect_calculation",
+        "decimal"
+      ],
+      "response_text": "2.5 multiplied by 4 equals 12.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "2.5 multiplied by 4 equals 12",
+          "claim_type": "numerical",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 29
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_current_statistics",
+      "split": "heldout",
+      "tags": [
+        "time_sensitive",
+        "fabricated_statistics",
+        "geography"
+      ],
+      "response_text": "Today, the unemployment rate in Iceland is 0%.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Today, the unemployment rate in Iceland is 0%",
+          "claim_type": "time_sensitive",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 45
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_prediction_praise",
+      "split": "heldout",
+      "tags": [
+        "sycophancy",
+        "predictive",
+        "subjective"
+      ],
+      "response_text": "Your plan is flawless! It will earn a billion dollars next year.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Your plan is flawless",
+          "claim_type": "subjective_normative",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 21
+          }
+        },
+        {
+          "exact_text": "It will earn a billion dollars next year",
+          "claim_type": "predictive",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 23,
+            "end": 63
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_conflicting_counts",
+      "split": "heldout",
+      "tags": [
+        "contradiction",
+        "numerical"
+      ],
+      "response_text": "Exactly 12 people attended the meeting. Exactly 15 people attended that same meeting.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Exactly 12 people attended the meeting",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 38
+          }
+        },
+        {
+          "exact_text": "Exactly 15 people attended that same meeting",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 40,
+            "end": 84
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_unobservable",
+      "split": "heldout",
+      "tags": [
+        "not_independently_checkable"
+      ],
+      "response_text": "My private dream last night contained a singing lighthouse.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "My private dream last night contained a singing lighthouse",
+          "claim_type": "not_independently_checkable",
+          "objectively_checkable": false,
+          "text_span": {
+            "start": 0,
+            "end": 58
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_causal_claim",
+      "split": "heldout",
+      "tags": [
+        "disputed",
+        "scientific",
+        "unsupported_causal_inference"
+      ],
+      "response_text": "A correlation between screen time and poor sleep proves that screens cause insomnia.",
+      "review_status": "draft",
+      "notes": "Extraction should retain the causal assertion. The disputed scenario tag does not establish the evidentiary outcome.",
+      "claims": [
+        {
+          "exact_text": "A correlation between screen time and poor sleep proves that screens cause insomnia",
+          "claim_type": "scientific",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 83
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_repeated_assertion",
+      "split": "heldout",
+      "tags": [
+        "repeated_text",
+        "factual"
+      ],
+      "response_text": "Water contains hydrogen. Water contains hydrogen.",
+      "review_status": "draft",
+      "claims": [
+        {
+          "exact_text": "Water contains hydrogen",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 0,
+            "end": 23
+          }
+        },
+        {
+          "exact_text": "Water contains hydrogen",
+          "claim_type": "factual",
+          "objectively_checkable": true,
+          "text_span": {
+            "start": 25,
+            "end": 48
+          }
+        }
+      ]
+    },
+    {
+      "id": "heldout_request_and_link",
+      "split": "heldout",
+      "tags": [
+        "negative_extraction",
+        "bare_reference"
+      ],
+      "response_text": "Please inspect this reference:\nhttps://www.example.org/research",
+      "review_status": "draft",
+      "claims": []
+    }
+  ]
+}

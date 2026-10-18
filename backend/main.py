@@ -14,18 +14,23 @@ from __future__ import annotations
 
 import base64
 import binascii
+import json
+import logging
 import os
+import threading
 import time
 from contextlib import asynccontextmanager
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
+from typing import Iterator, Optional
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Path as FastAPIPath
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import AliasChoices, BaseModel, ConfigDict, Field
+from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 
 from backend import store
 from backend.domain_rules import (
@@ -33,7 +38,13 @@ from backend.domain_rules import (
     FintechDomain,
     GeneralDomain,
 )
-from backend.scorer import ScorerError, SycophancyScorer
+from backend.scorer import ScorerError, SycophancyScorer, scorer_from_env
+from backend.verification import budget, pipeline
+from backend.verification.report import VerificationReport, VerificationRequest
+from backend.verification.schemas import ExtractionRequest, ExtractionResponse
+from backend.verification.service import extract_response
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -56,13 +67,26 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Permissive CORS for local dev / future JS SDK. Tighten for production.
+# CORS: permissive by default (local dev, SDKs, the separate public chat page).
+# Production should list its frontend origins in TRUSTLAYER_CORS_ORIGINS
+# (comma-separated). Credentials are never allowed cross-origin.
+_CORS_ORIGINS = [o.strip() for o in os.getenv("TRUSTLAYER_CORS_ORIGINS", "*").split(",") if o.strip()] or ["*"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.middleware("http")
+async def security_headers(request, call_next):
+    """Cheap defense-in-depth headers for the HTML pages and JSON alike."""
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "no-referrer")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    return response
 
 
 @lru_cache(maxsize=1)
@@ -70,18 +94,11 @@ def get_scorer() -> SycophancyScorer:
     """Build the scorer once. Cached as a singleton.
 
     The domain is now injected per-request (see DOMAIN_ADAPTERS), so no default
-    domain is baked in here. Reads optional GEMINI_API_KEY_2 and
-    GEMINI_FALLBACK_MODELS from env to build the (key, model) rotation chain.
+    domain is baked in here. scorer_from_env reads GEMINI_API_KEY_2.._9 and
+    GEMINI_FALLBACK_MODELS to build the (key, model) rotation chain — the same
+    builder the verification pipeline's sycophancy engine uses.
     """
-    # Collect every extra key: GEMINI_API_KEY_2, _3, _4, ... Each is a separate
-    # Google project = its own quota buckets, multiplying free-tier headroom.
-    fallback_keys = [k for k in (os.getenv(f"GEMINI_API_KEY_{i}") for i in range(2, 10)) if k]
-    raw_models = os.getenv("GEMINI_FALLBACK_MODELS", "")
-    fallback_models = [m.strip() for m in raw_models.split(",") if m.strip()] or None
-    return SycophancyScorer(
-        fallback_keys=fallback_keys,
-        fallback_models=fallback_models,
-    )
+    return scorer_from_env()
 
 
 # Per-request domain routing. Pluggable: a new vertical = a new entry here +
@@ -224,7 +241,10 @@ def _http_from_scorer_error(exc: ScorerError) -> HTTPException:
         return HTTPException(429, "Gemini free-tier quota exceeded. Try again later.")
     if "UNAVAILABLE" in msg or "503" in msg:
         return HTTPException(503, "Gemini is temporarily overloaded. Try again shortly.")
-    return HTTPException(502, f"Scoring failed upstream: {msg}")
+    # Never echo the message: parse errors quote the model's raw output, which
+    # can contain the caller's text. The type is enough for the server log.
+    logger.warning("Scoring failed upstream (%s)", type(exc).__name__)
+    return HTTPException(502, "Scoring failed upstream. Try again shortly.")
 
 
 # --------------------------------------------------------------------------- #
@@ -380,12 +400,263 @@ def feedback(req: FeedbackRequest, key_record: dict = Depends(authenticate)) -> 
     the current scorer: e.g. outcome='human_overrode' or feedback='verdict wrong'.
     """
     try:
-        updated = store.record_feedback(req.request_id, req.feedback, req.outcome)
+        # Scoped to the caller's key: a request_id from another customer is a 404.
+        updated = store.record_feedback(req.request_id, req.feedback, req.outcome,
+                                        owners=[key_record["key"]])
     except store.StoreError:
         raise HTTPException(503, "Feedback backend unavailable. Try again shortly.")
     if not updated:
         raise HTTPException(404, f"No scored request with id {req.request_id}.")
     return {"ok": True, "request_id": req.request_id}
+
+
+@app.post("/v1/claims/extract", response_model=ExtractionResponse, tags=["Claim extraction"])
+def extract_claims(req: ExtractionRequest, key_record: dict = Depends(authenticate)):
+    """Level 1 only: bounded local extraction, no evidence verdicts or storage.
+
+    Uses existing account authentication and atomic daily request limits. The
+    submitted text is neither persisted nor sent to any model/search provider.
+    """
+    try:
+        rate = store.check_and_increment_rate(key_record["key"], key_record["daily_limit"])
+    except store.StoreError:
+        raise HTTPException(503, "Rate-limit backend unavailable. Try again shortly.")
+    if not rate["allowed"]:
+        return JSONResponse(status_code=429, content={
+            "error": "rate_limit_exceeded",
+            "message": "Daily request limit reached.",
+            "reset_at": rate["reset_at"],
+        })
+    try:
+        return extract_response(req)
+    except ValueError:
+        raise HTTPException(503, "Claim extraction configuration is invalid.")
+
+
+# --------------------------------------------------------------------------- #
+# Level 2 verification — evidence-backed reports (schema 2.0).
+# Same tl_ keys and daily quota as /score, plus a per-process cap on concurrent
+# verifications: each one can hold a slot for its whole time budget. Request
+# text is never logged or stored here; failures log exception types only.
+# --------------------------------------------------------------------------- #
+
+_CONFIG_INVALID = "Verification configuration is invalid."
+_VERIFY_FAILED = "Verification could not complete. No verdicts were produced."
+
+
+def _verification_slots() -> Optional[threading.BoundedSemaphore]:
+    """Capacity from TRUSTLAYER_MAX_CONCURRENT_VERIFICATIONS (1..64, default 4).
+
+    None means misconfigured: the verify routes then fail closed with 503 while
+    every other route keeps working (raising at import would take them all down).
+    """
+    try:
+        size = int(os.getenv("TRUSTLAYER_MAX_CONCURRENT_VERIFICATIONS", "4"))
+    except ValueError:
+        return None
+    return threading.BoundedSemaphore(size) if 1 <= size <= 64 else None
+
+
+_VERIFY_SLOTS = _verification_slots()
+
+
+def _quota_rejection(key_record: dict) -> Optional[JSONResponse]:
+    """Charge one request to the daily quota; same 429/503 contract as /v1/claims/extract."""
+    try:
+        rate = store.check_and_increment_rate(key_record["key"], key_record["daily_limit"])
+    except store.StoreError:
+        raise HTTPException(503, "Rate-limit backend unavailable. Try again shortly.")
+    if rate["allowed"]:
+        return None
+    return JSONResponse(status_code=429, content={
+        "error": "rate_limit_exceeded",
+        "message": "Daily request limit reached.",
+        "reset_at": rate["reset_at"],
+    })
+
+
+def _acquire_verification_slot(mode: str) -> threading.BoundedSemaphore:
+    """Fail closed on bad config, then take a slot without waiting. The caller releases it."""
+    try:
+        pipeline.check_config(mode)
+    except ValueError:  # the message names server settings; never echo it
+        raise HTTPException(503, _CONFIG_INVALID)
+    slots = _VERIFY_SLOTS
+    if slots is None:
+        raise HTTPException(503, _CONFIG_INVALID)
+    if not slots.acquire(blocking=False):
+        raise HTTPException(503, "Verification capacity is busy. Try again shortly.",
+                            headers={"Retry-After": "5"})
+    return slots
+
+
+# One JSON line per finished verification: counts, timings, cost and the hashed
+# owner — never request text, report text or keys. Ship stdout to your log store.
+audit_log = logging.getLogger("trustlayer.audit")
+if not audit_log.handlers:
+    _handler = logging.StreamHandler()
+    _handler.setFormatter(logging.Formatter("%(message)s"))
+    audit_log.addHandler(_handler)
+    audit_log.setLevel(logging.INFO)
+    audit_log.propagate = False
+
+
+def _finalizer(api_key: str):
+    """Report post-processing for one caller: optional retention, then the audit line."""
+    def finalize(report: VerificationReport) -> VerificationReport:
+        hours = pipeline.retention_hours()
+        if hours:
+            report.privacy.stored = True
+            report.privacy.note += (f" This report is stored for {hours} hours; delete it any "
+                                    f"time with DELETE /v1/reports/{report.report_id}.")
+            try:
+                store.save_report(report.report_id, api_key, report.model_dump_json(), hours)
+            except store.StoreError as exc:
+                logger.error("Report storage failed (%s)", type(exc).__name__)
+                report.privacy.stored = False
+                report.privacy.note += " Storage failed, so the report was not saved."
+        s, u = report.summary, report.usage
+        audit_log.info(json.dumps({
+            "event": "verification", "report_id": report.report_id, "mode": report.mode,
+            "status": report.status, "owner": store.owner_hash(api_key)[:12],
+            "claims": s.total_extracted, "supported": s.supported, "contradicted": s.contradicted,
+            "disputed": s.disputed, "unverified": s.unverified, "not_checkable": s.not_checkable,
+            "investigated": s.investigated, "checks_incomplete": s.checks_incomplete,
+            "signals_critical": s.signals_critical, "duration_ms": u.duration_ms,
+            "model_calls": u.model_calls, "search_calls": u.search_calls,
+            "pages_fetched": u.pages_fetched, "cost_usd": u.estimated_cost_usd,
+            "exhausted": u.exhausted, "stored": report.privacy.stored,
+            "engines": {e.engine: e.status for e in report.engines},
+        }))
+        return report
+    return finalize
+
+
+def _stream_holding_slot(req: VerificationRequest, slots: threading.BoundedSemaphore,
+                         api_key: str) -> Iterator[str]:
+    """Pipeline NDJSON lines while holding a capacity slot until the verification work ends.
+
+    Once the worker thread runs, it frees the slot when it finishes: a client that drops the
+    stream must not free capacity while its verification is still running (drop-and-reopen
+    would otherwise exceed the cap). Before that, this generator frees it. Exactly once.
+    """
+    lock, state = threading.Lock(), {"released": False, "started": False}
+
+    def release():
+        with lock:
+            if state["released"]:
+                return
+            state["released"] = True
+        slots.release()
+
+    def started():
+        state["started"] = True
+
+    try:
+        # The route consumes this item, so the finally is armed before Starlette gets
+        # the stream: a client that leaves before streaming starts still frees its slot.
+        yield ""
+        yield from pipeline.stream_ndjson(req, finalize=_finalizer(api_key), on_start=started, on_done=release)
+    except Exception as exc:  # noqa: BLE001 — status 200 is already sent; end with an error line
+        logger.error("Verification stream failed (%s)", type(exc).__name__)
+        yield json.dumps({"type": "error", "message": _VERIFY_FAILED}) + "\n"
+    finally:
+        if not state["started"]:
+            release()
+
+
+@app.post("/v1/verify", response_model=VerificationReport, tags=["Verification"])
+def verify_response(req: VerificationRequest, key_record: dict = Depends(authenticate)):
+    """Split the response into claims, research the risky ones, apply the verdict policy.
+
+    Charges the daily quota (including requests refused because capacity is busy).
+    The request is never stored; the report only when report retention is enabled.
+    """
+    rejection = _quota_rejection(key_record)
+    if rejection is not None:
+        return rejection
+    slots = _acquire_verification_slot(req.mode)
+    try:
+        return pipeline.verify(req, finalize=_finalizer(key_record["key"]))
+    except ValueError as exc:  # pipeline.verify raises ValueError only for invalid server config
+        logger.error("Verification configuration is invalid (%s)", type(exc).__name__)
+        raise HTTPException(503, _CONFIG_INVALID)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("Verification failed (%s)", type(exc).__name__)
+        raise HTTPException(500, _VERIFY_FAILED)
+    finally:
+        slots.release()
+
+
+@app.post("/v1/verify/stream", tags=["Verification"])
+def verify_response_stream(req: VerificationRequest, key_record: dict = Depends(authenticate)):
+    """Same checks as /v1/verify with live progress as NDJSON.
+
+    Lines are {"type": "progress"} events, then one {"type": "report"} (or
+    {"type": "error"} when no report could be produced).
+    """
+    rejection = _quota_rejection(key_record)
+    if rejection is not None:
+        return rejection
+    lines = _stream_holding_slot(req, _acquire_verification_slot(req.mode), key_record["key"])
+    next(lines)
+    return StreamingResponse(lines, media_type="application/x-ndjson",
+                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
+
+
+_REPORT_ID = r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+
+
+@app.get("/v1/reports/{report_id}", response_model=VerificationReport, tags=["Verification"])
+def get_stored_report(report_id: str = FastAPIPath(..., pattern=_REPORT_ID),
+                      key_record: dict = Depends(authenticate)):
+    """A stored report (only when retention is enabled), visible to its owner only."""
+    try:
+        report = store.get_report(report_id, key_record["key"])
+    except store.StoreError:
+        raise HTTPException(503, "Report storage unavailable. Try again shortly.")
+    if report is None:  # missing, expired, or another caller's: indistinguishable on purpose
+        raise HTTPException(404, "No stored report with that id.")
+    return report
+
+
+@app.delete("/v1/reports/{report_id}", tags=["Verification"])
+def delete_stored_report(report_id: str = FastAPIPath(..., pattern=_REPORT_ID),
+                         key_record: dict = Depends(authenticate)) -> dict:
+    """Delete a stored report now, before its retention period ends."""
+    try:
+        deleted = store.delete_report(report_id, key_record["key"])
+    except store.StoreError:
+        raise HTTPException(503, "Report storage unavailable. Try again shortly.")
+    if not deleted:
+        raise HTTPException(404, "No stored report with that id.")
+    return {"deleted": True, "report_id": report_id}
+
+
+@app.get("/v1/status", tags=["Verification"])
+def verification_status() -> dict:
+    """Public capability summary: limits per mode and provider names. Never secrets."""
+    from backend.verification.llm import available_providers
+    from backend.verification.search import configured_search_providers
+
+    try:
+        modes = {mode: budget.limits_for(mode).public().model_dump() for mode in ("quick", "deep")}
+        retention = pipeline.retention_hours()
+        # Names only: provider objects hold API keys.
+        search_names = [p.name for p in configured_search_providers("deep")]
+    except ValueError:
+        raise HTTPException(503, _CONFIG_INVALID)
+    from backend.verification.fetcher import respects_robots
+
+    return {
+        "service": "TrustLayer",
+        "schema_version": "2.0",
+        "modes": modes,
+        "search_providers": search_names,
+        "ai_providers": available_providers(),
+        "fetching": {"ssrf_protection": True, "respects_robots_txt": respects_robots()},
+        "retention_hours": retention,
+    }
 
 
 # --------------------------------------------------------------------------- #
@@ -398,12 +669,23 @@ def feedback(req: FeedbackRequest, key_record: dict = Depends(authenticate)) -> 
 class ChatMessage(BaseModel):
     role: str = Field(..., pattern="^(user|assistant)$")
     content: str = Field(default="", max_length=8000)
-    image_b64: Optional[str] = None
-    image_mime: Optional[str] = None
+    # 10 MB of bytes is ~13.4M base64 characters; reject bigger bodies before decoding.
+    image_b64: Optional[str] = Field(default=None, max_length=14_000_000)
+    image_mime: Optional[str] = Field(default=None, max_length=40)
+
+
+MAX_CHAT_MESSAGES = 50
+MAX_CHAT_IMAGES = 4
 
 
 class ChatRequest(BaseModel):
-    messages: list[ChatMessage] = Field(..., min_length=1)
+    messages: list[ChatMessage] = Field(..., min_length=1, max_length=MAX_CHAT_MESSAGES)
+
+    @model_validator(mode="after")
+    def bounded_images(self):
+        if sum(bool(m.image_b64) for m in self.messages) > MAX_CHAT_IMAGES:
+            raise ValueError(f"At most {MAX_CHAT_IMAGES} images per conversation.")
+        return self
 
 
 class ChatResponse(BaseModel):
@@ -424,17 +706,26 @@ class ChatFeedbackRequest(BaseModel):
 
 _PUBLIC_CHAT_FALLBACK_LIMIT = 500
 _public_chat_counter = {"day": None, "count": 0}
+_public_chat_lock = threading.Lock()
 
 
 def _public_chat_allowed() -> bool:
-    """In-memory daily cap used only when TRUSTLAYER_CHAT_KEY isn't configured."""
+    """In-memory daily cap: used when TRUSTLAYER_CHAT_KEY isn't configured, and as
+    the fallback when the database quota can't be checked (never fail open)."""
     import datetime as _dt
     today = _dt.datetime.now(_dt.timezone.utc).date()
-    if _public_chat_counter["day"] != today:
-        _public_chat_counter["day"] = today
-        _public_chat_counter["count"] = 0
-    _public_chat_counter["count"] += 1
-    return _public_chat_counter["count"] <= _PUBLIC_CHAT_FALLBACK_LIMIT
+    with _public_chat_lock:
+        if _public_chat_counter["day"] != today:
+            _public_chat_counter["day"] = today
+            _public_chat_counter["count"] = 0
+        _public_chat_counter["count"] += 1
+        return _public_chat_counter["count"] <= _PUBLIC_CHAT_FALLBACK_LIMIT
+
+
+def _chat_identities() -> list[str]:
+    """api_key values the public chat logs under (see /chat)."""
+    chat_key = os.getenv("TRUSTLAYER_CHAT_KEY")
+    return ["public-chat"] + ([chat_key] if chat_key else [])
 
 
 def _decode_chat_image(msg: ChatMessage) -> Optional[bytes]:
@@ -473,7 +764,10 @@ def chat(req: ChatRequest) -> ChatResponse:
                              "reset_at": rate["reset_at"]},
                 )
         except store.StoreError:
-            pass
+            # Quota store unreachable: fall back to the in-memory cap instead of
+            # serving unlimited requests.
+            if not _public_chat_allowed():
+                raise HTTPException(429, "The chat's daily budget is used up. Try tomorrow.")
     elif not _public_chat_allowed():
         raise HTTPException(429, "The chat's daily budget is used up. Try tomorrow.")
 
@@ -521,7 +815,11 @@ def chat(req: ChatRequest) -> ChatResponse:
             resp.replaced = True
 
         identity = chat_key if key_record else "public-chat"
-        log_inputs = bool(key_record.get("log_inputs")) if key_record else True
+        # Keyless public chat logs raw text unless TRUSTLAYER_PUBLIC_CHAT_LOG_INPUTS
+        # is false (the default keeps the original data-collection behavior).
+        log_inputs = (bool(key_record.get("log_inputs")) if key_record else
+                      os.getenv("TRUSTLAYER_PUBLIC_CHAT_LOG_INPUTS", "true").strip().lower()
+                      not in ("0", "false", "no", "off"))
         log_id = store.log_usage(
             api_key=identity,
             domain="general",
@@ -553,11 +851,32 @@ def chat(req: ChatRequest) -> ChatResponse:
 
 @app.post("/chat/feedback")
 def chat_feedback(req: ChatFeedbackRequest) -> dict:
-    """Thumbs up/down from the public chat — human ground truth, no auth needed."""
+    """Thumbs up/down from the public chat — human ground truth, no auth needed.
+
+    Unauthenticated, so it may only label public-chat rows, and only once:
+    an enumerated request_id can't relabel API customers' rows or overwrite a label.
+    """
+    # ponytail: ids are still guessable; a per-response feedback token would also
+    # stop someone labeling a stranger's unlabeled public-chat row first.
     try:
-        updated = store.record_feedback(req.request_id, None, req.outcome)
+        updated = store.record_feedback(req.request_id, None, req.outcome,
+                                        owners=_chat_identities(), first_write_only=True)
     except store.StoreError:
         raise HTTPException(503, "Feedback backend unavailable.")
     if not updated:
         raise HTTPException(404, f"No scored request with id {req.request_id}.")
     return {"ok": True}
+
+
+# Additive UI: the original developer docs and Streamlit application remain.
+# Build with `cd frontend/web && npm ci && npm run build`, then restart the API.
+_WORKBENCH_DIST = Path(__file__).resolve().parent.parent / "frontend" / "web" / "dist"
+if _WORKBENCH_DIST.is_dir():
+    app.mount("/workbench", StaticFiles(directory=_WORKBENCH_DIST, html=True), name="workbench")
+else:
+    @app.get("/workbench/", response_class=HTMLResponse, include_in_schema=False)
+    def workbench_not_built():
+        return HTMLResponse(
+            "<h1>TrustLayer workbench</h1><p>Build frontend/web, then restart the API.</p>",
+            status_code=503,
+        )

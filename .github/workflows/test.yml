@@ -1,0 +1,49 @@
+name: Offline checks
+on: [push, pull_request]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements-dev.txt
+      - run: python -m pytest -q
+      - run: python -m ruff check backend/verification backend/main.py backend/store.py tests evaluation research
+      - run: python -m evaluation.run --split all --output evaluation/results/ci.json
+      - run: python -m evaluation.verification.run --split all --judge both --output evaluation/results/ci-verification.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: evaluations
+          path: evaluation/results/ci*.json
+  workbench:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/web/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m venv .venv
+        working-directory: .
+      - run: .venv/bin/python -m pip install -r requirements-api.txt
+        working-directory: .
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workbench-browser-results
+          path: frontend/web/test-results/

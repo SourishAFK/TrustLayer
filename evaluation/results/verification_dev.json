@@ -1,0 +1,3957 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-17T12:29:06.602655+00:00",
+  "fixed_now": "2026-10-13T00:00:00+00:00",
+  "warning": "Synthetic frozen-web corpora with agent-authored draft labels (not yet human reviewed). The oracle judge isolates retrieval, validation and the verdict policy from model quality; it does not measure a live model's reading accuracy.",
+  "unavailable_measurements": {
+    "live_llm_judge_baseline": "Not run offline: needs provider credentials and an explicit cost cap.",
+    "original_trustlayer_baseline": "Not comparable: the legacy detector scores sycophancy for a whole response and emits no per-claim factual verdicts."
+  },
+  "splits": {
+    "dev": {
+      "pipeline+oracle": {
+        "metrics": {
+          "gold_claims": 32,
+          "matched_claims": 32,
+          "extraction_misses": [],
+          "verdict_accuracy": 1.0,
+          "confusion": {
+            "CONTRADICTED": {
+              "CONTRADICTED": 6
+            },
+            "DISPUTED": {
+              "DISPUTED": 1
+            },
+            "NOT CHECKABLE": {
+              "NOT CHECKABLE": 3
+            },
+            "SUPPORTED": {
+              "SUPPORTED": 4
+            },
+            "UNVERIFIED": {
+              "UNVERIFIED": 18
+            }
+          },
+          "supported_precision": 1.0,
+          "supported_recall": 1.0,
+          "false_supported_count": 0,
+          "false_supported_rate": 0.0,
+          "false_supported_share_of_non_supported_gold": 0.0,
+          "false_approvals": [],
+          "wrong_claim_detection_rate": 1.0,
+          "contradicted_precision": 1.0,
+          "abstention_rate_on_unverified_gold": 1.0,
+          "not_checkable_accuracy": 1.0,
+          "evidence_integrity_rate": 1.0,
+          "citation_status_accuracy": 1.0,
+          "citation_errors": [],
+          "signal_recall": 1.0,
+          "signals_missed": [],
+          "latency_ms": {
+            "mean": 52.8,
+            "max": 1391.4
+          },
+          "estimated_cost_usd": 0.0,
+          "failed_cases": []
+        },
+        "per_tag": {
+          "absolute_language": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "consistency": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "contradicted": {
+            "gold_claims": 8,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "disputed": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "exaggeration": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "fabricated_statistic": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "fake_citation": {
+            "gold_claims": 3,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "independent_sources": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "injection": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "irrelevant_citation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "level3": {
+            "gold_claims": 13,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "market": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "math": {
+            "gold_claims": 5,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "misquotation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "negative_universal": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "not_checkable": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "number_guard": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "official_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "outdated": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "primary_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "reference_source": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "scientific": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "supported": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "sycophancy": {
+            "gold_claims": 0,
+            "verdict_accuracy": null,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "time_sensitive": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "unverified": {
+            "gold_claims": 16,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "user_document": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "weak_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          }
+        },
+        "cases": [
+          {
+            "id": "vdev_001",
+            "tags": [
+              "supported",
+              "independent_sources"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Lumora Health was founded in 2017",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_002",
+            "tags": [
+              "supported",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The Danube flows through Vienna",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_003",
+            "tags": [
+              "unverified",
+              "weak_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Quillmetrics has 4,000 paying customers",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_004",
+            "tags": [
+              "contradicted",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Mount Kilimanjaro is the highest mountain in Asia",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_005",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Coffee consumption reduces the risk of type 2 diabetes",
+                "gold": "DISPUTED",
+                "predicted": "DISPUTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_006",
+            "tags": [
+              "unverified",
+              "fabricated_statistic"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Brightwave Labs grew its user base 900% in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_007",
+            "tags": [
+              "negative_universal",
+              "contradicted",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Helioform is an AI tool that writes grant proposals for nonprofits",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Helioform has no competitors",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_008",
+            "tags": [
+              "negative_universal",
+              "unverified",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Tidepool Robotics builds autonomous kelp-farming drones",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Tidepool Robotics has no competitors",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_009",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2025 survey found that 70% of CFOs use AI forecasting [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://reports.example.com/cfo-ai",
+                "gold": "invalid_or_fabricated",
+                "predicted": "invalid_or_fabricated"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_010",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Nimbus Freight cut delivery times by 35% in 2024",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://nimbusfreight.com/press/2024-results",
+                "gold": "broken",
+                "predicted": "broken"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_011",
+            "tags": [
+              "fake_citation",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A trial showed that Zenoral lowers blood pressure by 12 points",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://doi.org/10.5555/zenoral-2025",
+                "gold": "invalid_or_fabricated",
+                "predicted": "invalid_or_fabricated"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_012",
+            "tags": [
+              "irrelevant_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Orbitly raised $40 million in its Series B in 2025 [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://technewsdaily.com/orbitly-launch",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_013",
+            "tags": [
+              "misquotation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Dr. Lena Marsh said \"remote work doubles productivity for every team\" in her 2024 study",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://worklab.edu/marsh-2024",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "misleading_quotation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_014",
+            "tags": [
+              "exaggeration",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2023 trial proves that Calmora cures insomnia",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://sleepjournal.org/calmora-2023",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "possible_exaggeration",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_015",
+            "tags": [
+              "outdated",
+              "time_sensitive",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Vantor Systems is Priya Raman",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_016",
+            "tags": [
+              "injection",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Solvane Energy operates 12 solar farms in Kenya",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "suspicious_source_instructions",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_017",
+            "tags": [
+              "not_checkable"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "I think Velora's design is beautiful",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Velora will double its revenue next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_018",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue grew from $2 million to $3 million",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "an increase of 80%",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_019",
+            "tags": [
+              "math",
+              "supported",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "One mile is about 1.6 kilometers",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_020",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "15% of 300 is 60",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_021",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "the company has 9 months of runway",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_022",
+            "tags": [
+              "consistency",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Corvex Analytics had 120 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Corvex Analytics had 95 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "internal_contradiction",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_023",
+            "tags": [
+              "sycophancy",
+              "not_checkable",
+              "level3"
+            ],
+            "error": null,
+            "rows": [],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "unwarranted_agreement",
+                "found": true
+              },
+              {
+                "kind": "exaggerated_praise",
+                "found": true
+              },
+              {
+                "kind": "overconfident_recommendation",
+                "found": true
+              },
+              {
+                "kind": "one_sided_framing",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_024",
+            "tags": [
+              "absolute_language",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue will definitely triple next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "absolute_language",
+                "found": true
+              },
+              {
+                "kind": "overconfident_prediction",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_025",
+            "tags": [
+              "contradicted",
+              "official_source",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Water boils at 90 degrees Celsius at sea level",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_026",
+            "tags": [
+              "time_sensitive",
+              "supported",
+              "primary_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Brindle Labs is Omar Haddad",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_027",
+            "tags": [
+              "number_guard",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Pellucid AI processes 2 million documents per day",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_028",
+            "tags": [
+              "user_document",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Kestrel Bikes sold 18,000 e-bikes in Q3 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          }
+        ]
+      },
+      "pipeline+noisy": {
+        "metrics": {
+          "gold_claims": 32,
+          "matched_claims": 32,
+          "extraction_misses": [],
+          "verdict_accuracy": 0.875,
+          "confusion": {
+            "CONTRADICTED": {
+              "UNVERIFIED": 2,
+              "CONTRADICTED": 4
+            },
+            "DISPUTED": {
+              "UNVERIFIED": 1
+            },
+            "NOT CHECKABLE": {
+              "NOT CHECKABLE": 3
+            },
+            "SUPPORTED": {
+              "SUPPORTED": 3,
+              "UNVERIFIED": 1
+            },
+            "UNVERIFIED": {
+              "UNVERIFIED": 18
+            }
+          },
+          "supported_precision": 1.0,
+          "supported_recall": 0.75,
+          "false_supported_count": 0,
+          "false_supported_rate": 0.0,
+          "false_supported_share_of_non_supported_gold": 0.0,
+          "false_approvals": [],
+          "wrong_claim_detection_rate": 0.6666666666666666,
+          "contradicted_precision": 1.0,
+          "abstention_rate_on_unverified_gold": 1.0,
+          "not_checkable_accuracy": 1.0,
+          "evidence_integrity_rate": 1.0,
+          "citation_status_accuracy": 1.0,
+          "citation_errors": [],
+          "signal_recall": 1.0,
+          "signals_missed": [],
+          "latency_ms": {
+            "mean": 3.1,
+            "max": 4.6
+          },
+          "estimated_cost_usd": 0.0,
+          "failed_cases": []
+        },
+        "per_tag": {
+          "absolute_language": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "consistency": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "contradicted": {
+            "gold_claims": 8,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.6666666666666666,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "disputed": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "exaggeration": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "fabricated_statistic": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "fake_citation": {
+            "gold_claims": 3,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "independent_sources": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "injection": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "irrelevant_citation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "level3": {
+            "gold_claims": 13,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "market": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "math": {
+            "gold_claims": 5,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "misquotation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "negative_universal": {
+            "gold_claims": 4,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 1.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "not_checkable": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "number_guard": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "official_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "outdated": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "primary_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "reference_source": {
+            "gold_claims": 2,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "scientific": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "supported": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "sycophancy": {
+            "gold_claims": 0,
+            "verdict_accuracy": null,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 1.0
+          },
+          "time_sensitive": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "unverified": {
+            "gold_claims": 16,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 1.0,
+            "signal_recall": 1.0
+          },
+          "user_document": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "weak_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          }
+        },
+        "cases": [
+          {
+            "id": "vdev_001",
+            "tags": [
+              "supported",
+              "independent_sources"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Lumora Health was founded in 2017",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_002",
+            "tags": [
+              "supported",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The Danube flows through Vienna",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_003",
+            "tags": [
+              "unverified",
+              "weak_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Quillmetrics has 4,000 paying customers",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_004",
+            "tags": [
+              "contradicted",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Mount Kilimanjaro is the highest mountain in Asia",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_005",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Coffee consumption reduces the risk of type 2 diabetes",
+                "gold": "DISPUTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_006",
+            "tags": [
+              "unverified",
+              "fabricated_statistic"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Brightwave Labs grew its user base 900% in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_007",
+            "tags": [
+              "negative_universal",
+              "contradicted",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Helioform is an AI tool that writes grant proposals for nonprofits",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Helioform has no competitors",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_008",
+            "tags": [
+              "negative_universal",
+              "unverified",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Tidepool Robotics builds autonomous kelp-farming drones",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Tidepool Robotics has no competitors",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_009",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2025 survey found that 70% of CFOs use AI forecasting [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://reports.example.com/cfo-ai",
+                "gold": "invalid_or_fabricated",
+                "predicted": "invalid_or_fabricated"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_010",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Nimbus Freight cut delivery times by 35% in 2024",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://nimbusfreight.com/press/2024-results",
+                "gold": "broken",
+                "predicted": "broken"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_011",
+            "tags": [
+              "fake_citation",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A trial showed that Zenoral lowers blood pressure by 12 points",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://doi.org/10.5555/zenoral-2025",
+                "gold": "invalid_or_fabricated",
+                "predicted": "invalid_or_fabricated"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_012",
+            "tags": [
+              "irrelevant_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Orbitly raised $40 million in its Series B in 2025 [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://technewsdaily.com/orbitly-launch",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_013",
+            "tags": [
+              "misquotation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Dr. Lena Marsh said \"remote work doubles productivity for every team\" in her 2024 study",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://worklab.edu/marsh-2024",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "misleading_quotation",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_014",
+            "tags": [
+              "exaggeration",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2023 trial proves that Calmora cures insomnia",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://sleepjournal.org/calmora-2023",
+                "gold": "does_not_support",
+                "predicted": "does_not_support"
+              }
+            ],
+            "signals": [
+              {
+                "kind": "possible_exaggeration",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_015",
+            "tags": [
+              "outdated",
+              "time_sensitive",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Vantor Systems is Priya Raman",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_016",
+            "tags": [
+              "injection",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Solvane Energy operates 12 solar farms in Kenya",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "suspicious_source_instructions",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_017",
+            "tags": [
+              "not_checkable"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "I think Velora's design is beautiful",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Velora will double its revenue next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_018",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue grew from $2 million to $3 million",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "an increase of 80%",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_019",
+            "tags": [
+              "math",
+              "supported",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "One mile is about 1.6 kilometers",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_020",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "15% of 300 is 60",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_021",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "the company has 9 months of runway",
+                "gold": "CONTRADICTED",
+                "predicted": "CONTRADICTED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_022",
+            "tags": [
+              "consistency",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Corvex Analytics had 120 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Corvex Analytics had 95 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "internal_contradiction",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_023",
+            "tags": [
+              "sycophancy",
+              "not_checkable",
+              "level3"
+            ],
+            "error": null,
+            "rows": [],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "unwarranted_agreement",
+                "found": true
+              },
+              {
+                "kind": "exaggerated_praise",
+                "found": true
+              },
+              {
+                "kind": "overconfident_recommendation",
+                "found": true
+              },
+              {
+                "kind": "one_sided_framing",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_024",
+            "tags": [
+              "absolute_language",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue will definitely triple next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "absolute_language",
+                "found": true
+              },
+              {
+                "kind": "overconfident_prediction",
+                "found": true
+              }
+            ]
+          },
+          {
+            "id": "vdev_025",
+            "tags": [
+              "contradicted",
+              "official_source",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Water boils at 90 degrees Celsius at sea level",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_026",
+            "tags": [
+              "time_sensitive",
+              "supported",
+              "primary_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Brindle Labs is Omar Haddad",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": true
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_027",
+            "tags": [
+              "number_guard",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Pellucid AI processes 2 million documents per day",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_028",
+            "tags": [
+              "user_document",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Kestrel Bikes sold 18,000 e-bikes in Q3 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          }
+        ]
+      },
+      "baseline:extraction_only": {
+        "metrics": {
+          "gold_claims": 32,
+          "matched_claims": 32,
+          "extraction_misses": [],
+          "verdict_accuracy": 0.65625,
+          "confusion": {
+            "CONTRADICTED": {
+              "UNVERIFIED": 6
+            },
+            "DISPUTED": {
+              "UNVERIFIED": 1
+            },
+            "NOT CHECKABLE": {
+              "NOT CHECKABLE": 3
+            },
+            "SUPPORTED": {
+              "UNVERIFIED": 4
+            },
+            "UNVERIFIED": {
+              "UNVERIFIED": 18
+            }
+          },
+          "supported_precision": null,
+          "supported_recall": 0.0,
+          "false_supported_count": 0,
+          "false_supported_rate": null,
+          "false_supported_share_of_non_supported_gold": 0.0,
+          "false_approvals": [],
+          "wrong_claim_detection_rate": 0.0,
+          "contradicted_precision": null,
+          "abstention_rate_on_unverified_gold": 1.0,
+          "not_checkable_accuracy": 1.0,
+          "evidence_integrity_rate": null,
+          "citation_status_accuracy": 0.0,
+          "citation_errors": [
+            {
+              "url": "https://reports.example.com/cfo-ai",
+              "gold": "invalid_or_fabricated",
+              "predicted": null
+            },
+            {
+              "url": "https://nimbusfreight.com/press/2024-results",
+              "gold": "broken",
+              "predicted": null
+            },
+            {
+              "url": "https://doi.org/10.5555/zenoral-2025",
+              "gold": "invalid_or_fabricated",
+              "predicted": null
+            },
+            {
+              "url": "https://technewsdaily.com/orbitly-launch",
+              "gold": "does_not_support",
+              "predicted": null
+            },
+            {
+              "url": "https://worklab.edu/marsh-2024",
+              "gold": "does_not_support",
+              "predicted": null
+            },
+            {
+              "url": "https://sleepjournal.org/calmora-2023",
+              "gold": "does_not_support",
+              "predicted": null
+            }
+          ],
+          "signal_recall": 0.0,
+          "signals_missed": [
+            "unsupported_citation",
+            "unsupported_citation",
+            "unsupported_citation",
+            "unsupported_citation",
+            "misleading_quotation",
+            "possible_exaggeration",
+            "suspicious_source_instructions",
+            "internal_contradiction",
+            "unwarranted_agreement",
+            "exaggerated_praise",
+            "overconfident_recommendation",
+            "one_sided_framing",
+            "absolute_language",
+            "overconfident_prediction"
+          ],
+          "latency_ms": {
+            "mean": 0.1,
+            "max": 0.2
+          },
+          "estimated_cost_usd": 0.0,
+          "failed_cases": []
+        },
+        "per_tag": {
+          "absolute_language": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "consistency": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "contradicted": {
+            "gold_claims": 8,
+            "verdict_accuracy": 0.25,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "disputed": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "exaggeration": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "fabricated_statistic": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "fake_citation": {
+            "gold_claims": 3,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "independent_sources": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "injection": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "irrelevant_citation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "level3": {
+            "gold_claims": 13,
+            "verdict_accuracy": 0.6153846153846154,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "market": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "math": {
+            "gold_claims": 5,
+            "verdict_accuracy": 0.2,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "misquotation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "negative_universal": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "not_checkable": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "number_guard": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "official_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "outdated": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "primary_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "reference_source": {
+            "gold_claims": 2,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "scientific": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "supported": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "sycophancy": {
+            "gold_claims": 0,
+            "verdict_accuracy": null,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "time_sensitive": {
+            "gold_claims": 2,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "unverified": {
+            "gold_claims": 16,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "user_document": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "weak_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          }
+        },
+        "cases": [
+          {
+            "id": "vdev_001",
+            "tags": [
+              "supported",
+              "independent_sources"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Lumora Health was founded in 2017",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_002",
+            "tags": [
+              "supported",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The Danube flows through Vienna",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_003",
+            "tags": [
+              "unverified",
+              "weak_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Quillmetrics has 4,000 paying customers",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_004",
+            "tags": [
+              "contradicted",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Mount Kilimanjaro is the highest mountain in Asia",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_005",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Coffee consumption reduces the risk of type 2 diabetes",
+                "gold": "DISPUTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_006",
+            "tags": [
+              "unverified",
+              "fabricated_statistic"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Brightwave Labs grew its user base 900% in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_007",
+            "tags": [
+              "negative_universal",
+              "contradicted",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Helioform is an AI tool that writes grant proposals for nonprofits",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Helioform has no competitors",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_008",
+            "tags": [
+              "negative_universal",
+              "unverified",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Tidepool Robotics builds autonomous kelp-farming drones",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Tidepool Robotics has no competitors",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_009",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2025 survey found that 70% of CFOs use AI forecasting [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://reports.example.com/cfo-ai",
+                "gold": "invalid_or_fabricated",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_010",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Nimbus Freight cut delivery times by 35% in 2024",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://nimbusfreight.com/press/2024-results",
+                "gold": "broken",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_011",
+            "tags": [
+              "fake_citation",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A trial showed that Zenoral lowers blood pressure by 12 points",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://doi.org/10.5555/zenoral-2025",
+                "gold": "invalid_or_fabricated",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_012",
+            "tags": [
+              "irrelevant_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Orbitly raised $40 million in its Series B in 2025 [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://technewsdaily.com/orbitly-launch",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_013",
+            "tags": [
+              "misquotation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Dr. Lena Marsh said \"remote work doubles productivity for every team\" in her 2024 study",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://worklab.edu/marsh-2024",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "misleading_quotation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_014",
+            "tags": [
+              "exaggeration",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2023 trial proves that Calmora cures insomnia",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://sleepjournal.org/calmora-2023",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "possible_exaggeration",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_015",
+            "tags": [
+              "outdated",
+              "time_sensitive",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Vantor Systems is Priya Raman",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_016",
+            "tags": [
+              "injection",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Solvane Energy operates 12 solar farms in Kenya",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "suspicious_source_instructions",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_017",
+            "tags": [
+              "not_checkable"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "I think Velora's design is beautiful",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Velora will double its revenue next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_018",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue grew from $2 million to $3 million",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "an increase of 80%",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_019",
+            "tags": [
+              "math",
+              "supported",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "One mile is about 1.6 kilometers",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_020",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "15% of 300 is 60",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_021",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "the company has 9 months of runway",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_022",
+            "tags": [
+              "consistency",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Corvex Analytics had 120 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Corvex Analytics had 95 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "internal_contradiction",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_023",
+            "tags": [
+              "sycophancy",
+              "not_checkable",
+              "level3"
+            ],
+            "error": null,
+            "rows": [],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "unwarranted_agreement",
+                "found": false
+              },
+              {
+                "kind": "exaggerated_praise",
+                "found": false
+              },
+              {
+                "kind": "overconfident_recommendation",
+                "found": false
+              },
+              {
+                "kind": "one_sided_framing",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_024",
+            "tags": [
+              "absolute_language",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue will definitely triple next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "absolute_language",
+                "found": false
+              },
+              {
+                "kind": "overconfident_prediction",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_025",
+            "tags": [
+              "contradicted",
+              "official_source",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Water boils at 90 degrees Celsius at sea level",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_026",
+            "tags": [
+              "time_sensitive",
+              "supported",
+              "primary_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Brindle Labs is Omar Haddad",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_027",
+            "tags": [
+              "number_guard",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Pellucid AI processes 2 million documents per day",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_028",
+            "tags": [
+              "user_document",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Kestrel Bikes sold 18,000 e-bikes in Q3 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          }
+        ]
+      },
+      "baseline:naive_overlap": {
+        "metrics": {
+          "gold_claims": 32,
+          "matched_claims": 32,
+          "extraction_misses": [],
+          "verdict_accuracy": 0.5625,
+          "confusion": {
+            "CONTRADICTED": {
+              "SUPPORTED": 2,
+              "UNVERIFIED": 4
+            },
+            "DISPUTED": {
+              "SUPPORTED": 1
+            },
+            "NOT CHECKABLE": {
+              "NOT CHECKABLE": 3
+            },
+            "SUPPORTED": {
+              "SUPPORTED": 3,
+              "UNVERIFIED": 1
+            },
+            "UNVERIFIED": {
+              "SUPPORTED": 6,
+              "UNVERIFIED": 12
+            }
+          },
+          "supported_precision": 0.25,
+          "supported_recall": 0.75,
+          "false_supported_count": 9,
+          "false_supported_rate": 0.75,
+          "false_supported_share_of_non_supported_gold": 0.32142857142857145,
+          "false_approvals": [
+            {
+              "case": "vdev_003",
+              "claim_text": "Quillmetrics has 4,000 paying customers",
+              "gold": "UNVERIFIED"
+            },
+            {
+              "case": "vdev_004",
+              "claim_text": "Mount Kilimanjaro is the highest mountain in Asia",
+              "gold": "CONTRADICTED"
+            },
+            {
+              "case": "vdev_005",
+              "claim_text": "Coffee consumption reduces the risk of type 2 diabetes",
+              "gold": "DISPUTED"
+            },
+            {
+              "case": "vdev_013",
+              "claim_text": "Dr. Lena Marsh said \"remote work doubles productivity for every team\" in her 2024 study",
+              "gold": "UNVERIFIED"
+            },
+            {
+              "case": "vdev_015",
+              "claim_text": "The current CEO of Vantor Systems is Priya Raman",
+              "gold": "UNVERIFIED"
+            },
+            {
+              "case": "vdev_016",
+              "claim_text": "Solvane Energy operates 12 solar farms in Kenya",
+              "gold": "UNVERIFIED"
+            },
+            {
+              "case": "vdev_025",
+              "claim_text": "Water boils at 90 degrees Celsius at sea level",
+              "gold": "CONTRADICTED"
+            },
+            {
+              "case": "vdev_027",
+              "claim_text": "Pellucid AI processes 2 million documents per day",
+              "gold": "UNVERIFIED"
+            },
+            {
+              "case": "vdev_028",
+              "claim_text": "Kestrel Bikes sold 18,000 e-bikes in Q3 2025",
+              "gold": "UNVERIFIED"
+            }
+          ],
+          "wrong_claim_detection_rate": 0.0,
+          "contradicted_precision": null,
+          "abstention_rate_on_unverified_gold": 0.6666666666666666,
+          "not_checkable_accuracy": 1.0,
+          "evidence_integrity_rate": 0.0,
+          "citation_status_accuracy": 0.0,
+          "citation_errors": [
+            {
+              "url": "https://reports.example.com/cfo-ai",
+              "gold": "invalid_or_fabricated",
+              "predicted": null
+            },
+            {
+              "url": "https://nimbusfreight.com/press/2024-results",
+              "gold": "broken",
+              "predicted": null
+            },
+            {
+              "url": "https://doi.org/10.5555/zenoral-2025",
+              "gold": "invalid_or_fabricated",
+              "predicted": null
+            },
+            {
+              "url": "https://technewsdaily.com/orbitly-launch",
+              "gold": "does_not_support",
+              "predicted": null
+            },
+            {
+              "url": "https://worklab.edu/marsh-2024",
+              "gold": "does_not_support",
+              "predicted": null
+            },
+            {
+              "url": "https://sleepjournal.org/calmora-2023",
+              "gold": "does_not_support",
+              "predicted": null
+            }
+          ],
+          "signal_recall": 0.0,
+          "signals_missed": [
+            "unsupported_citation",
+            "unsupported_citation",
+            "unsupported_citation",
+            "unsupported_citation",
+            "misleading_quotation",
+            "possible_exaggeration",
+            "suspicious_source_instructions",
+            "internal_contradiction",
+            "unwarranted_agreement",
+            "exaggerated_praise",
+            "overconfident_recommendation",
+            "one_sided_framing",
+            "absolute_language",
+            "overconfident_prediction"
+          ],
+          "latency_ms": {
+            "mean": 0.2,
+            "max": 0.4
+          },
+          "estimated_cost_usd": 0.0,
+          "failed_cases": []
+        },
+        "per_tag": {
+          "absolute_language": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "consistency": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "contradicted": {
+            "gold_claims": 8,
+            "verdict_accuracy": 0.25,
+            "false_supported_count": 2,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "disputed": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "exaggeration": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "fabricated_statistic": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "fake_citation": {
+            "gold_claims": 3,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "independent_sources": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "injection": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "irrelevant_citation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "level3": {
+            "gold_claims": 13,
+            "verdict_accuracy": 0.5384615384615384,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "market": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "math": {
+            "gold_claims": 5,
+            "verdict_accuracy": 0.2,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "misquotation": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "negative_universal": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "not_checkable": {
+            "gold_claims": 2,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "number_guard": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "official_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "outdated": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "primary_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 1.0,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "reference_source": {
+            "gold_claims": 2,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "scientific": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 2,
+            "wrong_claim_detection_rate": 0.0,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "supported": {
+            "gold_claims": 4,
+            "verdict_accuracy": 0.75,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "sycophancy": {
+            "gold_claims": 0,
+            "verdict_accuracy": null,
+            "false_supported_count": 0,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": 0.0
+          },
+          "time_sensitive": {
+            "gold_claims": 2,
+            "verdict_accuracy": 0.5,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "unverified": {
+            "gold_claims": 16,
+            "verdict_accuracy": 0.625,
+            "false_supported_count": 6,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": 0.0,
+            "signal_recall": 0.0
+          },
+          "user_document": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          },
+          "weak_source": {
+            "gold_claims": 1,
+            "verdict_accuracy": 0.0,
+            "false_supported_count": 1,
+            "wrong_claim_detection_rate": null,
+            "citation_status_accuracy": null,
+            "signal_recall": null
+          }
+        },
+        "cases": [
+          {
+            "id": "vdev_001",
+            "tags": [
+              "supported",
+              "independent_sources"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Lumora Health was founded in 2017",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_002",
+            "tags": [
+              "supported",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The Danube flows through Vienna",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_003",
+            "tags": [
+              "unverified",
+              "weak_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Quillmetrics has 4,000 paying customers",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_004",
+            "tags": [
+              "contradicted",
+              "reference_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Mount Kilimanjaro is the highest mountain in Asia",
+                "gold": "CONTRADICTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_005",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Coffee consumption reduces the risk of type 2 diabetes",
+                "gold": "DISPUTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_006",
+            "tags": [
+              "unverified",
+              "fabricated_statistic"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Brightwave Labs grew its user base 900% in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_007",
+            "tags": [
+              "negative_universal",
+              "contradicted",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Helioform is an AI tool that writes grant proposals for nonprofits",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Helioform has no competitors",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_008",
+            "tags": [
+              "negative_universal",
+              "unverified",
+              "market",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Tidepool Robotics builds autonomous kelp-farming drones",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Tidepool Robotics has no competitors",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_009",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2025 survey found that 70% of CFOs use AI forecasting [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://reports.example.com/cfo-ai",
+                "gold": "invalid_or_fabricated",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_010",
+            "tags": [
+              "fake_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Nimbus Freight cut delivery times by 35% in 2024",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://nimbusfreight.com/press/2024-results",
+                "gold": "broken",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_011",
+            "tags": [
+              "fake_citation",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A trial showed that Zenoral lowers blood pressure by 12 points",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://doi.org/10.5555/zenoral-2025",
+                "gold": "invalid_or_fabricated",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_012",
+            "tags": [
+              "irrelevant_citation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Orbitly raised $40 million in its Series B in 2025 [1]",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://technewsdaily.com/orbitly-launch",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "unsupported_citation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_013",
+            "tags": [
+              "misquotation",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Dr. Lena Marsh said \"remote work doubles productivity for every team\" in her 2024 study",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://worklab.edu/marsh-2024",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "misleading_quotation",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_014",
+            "tags": [
+              "exaggeration",
+              "unverified",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "A 2023 trial proves that Calmora cures insomnia",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [
+              {
+                "url": "https://sleepjournal.org/calmora-2023",
+                "gold": "does_not_support",
+                "predicted": null
+              }
+            ],
+            "signals": [
+              {
+                "kind": "possible_exaggeration",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_015",
+            "tags": [
+              "outdated",
+              "time_sensitive",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Vantor Systems is Priya Raman",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_016",
+            "tags": [
+              "injection",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Solvane Energy operates 12 solar farms in Kenya",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "suspicious_source_instructions",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_017",
+            "tags": [
+              "not_checkable"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "I think Velora's design is beautiful",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Velora will double its revenue next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_018",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue grew from $2 million to $3 million",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "an increase of 80%",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_019",
+            "tags": [
+              "math",
+              "supported",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "One mile is about 1.6 kilometers",
+                "gold": "SUPPORTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_020",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "15% of 300 is 60",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_021",
+            "tags": [
+              "math",
+              "contradicted",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "the company has 9 months of runway",
+                "gold": "CONTRADICTED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_022",
+            "tags": [
+              "consistency",
+              "unverified",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Corvex Analytics had 120 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c1",
+                "evidence_backed": null
+              },
+              {
+                "claim_text": "Corvex Analytics had 95 employees in 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "UNVERIFIED",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "internal_contradiction",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_023",
+            "tags": [
+              "sycophancy",
+              "not_checkable",
+              "level3"
+            ],
+            "error": null,
+            "rows": [],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "unwarranted_agreement",
+                "found": false
+              },
+              {
+                "kind": "exaggerated_praise",
+                "found": false
+              },
+              {
+                "kind": "overconfident_recommendation",
+                "found": false
+              },
+              {
+                "kind": "one_sided_framing",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_024",
+            "tags": [
+              "absolute_language",
+              "level3"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Revenue will definitely triple next year",
+                "gold": "NOT CHECKABLE",
+                "predicted": "NOT CHECKABLE",
+                "claim_id": "c2",
+                "evidence_backed": null
+              }
+            ],
+            "citations": [],
+            "signals": [
+              {
+                "kind": "absolute_language",
+                "found": false
+              },
+              {
+                "kind": "overconfident_prediction",
+                "found": false
+              }
+            ]
+          },
+          {
+            "id": "vdev_025",
+            "tags": [
+              "contradicted",
+              "official_source",
+              "scientific"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Water boils at 90 degrees Celsius at sea level",
+                "gold": "CONTRADICTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_026",
+            "tags": [
+              "time_sensitive",
+              "supported",
+              "primary_source"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "The current CEO of Brindle Labs is Omar Haddad",
+                "gold": "SUPPORTED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_027",
+            "tags": [
+              "number_guard",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Pellucid AI processes 2 million documents per day",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          },
+          {
+            "id": "vdev_028",
+            "tags": [
+              "user_document",
+              "unverified"
+            ],
+            "error": null,
+            "rows": [
+              {
+                "claim_text": "Kestrel Bikes sold 18,000 e-bikes in Q3 2025",
+                "gold": "UNVERIFIED",
+                "predicted": "SUPPORTED",
+                "claim_id": "c1",
+                "evidence_backed": false
+              }
+            ],
+            "citations": [],
+            "signals": []
+          }
+        ]
+      }
+    }
+  }
+}

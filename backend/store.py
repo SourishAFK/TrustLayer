@@ -16,12 +16,13 @@ DESIGN NOTES:
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import secrets
 import string
 from datetime import date, datetime, timedelta, timezone
-from typing import Optional
+from typing import Optional, Sequence
 
 from psycopg.rows import dict_row
 from psycopg_pool import ConnectionPool
@@ -113,6 +114,17 @@ CREATE TABLE IF NOT EXISTS rate_counter (
     count   INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (api_key, day)
 );
+
+-- Level 5: verification reports, stored only when TRUSTLAYER_REPORT_RETENTION_HOURS > 0.
+-- The owner is a SHA-256 hash of the caller's key (raw keys stay in api_keys only).
+CREATE TABLE IF NOT EXISTS verification_reports (
+    report_id  TEXT PRIMARY KEY,
+    owner_hash TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    expires_at TIMESTAMPTZ NOT NULL,
+    report     JSONB NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_verification_reports_expires ON verification_reports (expires_at);
 
 -- Migrations for already-created tables (idempotent).
 ALTER TABLE api_keys  ADD COLUMN IF NOT EXISTS log_inputs BOOLEAN NOT NULL DEFAULT FALSE;
@@ -295,22 +307,75 @@ def log_usage(
 
 
 def record_feedback(
-    log_id: int, feedback: Optional[str] = None, outcome: Optional[str] = None
+    log_id: int, feedback: Optional[str] = None, outcome: Optional[str] = None,
+    *, owners: Sequence[str], first_write_only: bool = False,
 ) -> bool:
     """Attach ground-truth feedback/outcome to a logged request. The real moat:
     'a human reversed this', 'the customer disputed', 'verdict was wrong'.
 
-    Returns True if the row existed and was updated.
+    Only rows logged under one of `owners` (the caller's API key, or the public
+    chat identities) can change, so one customer cannot relabel another's data.
+    `first_write_only` refuses to overwrite an existing label (unauthenticated
+    public chat). Returns True if a matching row was updated.
     """
+    sql = ("UPDATE usage_log SET "
+           " feedback = COALESCE(%s, feedback), "
+           " outcome  = COALESCE(%s, outcome) "
+           "WHERE id = %s AND api_key = ANY(%s)")
+    if first_write_only:
+        sql += " AND feedback IS NULL AND outcome IS NULL"
     try:
         with _get_pool().connection() as conn:
-            res = conn.execute(
-                "UPDATE usage_log SET "
-                " feedback = COALESCE(%s, feedback), "
-                " outcome  = COALESCE(%s, outcome) "
-                "WHERE id = %s",
-                (feedback, outcome, log_id),
-            )
+            res = conn.execute(sql, (feedback, outcome, log_id, list(owners)))
         return bool(res.rowcount)
     except Exception as exc:  # noqa: BLE001
         raise StoreError(f"Could not record feedback: {exc}") from exc
+
+
+# --------------------------------------------------------------------------- #
+# Verification reports (opt-in retention)
+# --------------------------------------------------------------------------- #
+
+def owner_hash(api_key: str) -> str:
+    """Stable, non-reversible owner id so report rows never hold raw API keys."""
+    return hashlib.sha256(api_key.encode("utf-8")).hexdigest()
+
+
+def save_report(report_id: str, api_key: str, report_json: str, hours: int) -> None:
+    """Store one report for `hours`; expired reports are purged on every save."""
+    try:
+        with _get_pool().connection() as conn:
+            conn.execute("DELETE FROM verification_reports WHERE expires_at < now()")
+            conn.execute(
+                "INSERT INTO verification_reports (report_id, owner_hash, expires_at, report) "
+                "VALUES (%s, %s, now() + make_interval(hours => %s), %s::jsonb)",
+                (report_id, owner_hash(api_key), hours, report_json),
+            )
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not save report: {type(exc).__name__}") from exc
+
+
+def get_report(report_id: str, api_key: str) -> Optional[dict]:
+    """The caller's unexpired report, or None (another owner's id looks identical to a missing one)."""
+    try:
+        with _get_pool().connection() as conn:
+            row = conn.execute(
+                "SELECT report FROM verification_reports "
+                "WHERE report_id = %s AND owner_hash = %s AND expires_at > now()",
+                (report_id, owner_hash(api_key)),
+            ).fetchone()
+        return row["report"] if row else None
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not read report: {type(exc).__name__}") from exc
+
+
+def delete_report(report_id: str, api_key: str) -> bool:
+    try:
+        with _get_pool().connection() as conn:
+            res = conn.execute(
+                "DELETE FROM verification_reports WHERE report_id = %s AND owner_hash = %s",
+                (report_id, owner_hash(api_key)),
+            )
+        return bool(res.rowcount)
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not delete report: {type(exc).__name__}") from exc

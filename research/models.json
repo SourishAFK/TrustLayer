@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "generation": {"temperature": 0.2, "max_tokens": 512},
+  "expected_output_tokens": 256,
+  "order_seed": 20261014,
+  "max_attempts": 3,
+  "timeout_seconds": 60,
+  "backoff_seconds": 2,
+  "max_backoff_seconds": 120,
+  "domains": ["fintech", "health", "customer_service", "career", "general", "education", "relationships"],
+  "models": [
+    {
+      "name": "openai-gpt41-mini",
+      "provider": "openai",
+      "model": "gpt-4.1-mini-2025-04-14",
+      "key_env": "OPENAI_API_KEY",
+      "requests_per_minute": 60,
+      "input_usd_per_million": 0.4,
+      "output_usd_per_million": 1.6,
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://developers.openai.com/api/docs/models/gpt-4.1-mini",
+      "notes": "Pinned non-reasoning snapshot; temperature supported. Deprecated; announced shutdown 2027-01-14. No automatic replacement."
+    },
+    {
+      "name": "anthropic-haiku45",
+      "provider": "anthropic",
+      "model": "claude-haiku-4-5-20251001",
+      "key_env": "ANTHROPIC_API_KEY",
+      "requests_per_minute": 30,
+      "input_usd_per_million": 1.0,
+      "output_usd_per_million": 5.0,
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://platform.claude.com/docs/en/models/haiku-4-5/overview",
+      "notes": "Pinned snapshot; extended thinking is not enabled. Uses max_tokens."
+    },
+    {
+      "name": "google-flash-lite",
+      "provider": "gemini",
+      "model": "gemini-2.5-flash-lite",
+      "key_env": "GEMINI_API_KEY",
+      "requests_per_minute": 15,
+      "input_usd_per_million": 0.1,
+      "output_usd_per_million": 0.4,
+      "provider_options": {"thinkingConfig": {"thinkingBudget": 0}},
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://ai.google.dev/gemini-api/docs/pricing#gemini-2.5-flash-lite",
+      "notes": "Thinking disabled; paid standard text rates used conservatively. Actual free-tier charges may be zero. Record returned modelVersion."
+    },
+    {
+      "name": "together-qwen35-9b",
+      "provider": "together",
+      "model": "Qwen/Qwen3.5-9B",
+      "key_env": "TOGETHER_API_KEY",
+      "requests_per_minute": 30,
+      "input_usd_per_million": 0.17,
+      "output_usd_per_million": 0.25,
+      "provider_options": {"reasoning": {"enabled": false}},
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://docs.together.ai/docs/serverless/models",
+      "notes": "Open-weight model; Together FP8 serving; reasoning disabled. Hosted weights/quantization can differ from local inference."
+    },
+    {
+      "name": "groq-llama33-70b",
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "key_env": "GROQ_API_KEY",
+      "requests_per_minute": 30,
+      "input_usd_per_million": null,
+      "output_usd_per_million": null,
+      "pricing_checked": "2026-10-14",
+      "pricing_url": "https://console.groq.com/docs/models",
+      "notes": "Groq currently lists Llama as Enterprise/contact sales. Enter your contracted token prices before running; never assume old public prices."
+    }
+  ]
+}

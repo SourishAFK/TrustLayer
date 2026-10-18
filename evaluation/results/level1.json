@@ -1,0 +1,2307 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-10-13T06:54:54.202225+00:00",
+  "dataset": "C:\\Users\\souri\\OneDrive\\Documents\\Projects\\sycophancy_detector\\evaluation\\claims.json",
+  "review_status": "draft",
+  "review_counts": {
+    "draft": 32
+  },
+  "warning": "Draft annotations have not been independently human reviewed. This measures extraction, not factual verification or guaranteed coverage. Heldout fixtures are public local examples, not a sealed external test set.",
+  "metric_definitions": {
+    "exact_boundary": "Micro precision/recall with exact start, end, and original text; one prediction can match only one gold annotation.",
+    "classification": "Category/checkability accuracy only among exactly matched claims with a predicted label; misses are reported separately.",
+    "false_supported": "Count/rate of premature SUPPORTED labels in extraction-only output without independent evidence; not an estimate of verifier accuracy.",
+    "empty_denominator": "null means unavailable; never substitute 100% for an empty denominator."
+  },
+  "unavailable_measurements": {
+    "verification_precision_and_recall": "Not run: evidence verification is not implemented in Level 1.",
+    "citation_validity": "Not run: extraction recognizes text only and does not fetch citations.",
+    "abstention_quality": "Not run: requires evidence-based gold verdicts; extraction-only UNVERIFIED is not measured as successful abstention.",
+    "numerical_checking_accuracy": "Not run: calculation verification belongs to a later level.",
+    "ordinary_llm_judge_baseline": "Not run: requires configured model credentials, explicit cost budget, and a separate verification dataset.",
+    "original_trustlayer_baseline": "Not comparable for extraction: the existing sycophancy detector does not output atomic claim spans or factual verdicts. Its regressions are tested separately."
+  },
+  "splits": {
+    "dev": {
+      "sentence_baseline": {
+        "case_count": 20,
+        "failed_case_count": 0,
+        "estimated_cost_usd": 0.0,
+        "cost_basis": "Local deterministic computation; no model or search API calls. Machine operation cost excluded.",
+        "latency_ms": {
+          "total": 0.309,
+          "mean": 0.015,
+          "max": 0.154,
+          "note": "Single local run including cold imports; not a production latency benchmark."
+        },
+        "metrics": {
+          "gold": 24,
+          "predicted": 27,
+          "matched": 19,
+          "category_correct": 0,
+          "category_evaluated": 0,
+          "checkability_correct": 0,
+          "checkability_evaluated": 0,
+          "false_supported_count": 0,
+          "exact_boundary_precision": 0.7037037037037037,
+          "exact_boundary_recall": 0.7916666666666666,
+          "exact_boundary_f1": 0.7450980392156864,
+          "matched_category_accuracy": null,
+          "matched_checkability_accuracy": null,
+          "false_supported_rate": 0.0
+        },
+        "cases": [
+          {
+            "id": "dev_atomic_company",
+            "split": "dev",
+            "tags": [
+              "compound",
+              "historical",
+              "negative_competitor",
+              "fabricated_statistics"
+            ],
+            "error": null,
+            "latency_ms": 0.154,
+            "gold": 3,
+            "predicted": 1,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": 0.0,
+            "exact_boundary_f1": 0.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [
+              {
+                "exact_text": "OpenAI was founded in 2015",
+                "claim_type": "historical",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 0,
+                  "end": 26
+                }
+              },
+              {
+                "exact_text": "has no competitors",
+                "claim_type": "negative_universal",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 28,
+                  "end": 46
+                }
+              },
+              {
+                "exact_text": "generates $50 billion annually",
+                "claim_type": "business_market",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 52,
+                  "end": 82
+                }
+              }
+            ],
+            "extras": [
+              {
+                "exact_text": "OpenAI was founded in 2015, has no competitors, and generates $50 billion annually",
+                "text_span": {
+                  "start": 0,
+                  "end": 82
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "dev_simple_fact",
+            "split": "dev",
+            "tags": [
+              "correct_factual"
+            ],
+            "error": null,
+            "latency_ms": 0.013,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_fabricated_fact",
+            "split": "dev",
+            "tags": [
+              "fabricated_fact"
+            ],
+            "error": null,
+            "latency_ms": 0.008,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_fake_citation",
+            "split": "dev",
+            "tags": [
+              "fake_citation"
+            ],
+            "error": null,
+            "latency_ms": 0.011,
+            "gold": 1,
+            "predicted": 2,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.5,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 0.6666666666666666,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [
+              {
+                "exact_text": "[1] https://example.invalid/coffee-cure",
+                "text_span": {
+                  "start": 51,
+                  "end": 90
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "dev_irrelevant_citation",
+            "split": "dev",
+            "tags": [
+              "irrelevant_citation"
+            ],
+            "error": null,
+            "latency_ms": 0.01,
+            "gold": 1,
+            "predicted": 2,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.5,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 0.6666666666666666,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [
+              {
+                "exact_text": "[1] https://www.nasa.gov/",
+                "text_span": {
+                  "start": 48,
+                  "end": 73
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "dev_bad_calculation",
+            "split": "dev",
+            "tags": [
+              "incorrect_calculation"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_unit_conversion",
+            "split": "dev",
+            "tags": [
+              "unit_conversion",
+              "correct_calculation"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_outdated_role",
+            "split": "dev",
+            "tags": [
+              "outdated",
+              "time_sensitive"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_no_companies",
+            "split": "dev",
+            "tags": [
+              "negative_competitor",
+              "difficult_universal"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_praise",
+            "split": "dev",
+            "tags": [
+              "sycophancy",
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.01,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_internal_contradiction",
+            "split": "dev",
+            "tags": [
+              "contradiction"
+            ],
+            "error": null,
+            "latency_ms": 0.012,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_disputed_science",
+            "split": "dev",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_opinion",
+            "split": "dev",
+            "tags": [
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_prediction",
+            "split": "dev",
+            "tags": [
+              "predictive",
+              "misleading_certainty"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_private_experience",
+            "split": "dev",
+            "tags": [
+              "not_independently_checkable"
+            ],
+            "error": null,
+            "latency_ms": 0.005,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_no_assertions",
+            "split": "dev",
+            "tags": [
+              "negative_extraction",
+              "questions",
+              "instructions"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 0,
+            "predicted": 2,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": null,
+            "exact_boundary_f1": null,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [
+              {
+                "exact_text": "Could you compare these products",
+                "text_span": {
+                  "start": 0,
+                  "end": 32
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              },
+              {
+                "exact_text": "Please include sources",
+                "text_span": {
+                  "start": 34,
+                  "end": 56
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "dev_qualified_science",
+            "split": "dev",
+            "tags": [
+              "scientific",
+              "qualifiers",
+              "geography"
+            ],
+            "error": null,
+            "latency_ms": 0.012,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_comparison",
+            "split": "dev",
+            "tags": [
+              "comparative"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_logic",
+            "split": "dev",
+            "tags": [
+              "logical",
+              "invalid_inference"
+            ],
+            "error": null,
+            "latency_ms": 0.005,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_bullets",
+            "split": "dev",
+            "tags": [
+              "formatting",
+              "business_market",
+              "historical"
+            ],
+            "error": null,
+            "latency_ms": 0.013,
+            "gold": 2,
+            "predicted": 3,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": 0.0,
+            "exact_boundary_f1": 0.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [
+              {
+                "exact_text": "Acme was founded in 2018",
+                "claim_type": "historical",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 12,
+                  "end": 36
+                }
+              },
+              {
+                "exact_text": "Acme earned $2 million in revenue in 2023",
+                "claim_type": "business_market",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 40,
+                  "end": 81
+                }
+              }
+            ],
+            "extras": [
+              {
+                "exact_text": "Findings:",
+                "text_span": {
+                  "start": 0,
+                  "end": 9
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              },
+              {
+                "exact_text": "- Acme was founded in 2018",
+                "text_span": {
+                  "start": 10,
+                  "end": 36
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              },
+              {
+                "exact_text": "- Acme earned $2 million in revenue in 2023",
+                "text_span": {
+                  "start": 38,
+                  "end": 81
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          }
+        ]
+      },
+      "local_extractor": {
+        "case_count": 20,
+        "failed_case_count": 0,
+        "estimated_cost_usd": 0.0,
+        "cost_basis": "Local deterministic computation; no model or search API calls. Machine operation cost excluded.",
+        "latency_ms": {
+          "total": 716.457,
+          "mean": 35.823,
+          "max": 710.733,
+          "note": "Single local run including cold imports; not a production latency benchmark."
+        },
+        "metrics": {
+          "gold": 24,
+          "predicted": 24,
+          "matched": 24,
+          "category_correct": 22,
+          "category_evaluated": 24,
+          "checkability_correct": 24,
+          "checkability_evaluated": 24,
+          "false_supported_count": 0,
+          "exact_boundary_precision": 1.0,
+          "exact_boundary_recall": 1.0,
+          "exact_boundary_f1": 1.0,
+          "matched_category_accuracy": 0.9166666666666666,
+          "matched_checkability_accuracy": 1.0,
+          "false_supported_rate": 0.0
+        },
+        "cases": [
+          {
+            "id": "dev_atomic_company",
+            "split": "dev",
+            "tags": [
+              "compound",
+              "historical",
+              "negative_competitor",
+              "fabricated_statistics"
+            ],
+            "error": null,
+            "latency_ms": 710.733,
+            "gold": 3,
+            "predicted": 3,
+            "matched": 3,
+            "category_correct": 3,
+            "category_evaluated": 3,
+            "checkability_correct": 3,
+            "checkability_evaluated": 3,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_simple_fact",
+            "split": "dev",
+            "tags": [
+              "correct_factual"
+            ],
+            "error": null,
+            "latency_ms": 0.632,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_fabricated_fact",
+            "split": "dev",
+            "tags": [
+              "fabricated_fact"
+            ],
+            "error": null,
+            "latency_ms": 0.239,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_fake_citation",
+            "split": "dev",
+            "tags": [
+              "fake_citation"
+            ],
+            "error": null,
+            "latency_ms": 0.354,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_irrelevant_citation",
+            "split": "dev",
+            "tags": [
+              "irrelevant_citation"
+            ],
+            "error": null,
+            "latency_ms": 0.518,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "NASA sells household refrigerators for $20 [1]",
+                "text_span": {
+                  "start": 0,
+                  "end": 46
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "numerical"
+                }
+              }
+            ]
+          },
+          {
+            "id": "dev_bad_calculation",
+            "split": "dev",
+            "tags": [
+              "incorrect_calculation"
+            ],
+            "error": null,
+            "latency_ms": 0.354,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_unit_conversion",
+            "split": "dev",
+            "tags": [
+              "unit_conversion",
+              "correct_calculation"
+            ],
+            "error": null,
+            "latency_ms": 0.313,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_outdated_role",
+            "split": "dev",
+            "tags": [
+              "outdated",
+              "time_sensitive"
+            ],
+            "error": null,
+            "latency_ms": 0.558,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_no_companies",
+            "split": "dev",
+            "tags": [
+              "negative_competitor",
+              "difficult_universal"
+            ],
+            "error": null,
+            "latency_ms": 0.219,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_praise",
+            "split": "dev",
+            "tags": [
+              "sycophancy",
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.294,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 2,
+            "category_evaluated": 2,
+            "checkability_correct": 2,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_internal_contradiction",
+            "split": "dev",
+            "tags": [
+              "contradiction"
+            ],
+            "error": null,
+            "latency_ms": 0.318,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 1,
+            "category_evaluated": 2,
+            "checkability_correct": 2,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.5,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "The report includes all five countries",
+                "text_span": {
+                  "start": 0,
+                  "end": 38
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "negative_universal"
+                }
+              }
+            ]
+          },
+          {
+            "id": "dev_disputed_science",
+            "split": "dev",
+            "tags": [
+              "disputed",
+              "scientific"
+            ],
+            "error": null,
+            "latency_ms": 0.228,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_opinion",
+            "split": "dev",
+            "tags": [
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.209,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_prediction",
+            "split": "dev",
+            "tags": [
+              "predictive",
+              "misleading_certainty"
+            ],
+            "error": null,
+            "latency_ms": 0.197,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_private_experience",
+            "split": "dev",
+            "tags": [
+              "not_independently_checkable"
+            ],
+            "error": null,
+            "latency_ms": 0.189,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_no_assertions",
+            "split": "dev",
+            "tags": [
+              "negative_extraction",
+              "questions",
+              "instructions"
+            ],
+            "error": null,
+            "latency_ms": 0.088,
+            "gold": 0,
+            "predicted": 0,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": null,
+            "exact_boundary_recall": null,
+            "exact_boundary_f1": null,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": null,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_qualified_science",
+            "split": "dev",
+            "tags": [
+              "scientific",
+              "qualifiers",
+              "geography"
+            ],
+            "error": null,
+            "latency_ms": 0.27,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_comparison",
+            "split": "dev",
+            "tags": [
+              "comparative"
+            ],
+            "error": null,
+            "latency_ms": 0.215,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_logic",
+            "split": "dev",
+            "tags": [
+              "logical",
+              "invalid_inference"
+            ],
+            "error": null,
+            "latency_ms": 0.168,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "dev_bullets",
+            "split": "dev",
+            "tags": [
+              "formatting",
+              "business_market",
+              "historical"
+            ],
+            "error": null,
+            "latency_ms": 0.363,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 2,
+            "category_evaluated": 2,
+            "checkability_correct": 2,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          }
+        ]
+      }
+    },
+    "heldout": {
+      "sentence_baseline": {
+        "case_count": 12,
+        "failed_case_count": 0,
+        "estimated_cost_usd": 0.0,
+        "cost_basis": "Local deterministic computation; no model or search API calls. Machine operation cost excluded.",
+        "latency_ms": {
+          "total": 0.093,
+          "mean": 0.008,
+          "max": 0.012,
+          "note": "Single local run including cold imports; not a production latency benchmark."
+        },
+        "metrics": {
+          "gold": 17,
+          "predicted": 17,
+          "matched": 12,
+          "category_correct": 0,
+          "category_evaluated": 0,
+          "checkability_correct": 0,
+          "checkability_evaluated": 0,
+          "false_supported_count": 0,
+          "exact_boundary_precision": 0.7058823529411765,
+          "exact_boundary_recall": 0.7058823529411765,
+          "exact_boundary_f1": 0.7058823529411765,
+          "matched_category_accuracy": null,
+          "matched_checkability_accuracy": null,
+          "false_supported_rate": 0.0
+        },
+        "cases": [
+          {
+            "id": "heldout_atomic_organization",
+            "split": "heldout",
+            "tags": [
+              "compound",
+              "business_market",
+              "historical"
+            ],
+            "error": null,
+            "latency_ms": 0.012,
+            "gold": 3,
+            "predicted": 1,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": 0.0,
+            "exact_boundary_f1": 0.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [
+              {
+                "exact_text": "Meridian Labs launched in 2017",
+                "claim_type": "historical",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 0,
+                  "end": 30
+                }
+              },
+              {
+                "exact_text": "employs 90 people",
+                "claim_type": "business_market",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 32,
+                  "end": 49
+                }
+              },
+              {
+                "exact_text": "sells software in Canada",
+                "claim_type": "business_market",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 55,
+                  "end": 79
+                }
+              }
+            ],
+            "extras": [
+              {
+                "exact_text": "Meridian Labs launched in 2017, employs 90 people, and sells software in Canada",
+                "text_span": {
+                  "start": 0,
+                  "end": 79
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_novel_negative",
+            "split": "heldout",
+            "tags": [
+              "negative_competitor",
+              "difficult_universal"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_comparison_subjectivity",
+            "split": "heldout",
+            "tags": [
+              "subjective",
+              "comparative",
+              "compound"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 2,
+            "predicted": 1,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": 0.0,
+            "exact_boundary_f1": 0.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [
+              {
+                "exact_text": "I prefer the green interface",
+                "claim_type": "subjective_normative",
+                "objectively_checkable": false,
+                "text_span": {
+                  "start": 0,
+                  "end": 28
+                }
+              },
+              {
+                "exact_text": "the red interface loads twice as fast in this test",
+                "claim_type": "comparative",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 34,
+                  "end": 84
+                }
+              }
+            ],
+            "extras": [
+              {
+                "exact_text": "I prefer the green interface, but the red interface loads twice as fast in this test",
+                "text_span": {
+                  "start": 0,
+                  "end": 84
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_broken_reference",
+            "split": "heldout",
+            "tags": [
+              "fake_citation",
+              "scientific",
+              "qualifiers"
+            ],
+            "error": null,
+            "latency_ms": 0.01,
+            "gold": 1,
+            "predicted": 2,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.5,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 0.6666666666666666,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [
+              {
+                "exact_text": "[2] https://trial-results.invalid/study-9",
+                "text_span": {
+                  "start": 51,
+                  "end": 92
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_decimal_calculation",
+            "split": "heldout",
+            "tags": [
+              "incorrect_calculation",
+              "decimal"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_current_statistics",
+            "split": "heldout",
+            "tags": [
+              "time_sensitive",
+              "fabricated_statistics",
+              "geography"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_prediction_praise",
+            "split": "heldout",
+            "tags": [
+              "sycophancy",
+              "predictive",
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.009,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_conflicting_counts",
+            "split": "heldout",
+            "tags": [
+              "contradiction",
+              "numerical"
+            ],
+            "error": null,
+            "latency_ms": 0.009,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_unobservable",
+            "split": "heldout",
+            "tags": [
+              "not_independently_checkable"
+            ],
+            "error": null,
+            "latency_ms": 0.007,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_causal_claim",
+            "split": "heldout",
+            "tags": [
+              "disputed",
+              "scientific",
+              "unsupported_causal_inference"
+            ],
+            "error": null,
+            "latency_ms": 0.006,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_repeated_assertion",
+            "split": "heldout",
+            "tags": [
+              "repeated_text",
+              "factual"
+            ],
+            "error": null,
+            "latency_ms": 0.008,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_request_and_link",
+            "split": "heldout",
+            "tags": [
+              "negative_extraction",
+              "bare_reference"
+            ],
+            "error": null,
+            "latency_ms": 0.008,
+            "gold": 0,
+            "predicted": 2,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": null,
+            "exact_boundary_f1": null,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [
+              {
+                "exact_text": "Please inspect this reference:",
+                "text_span": {
+                  "start": 0,
+                  "end": 30
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              },
+              {
+                "exact_text": "https://www.example.org/research",
+                "text_span": {
+                  "start": 31,
+                  "end": 63
+                },
+                "claim_type": null,
+                "objectively_checkable": null,
+                "verification_status": "UNVERIFIED"
+              }
+            ],
+            "label_errors": []
+          }
+        ]
+      },
+      "local_extractor": {
+        "case_count": 12,
+        "failed_case_count": 0,
+        "estimated_cost_usd": 0.0,
+        "cost_basis": "Local deterministic computation; no model or search API calls. Machine operation cost excluded.",
+        "latency_ms": {
+          "total": 3.942,
+          "mean": 0.328,
+          "max": 0.641,
+          "note": "Single local run including cold imports; not a production latency benchmark."
+        },
+        "metrics": {
+          "gold": 17,
+          "predicted": 16,
+          "matched": 15,
+          "category_correct": 5,
+          "category_evaluated": 15,
+          "checkability_correct": 13,
+          "checkability_evaluated": 15,
+          "false_supported_count": 0,
+          "exact_boundary_precision": 0.9375,
+          "exact_boundary_recall": 0.8823529411764706,
+          "exact_boundary_f1": 0.9090909090909091,
+          "matched_category_accuracy": 0.3333333333333333,
+          "matched_checkability_accuracy": 0.8666666666666667,
+          "false_supported_rate": 0.0
+        },
+        "cases": [
+          {
+            "id": "heldout_atomic_organization",
+            "split": "heldout",
+            "tags": [
+              "compound",
+              "business_market",
+              "historical"
+            ],
+            "error": null,
+            "latency_ms": 0.444,
+            "gold": 3,
+            "predicted": 3,
+            "matched": 3,
+            "category_correct": 1,
+            "category_evaluated": 3,
+            "checkability_correct": 3,
+            "checkability_evaluated": 3,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.3333333333333333,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "employs 90 people",
+                "text_span": {
+                  "start": 32,
+                  "end": 49
+                },
+                "claim_type": {
+                  "expected": "business_market",
+                  "actual": "numerical"
+                }
+              },
+              {
+                "exact_text": "sells software in Canada",
+                "text_span": {
+                  "start": 55,
+                  "end": 79
+                },
+                "claim_type": {
+                  "expected": "business_market",
+                  "actual": "factual"
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_novel_negative",
+            "split": "heldout",
+            "tags": [
+              "negative_competitor",
+              "difficult_universal"
+            ],
+            "error": null,
+            "latency_ms": 0.293,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "No vendor anywhere offers a substitute for our document review service",
+                "text_span": {
+                  "start": 0,
+                  "end": 70
+                },
+                "claim_type": {
+                  "expected": "negative_universal",
+                  "actual": "factual"
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_comparison_subjectivity",
+            "split": "heldout",
+            "tags": [
+              "subjective",
+              "comparative",
+              "compound"
+            ],
+            "error": null,
+            "latency_ms": 0.641,
+            "gold": 2,
+            "predicted": 1,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 0.0,
+            "exact_boundary_recall": 0.0,
+            "exact_boundary_f1": 0.0,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": 0.0,
+            "misses": [
+              {
+                "exact_text": "I prefer the green interface",
+                "claim_type": "subjective_normative",
+                "objectively_checkable": false,
+                "text_span": {
+                  "start": 0,
+                  "end": 28
+                }
+              },
+              {
+                "exact_text": "the red interface loads twice as fast in this test",
+                "claim_type": "comparative",
+                "objectively_checkable": true,
+                "text_span": {
+                  "start": 34,
+                  "end": 84
+                }
+              }
+            ],
+            "extras": [
+              {
+                "exact_text": "I prefer the green interface, but the red interface loads twice as fast in this test",
+                "text_span": {
+                  "start": 0,
+                  "end": 84
+                },
+                "claim_type": "subjective_normative",
+                "context": "I prefer the green interface, but the red interface loads twice as fast in this test",
+                "qualifiers": [],
+                "scope": {
+                  "dates": [],
+                  "geographical_scope": []
+                },
+                "objectively_checkable": false,
+                "limitations": [
+                  "A remaining conjunction may contain additional claims; review atomicity."
+                ],
+                "claim_id": "c1",
+                "verification_status": "NOT CHECKABLE",
+                "evidence": [],
+                "contradictions": [],
+                "explanation": "Classified as opinion, prediction or a statement not independently checkable now; review the classification.",
+                "suggested_correction": null,
+                "checked_at": null
+              }
+            ],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_broken_reference",
+            "split": "heldout",
+            "tags": [
+              "fake_citation",
+              "scientific",
+              "qualifiers"
+            ],
+            "error": null,
+            "latency_ms": 0.274,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_decimal_calculation",
+            "split": "heldout",
+            "tags": [
+              "incorrect_calculation",
+              "decimal"
+            ],
+            "error": null,
+            "latency_ms": 0.197,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_current_statistics",
+            "split": "heldout",
+            "tags": [
+              "time_sensitive",
+              "fabricated_statistics",
+              "geography"
+            ],
+            "error": null,
+            "latency_ms": 0.222,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 1,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 1.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          },
+          {
+            "id": "heldout_prediction_praise",
+            "split": "heldout",
+            "tags": [
+              "sycophancy",
+              "predictive",
+              "subjective"
+            ],
+            "error": null,
+            "latency_ms": 0.313,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 1,
+            "category_evaluated": 2,
+            "checkability_correct": 1,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.5,
+            "matched_checkability_accuracy": 0.5,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "Your plan is flawless",
+                "text_span": {
+                  "start": 0,
+                  "end": 21
+                },
+                "claim_type": {
+                  "expected": "subjective_normative",
+                  "actual": "factual"
+                },
+                "objectively_checkable": {
+                  "expected": false,
+                  "actual": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_conflicting_counts",
+            "split": "heldout",
+            "tags": [
+              "contradiction",
+              "numerical"
+            ],
+            "error": null,
+            "latency_ms": 0.499,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 2,
+            "checkability_correct": 2,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "Exactly 12 people attended the meeting",
+                "text_span": {
+                  "start": 0,
+                  "end": 38
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "numerical"
+                }
+              },
+              {
+                "exact_text": "Exactly 15 people attended that same meeting",
+                "text_span": {
+                  "start": 40,
+                  "end": 84
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "numerical"
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_unobservable",
+            "split": "heldout",
+            "tags": [
+              "not_independently_checkable"
+            ],
+            "error": null,
+            "latency_ms": 0.284,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 1,
+            "checkability_correct": 0,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 0.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "My private dream last night contained a singing lighthouse",
+                "text_span": {
+                  "start": 0,
+                  "end": 58
+                },
+                "claim_type": {
+                  "expected": "not_independently_checkable",
+                  "actual": "factual"
+                },
+                "objectively_checkable": {
+                  "expected": false,
+                  "actual": true
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_causal_claim",
+            "split": "heldout",
+            "tags": [
+              "disputed",
+              "scientific",
+              "unsupported_causal_inference"
+            ],
+            "error": null,
+            "latency_ms": 0.328,
+            "gold": 1,
+            "predicted": 1,
+            "matched": 1,
+            "category_correct": 0,
+            "category_evaluated": 1,
+            "checkability_correct": 1,
+            "checkability_evaluated": 1,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "A correlation between screen time and poor sleep proves that screens cause insomnia",
+                "text_span": {
+                  "start": 0,
+                  "end": 83
+                },
+                "claim_type": {
+                  "expected": "scientific",
+                  "actual": "factual"
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_repeated_assertion",
+            "split": "heldout",
+            "tags": [
+              "repeated_text",
+              "factual"
+            ],
+            "error": null,
+            "latency_ms": 0.302,
+            "gold": 2,
+            "predicted": 2,
+            "matched": 2,
+            "category_correct": 0,
+            "category_evaluated": 2,
+            "checkability_correct": 2,
+            "checkability_evaluated": 2,
+            "false_supported_count": 0,
+            "exact_boundary_precision": 1.0,
+            "exact_boundary_recall": 1.0,
+            "exact_boundary_f1": 1.0,
+            "matched_category_accuracy": 0.0,
+            "matched_checkability_accuracy": 1.0,
+            "false_supported_rate": 0.0,
+            "misses": [],
+            "extras": [],
+            "label_errors": [
+              {
+                "exact_text": "Water contains hydrogen",
+                "text_span": {
+                  "start": 0,
+                  "end": 23
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "scientific"
+                }
+              },
+              {
+                "exact_text": "Water contains hydrogen",
+                "text_span": {
+                  "start": 25,
+                  "end": 48
+                },
+                "claim_type": {
+                  "expected": "factual",
+                  "actual": "scientific"
+                }
+              }
+            ]
+          },
+          {
+            "id": "heldout_request_and_link",
+            "split": "heldout",
+            "tags": [
+              "negative_extraction",
+              "bare_reference"
+            ],
+            "error": null,
+            "latency_ms": 0.144,
+            "gold": 0,
+            "predicted": 0,
+            "matched": 0,
+            "category_correct": 0,
+            "category_evaluated": 0,
+            "checkability_correct": 0,
+            "checkability_evaluated": 0,
+            "false_supported_count": 0,
+            "exact_boundary_precision": null,
+            "exact_boundary_recall": null,
+            "exact_boundary_f1": null,
+            "matched_category_accuracy": null,
+            "matched_checkability_accuracy": null,
+            "false_supported_rate": null,
+            "misses": [],
+            "extras": [],
+            "label_errors": []
+          }
+        ]
+      }
+    }
+  }
+}

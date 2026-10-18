@@ -4,3 +4,10 @@ __pycache__/
 .venv/
 venv/
 .streamlit/secrets.toml
+node_modules/
+frontend/web/dist/
+.pytest_cache/
+.ruff_cache/
+playwright-report/
+test-results/
+research/runs/
