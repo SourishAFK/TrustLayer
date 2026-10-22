@@ -101,6 +101,17 @@ def _atomic_spans(text: str, start: int, end: int):
     yield _trim(text, cursor, end)
 
 
+# Praise with no yardstick is opinion: "the best analytics tool", "an amazing team". Measurable
+# superlatives stay checkable ("best-selling", "the fastest", "the cheapest", "the largest").
+# ponytail: word list, not a model; a ranked "best" ("best university in the QS ranking") reads
+# as opinion too, which errs toward NOT CHECKABLE rather than toward a verdict.
+_OPINION = re.compile(
+    r"\b(?:i (?:feel|prefer|love|hate)|in my opinion|beautiful|delicious|wonderful|brilliant|genius"
+    r"|you(?:'re| are) (?:absolutely )?right|should|ought to|best idea"
+    r"|amazing|awesome|excellent|fantastic|incredible|outstanding|superb|stunning|world-class|greatest|finest"
+    r"|(?:the|our|its|their|your) (?:very )?(?:best|worst)(?![- ](?:selling|sellers?|known|performing|rated|ranked)))\b")
+
+
 def _classify(text: str) -> tuple[ClaimType, bool]:
     t = _FRAMING.sub("", text.lower())
     if re.search(r"\b(?:i (?:secretly )?(?:imagined|dreamed|dreamt)|my (?:dream|private thoughts)|secret thoughts|private thoughts|unobservable|unknowable)\b", t):
@@ -109,7 +120,7 @@ def _classify(text: str) -> tuple[ClaimType, bool]:
         return ClaimType.logical, True
     if re.search(r"\b(?:will|predicts?|forecasts?|next year|tomorrow)\b", t):
         return ClaimType.predictive, False
-    if re.search(r"\b(?:i (?:feel|prefer|love|hate)|in my opinion|beautiful|delicious|wonderful|brilliant|genius|you(?:'re| are) (?:absolutely )?right|should|ought to|best idea)\b", t):
+    if _OPINION.search(t):
         return ClaimType.subjective_normative, False
     if re.search(r"\b(?:currently|today|latest|current|now)\b", t) or (
         re.search(r"\b(?:ceo|president|prime minister|exchange rate)\b", t)

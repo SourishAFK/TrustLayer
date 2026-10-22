@@ -163,11 +163,11 @@ export function TrendLine({ days, min, max, unit = '%' }: { days: Day[]; min: nu
           {ticks.map(t => (
             <g key={t}>
               <line x1={pad.l} x2={width - pad.r} y1={y(t)} y2={y(t)} stroke="rgb(255 255 255 / .07)" />
-              <text x={pad.l - 10} y={y(t) + 4} textAnchor="end" className="fill-muted text-[11px] tabular-nums">{t}{unit}</text>
+              <text x={pad.l - 10} y={y(t) + 4} textAnchor="end" className="fill-muted text-[12px] tabular-nums">{t}{unit}</text>
             </g>
           ))}
           {[days[0], days[Math.floor(days.length / 2)], days[days.length - 1]].map(d => (
-            <text key={d.day} x={x(d.day)} y={height - 8} textAnchor="middle" className="fill-muted text-[11px]">Day {d.day}</text>
+            <text key={d.day} x={x(d.day)} y={height - 8} textAnchor="middle" className="fill-muted text-[12px]">Day {d.day}</text>
           ))}
           <polygon points={band} fill={SERIES} opacity={0.1} />
           <path ref={path} d={line} fill="none" stroke={SERIES} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round"

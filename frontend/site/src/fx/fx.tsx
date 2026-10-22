@@ -16,13 +16,14 @@ export function Aurora({ blobs, className = '' }: { blobs: Blob[]; className?: s
   );
 }
 
-export function Meteors({ count = 14 }: { count?: number }) {
+/** Falling light streaks. Keep them out of text: pass a className that masks or hides them there. */
+export function Meteors({ count = 14, className = '' }: { count?: number; className?: string }) {
   const meteors = useMemo(() => Array.from({ length: count }, (_, i) => ({
     left: `${(i * 37) % 100}%`, top: `${(i * 53) % 60 - 10}%`,
     d: `${6 + ((i * 7) % 6)}s`, delay: `${(i * 1.7) % 9}s`,
   })), [count]);
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+    <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden="true">
       {meteors.map((m, i) => (
         <span key={i} className="meteor" style={{ left: m.left, top: m.top, '--d': m.d, '--delay': m.delay } as React.CSSProperties} />
       ))}
@@ -97,7 +98,7 @@ export function Cite({ k }: { k: SourceKey }) {
   const s = SOURCES[k];
   return (
     <a href={s.url} target="_blank" rel="noreferrer" title={`${s.title} — ${s.by}, ${s.date}`}
-      className="ml-0.5 align-super font-mono text-[0.62em] text-cyan hover:text-ice" data-cursor="Source">
+      className="ml-0.5 align-super font-mono text-xs text-cyan hover:text-ice" data-cursor="Source">
       [{sourceNumber(k)}]
     </a>
   );

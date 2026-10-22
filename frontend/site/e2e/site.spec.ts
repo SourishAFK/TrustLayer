@@ -11,6 +11,7 @@ async function fillLead(page: Page) {
   await page.getByLabel('Your name').fill('Asha Rao');
   await page.getByLabel('Work email').fill('asha@bank.example');
   await page.getByLabel('What should we check?').fill('Our loan bot answers fee questions.');
+  await page.getByText('Maybe', { exact: true }).click();
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: /Get my free check/ }).click();
 }
@@ -37,7 +38,7 @@ test('a sign-up is sent with its audience and where the visitor came from', asyn
   await fillLead(page);
   await expect(page.getByRole('status')).toContainText("You're on the list");
   expect(body).toMatchObject({
-    audience: 'support-bots', name: 'Asha Rao', email: 'asha@bank.example', consent: true, website: '',
+    audience: 'support-bots', name: 'Asha Rao', email: 'asha@bank.example', consent: true, website: '', would_pay: 'maybe',
     source: { page: '/check/?for=support-bots&utm_source=linkedin', utm_source: 'linkedin' },
   });
 });
@@ -64,13 +65,29 @@ test('a refused sign-up explains itself and keeps what was typed', async ({ page
   await expect(page.getByLabel('Your name')).toHaveValue('Asha Rao');
 });
 
+test('when the sign-up server is down, the lead is never lost', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.route('**/v1/leads', route => route.abort('connectionrefused'));
+  await page.goto('/check/?for=documents');
+  await fillLead(page);
+  const alert = page.getByRole('alert');
+  await expect(alert).toContainText('could not reach our server');
+  await expect(alert).toContainText('Your details are still in the form');
+  await alert.getByRole('button', { name: 'Copy my details' }).click();
+  await expect(alert.getByRole('button', { name: 'Copied' })).toBeVisible();
+  const copied = await page.evaluate(() => navigator.clipboard.readText());
+  expect(copied).toContain('Email: asha@bank.example');
+  expect(copied).toContain('Would pay for a full check: maybe');
+});
+
 test('the demo streams a check and shows each verdict with its proof', async ({ page }) => {
   await page.route('**/v1/demo/verify/stream', route =>
     route.fulfill({ status: 200, contentType: 'application/x-ndjson', body: ndjson(recording('answer').lines) }));
   await page.goto('/demo/?preset=answer');
   await page.getByRole('button', { name: /Check it/ }).click();
   await expect(page.locator('.claim-card').first()).toContainText('Contradicted');
-  await expect(page.getByText('12 × 20 = 240', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('4 × 29 = 116', { exact: false }).first()).toBeVisible();
+  await expect(page.getByText('Not checkable', { exact: true }).first()).toBeVisible();
   await expect(page.getByText(/Showing a recorded run/)).toHaveCount(0);
 });
 
@@ -78,7 +95,7 @@ test('when the live demo is off, a clearly labelled recording plays instead', as
   await page.route('**/v1/demo/verify/stream', route => route.fulfill({ status: 404, json: { detail: 'Not Found' } }));
   await page.goto('/demo/?preset=support');
   await page.getByRole('button', { name: /Check it/ }).click();
-  await expect(page.getByText(/switched off right now\. Showing a recorded run/)).toBeVisible();
+  await expect(page.getByText(/Live checks are paused, so here's a recorded run of this example from/)).toBeVisible();
   await expect(page.locator('.claim-card').first()).toBeVisible({ timeout: 15_000 });
 });
 
@@ -87,7 +104,7 @@ test('an edited answer never gets a recording passed off as its result', async (
   await page.goto('/demo/?preset=answer');
   await page.getByLabel('AI answer').fill('The moon is made of cheese.');
   await page.getByRole('button', { name: /Check it/ }).click();
-  await expect(page.getByRole('alert')).toContainText('switched off');
+  await expect(page.getByRole('alert')).toContainText('Live checks are paused');
   await expect(page.locator('.claim-card')).toHaveCount(0);
 });
 
@@ -129,4 +146,40 @@ test('no text runs off the side of a phone screen', async ({ browser }) => {
     expect(await offscreen(), path).toEqual([]);
   }
   await page.close();
+});
+
+for (const [width, height] of [[390, 844], [1440, 900]]) {
+  test(`nothing scrolls sideways at ${width}px, and the menu fits`, async ({ browser }) => {
+    const phone = width < 500; // phones widen the page to fit overflow, which is how the menu got cut off
+    const page = await browser.newPage({ viewport: { width, height }, isMobile: phone, hasTouch: phone, reducedMotion: 'reduce' });
+    for (const path of ['/', '/check/', '/demo/', '/report/sample/']) {
+      await page.goto(path);
+      const box = await page.evaluate(() => ({
+        scroll: document.documentElement.scrollWidth, inner: window.innerWidth,
+        nav: document.querySelector('nav[aria-label="Main"]')!.getBoundingClientRect().right,
+      }));
+      expect(box.scroll, `${path} page width`).toBeLessThanOrEqual(box.inner);
+      expect(box.nav, `${path} nav`).toBeLessThanOrEqual(box.inner);
+    }
+    await page.close();
+  });
+}
+
+test('every visible piece of text is at least 12px', async ({ page }) => {
+  for (const path of ['/', '/check/', '/demo/', '/report/sample/']) {
+    await page.goto(path);
+    const small = await page.evaluate(() => {
+      const found: string[] = [];
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+        const el = node.parentElement;
+        if (!el || !node.textContent?.trim() || el.closest('[aria-hidden="true"], .sr-only, noscript, script, style')) continue;
+        const rect = el.getBoundingClientRect();
+        if (!rect.width || !rect.height || getComputedStyle(el).visibility === 'hidden') continue;
+        if (parseFloat(getComputedStyle(el).fontSize) < 12) found.push(`${node.textContent.trim().slice(0, 30)} (${getComputedStyle(el).fontSize})`);
+      }
+      return found;
+    });
+    expect(small, path).toEqual([]);
+  }
 });

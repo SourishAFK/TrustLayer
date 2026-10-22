@@ -46,7 +46,7 @@ function AudienceSection({ id, tone, kicker, pitch, body, stats, audience, visua
 }
 
 function Illustration({ children }: { children: ReactNode }) {
-  return <p className="t-label mt-4 text-right text-muted/80">{children}</p>;
+  return <p className="t-label mt-4 text-right text-muted">{children}</p>;
 }
 
 /* ---------------- AI product teams: a model switch, re-checked ---------------- */

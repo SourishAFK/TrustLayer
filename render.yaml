@@ -68,3 +68,6 @@ services:
       # The site's own public URL, for link previews on LinkedIn, X and WhatsApp.
       - key: SITE_URL
         sync: false
+      # Shown when a sign-up cannot be sent, with the visitor's details pre-filled in an email.
+      - key: VITE_CONTACT_EMAIL
+        sync: false

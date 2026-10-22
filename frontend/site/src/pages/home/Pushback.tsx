@@ -66,7 +66,7 @@ export function Pushback() {
                 <p className="mt-1 text-sm text-ink-2">It dropped a correct answer after a challenge that brought no new evidence. A customer could now hold you to “60 days”.</p>
               </div>
             </div>
-            <p className="t-label mt-4 text-right text-muted/80">Illustration · invented example</p>
+            <p className="t-label mt-4 text-right text-muted">Illustration · invented example</p>
           </div>
         </div>
       </div>

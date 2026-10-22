@@ -1,10 +1,10 @@
 {
   "answer": {
     "name": "An AI answer",
-    "blurb": "A confident answer with two math slips and one boast.",
+    "blurb": "Three sentences: a real fact, a math slip and an opinion.",
     "body": {
-      "original_question": "Tell me about Acme Analytics.",
-      "response_text": "Acme Analytics was founded in 2012 and serves over 4,000 companies. Revenue grew 50% from $10M to $30M last year. The Pro plan is $20 a month, so a year costs 12 × 20 = 260 dollars. Acme is definitely the best analytics tool on the market."
+      "original_question": "Give me some quick facts about the Eiffel Tower.",
+      "response_text": "The Eiffel Tower was completed in 1889. A family of four paying 29 euros each spends 4 × 29 = 126 euros on tickets. It is the most beautiful monument in the world."
     }
   },
   "document": {

@@ -76,3 +76,86 @@ export const SOURCE_KIND: Record<string, string> = {
   answer_key: 'Your answer key', user_provided: 'Your document', primary: 'Primary source', official: 'Official source',
   academic: 'Academic source', reference: 'Reference work', news: 'News', other: 'Other source',
 };
+
+const RUNNING: Record<string, string> = {
+  extraction: 'Splitting the answer…', numerical: 'Redoing the math…', consistency: 'Comparing the claims…',
+  uncertainty: 'Reading the wording…', planning: 'Choosing what to research…', evidence: 'Searching and reading sources…',
+  citations: 'Opening the citations…', market: 'Looking up companies…', sycophancy: 'Reading the tone…',
+  completeness: 'Comparing with the question…', freshness: 'Checking dates…',
+};
+
+const count = (message: string, pattern: RegExp) => {
+  const match = message.match(pattern);
+  return match ? Number(match[1]) : null;
+};
+const many = (n: number, one: string, plural = `${one}s`) => `${n} ${n === 1 ? one : plural}`;
+
+/** One plain-language line per check. The engine's own progress messages are written for engineers. */
+export function plainStage(stage: string, status: string, message: string): string {
+  if (status === 'failed') return 'Could not finish this check';
+  if (status === 'skipped') return '';
+  if (status === 'started' || status === 'progress') {
+    if (/^Reading \S+$/.test(message)) return message;
+    const read = count(message, /^Assessed (\d+) passage/);
+    if (read !== null) return `Read ${many(read, 'passage')}`;
+    if (/^Checking citation/.test(message)) return 'Opening a citation…';
+    return RUNNING[stage] ?? 'Working…';
+  }
+  switch (stage) {
+    case 'extraction': {
+      const n = count(message, /Found (\d+)/);
+      return n === null ? '' : `Found ${many(n, 'claim')}`;
+    }
+    case 'numerical': {
+      const n = count(message, /(\d+) calculation/), wrong = count(message, /(\d+) inconsistent/) ?? 0;
+      return n === null ? '' : wrong ? `${many(n, 'sum')} redone, ${wrong} wrong` : `${many(n, 'sum')} redone, all right`;
+    }
+    case 'consistency': {
+      const n = count(message, /(\d+) contradiction/);
+      return n ? `${many(n, 'contradiction')} inside the answer` : 'The answer never contradicts itself';
+    }
+    case 'uncertainty': {
+      const n = count(message, /(\d+) absolute-language/);
+      return n ? `${many(n, 'overconfident phrase')}` : 'No overconfident wording';
+    }
+    case 'planning': {
+      const match = message.match(/(\d+) of (\d+)/);
+      return match ? `${match[1]} of ${many(Number(match[2]), 'checkable claim')} to research` : '';
+    }
+    case 'evidence': {
+      const n = count(message, /Researched (\d+)/);
+      return n === null ? '' : `${many(n, 'claim')} researched`;
+    }
+    case 'citations': {
+      const n = count(message, /(\d+) citation/);
+      return n === null ? '' : `${many(n, 'citation')} opened`;
+    }
+    case 'market': {
+      const n = count(message, /(\d+) compan/);
+      return n === null ? '' : `${many(n, 'company', 'companies')} found`;
+    }
+    case 'sycophancy': {
+      const verdict = message.match(/\((HONEST|BORDERLINE|SYCOPHANTIC)\)/)?.[1];
+      if (verdict === 'HONEST') return 'No sign of telling you what you want to hear';
+      if (verdict === 'BORDERLINE') return 'Some signs of telling you what you want to hear';
+      if (verdict === 'SYCOPHANTIC') return 'Leans toward telling you what you want to hear';
+      return 'Wording checked';
+    }
+    case 'completeness': {
+      const n = count(message, /(\d+) possible omission/);
+      return n ? `${many(n, 'part')} of the question may be unanswered` : 'Every part of the question was answered';
+    }
+    case 'freshness': {
+      const n = count(message, /(\d+) may have changed/);
+      return n ? `${many(n, 'fact')} may be out of date` : 'Nothing looks out of date';
+    }
+  }
+  return '';
+}
+
+/** Plain names for the engine's claim types. */
+export const CLAIM_KIND: Record<string, string> = {
+  factual: 'Fact', numerical: 'Numbers', logical: 'Logic', historical: 'History', time_sensitive: 'Can change over time',
+  comparative: 'Comparison', business_market: 'Business', scientific: 'Science', predictive: 'Prediction',
+  subjective_normative: 'Opinion', negative_universal: 'Sweeping claim', not_independently_checkable: 'Private',
+};

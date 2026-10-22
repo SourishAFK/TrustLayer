@@ -1373,7 +1373,27 @@ Building the demo meant running real checks end to end, and two real bugs surfac
 The interview lesson: *a demo is a test you run in public*. Both bugs would have hit
 customers.
 
-### 8.11 Honest limits
+### 8.11 What an outside review caught
+
+A second session reviewed the site with a real browser on desktop and phone. Lessons:
+
+- **A decoration broke the layout.** Each section's glow was a box 10% wider than the
+  section on both sides. On desktop that let the page scroll sideways by 144px; on a phone
+  the browser widened the whole page to fit it, which pushed the menu button off screen.
+  The fix was one line (bleed up and down, never sideways), and the lasting fix is a test
+  that measures the page width on every page at phone and desktop size.
+- **Our tests had a blind spot.** The phone test only looked at text inside the main
+  content, so the cut-off menu in the header slipped through. Measure the thing the user
+  sees (the page width), not a proxy.
+- **"The best" is an opinion.** The demo showed "Acme is definitely the best analytics
+  tool" as UNVERIFIED (we tried and failed) instead of NOT CHECKABLE (no source could ever
+  settle it). The extractor now treats praise without a yardstick as opinion, but keeps
+  measurable superlatives ("best-selling", "the fastest") checkable.
+- **Words matter.** "The live demo could not start" read like a crash; "Live checks are
+  paused, so here's a recorded run" says the same thing honestly. Engine messages such as
+  "0 lexical signal(s)" became "No overconfident wording".
+
+### 8.12 Honest limits
 
 - The live demo is off until a paid model key is set; free-tier Gemini keys have a
   per-model daily cap, and one afternoon of testing used it up.

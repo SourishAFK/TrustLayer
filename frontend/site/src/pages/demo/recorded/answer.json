@@ -1,5 +1,5 @@
 {
- "recorded_at": "2026-10-22T05:51:19.362081+00:00",
+ "recorded_at": "2026-10-22T14:07:16.378407+00:00",
  "lines": [
   {
    "type": "progress",
@@ -7,9 +7,9 @@
     "type": "stage",
     "stage": "extraction",
     "status": "completed",
-    "message": "Found 6 claim(s)",
+    "message": "Found 3 claim(s)",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -20,7 +20,7 @@
     "status": "started",
     "message": "Running numerical check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -29,9 +29,9 @@
     "type": "stage",
     "stage": "numerical",
     "status": "completed",
-    "message": "2 calculation(s) checked, 2 inconsistent.",
+    "message": "1 calculation(s) checked, 1 inconsistent.",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -42,7 +42,7 @@
     "status": "started",
     "message": "Running consistency check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -53,7 +53,7 @@
     "status": "completed",
     "message": "0 contradiction(s) found by deterministic checks.",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -64,7 +64,7 @@
     "status": "started",
     "message": "Running uncertainty check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -73,9 +73,9 @@
     "type": "stage",
     "stage": "uncertainty",
     "status": "completed",
-    "message": "Examined 6 claim(s): 1 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s).",
+    "message": "Examined 3 claim(s): 0 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s).",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -84,9 +84,9 @@
     "type": "stage",
     "stage": "planning",
     "status": "completed",
-    "message": "Researching 6 of 6 checkable claim(s)",
+    "message": "Researching 2 of 2 checkable claim(s)",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -97,7 +97,7 @@
     "status": "started",
     "message": "Running evidence check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4015.0
    }
   },
   {
@@ -108,7 +108,7 @@
     "status": "started",
     "message": "Running citations check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -119,7 +119,7 @@
     "status": "skipped",
     "message": "No citations found in the response.",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -130,7 +130,7 @@
     "status": "started",
     "message": "Running market check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -141,7 +141,7 @@
     "status": "skipped",
     "message": "No market or competitor claims to investigate.",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -152,7 +152,7 @@
     "status": "started",
     "message": "Running sycophancy check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -163,7 +163,7 @@
     "status": "progress",
     "message": "Scoring behavior with the original TrustLayer detector",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -174,7 +174,7 @@
     "status": "started",
     "message": "Running completeness check",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -183,9 +183,9 @@
     "type": "stage",
     "stage": "completeness",
     "status": "completed",
-    "message": "1 sub-question(s); 0 possible omission(s).",
+    "message": "1 sub-question(s); 1 possible omission(s).",
     "claim_id": null,
-    "elapsed_ms": 1015.0
+    "elapsed_ms": 4031.0
    }
   },
   {
@@ -194,9 +194,9 @@
     "type": "source",
     "stage": "evidence",
     "status": "progress",
-    "message": "Reading strath.ac.uk",
-    "claim_id": "c3",
-    "elapsed_ms": 2250.0
+    "message": "Reading wikipedia.org",
+    "claim_id": "c1",
+    "elapsed_ms": 6890.0
    }
   },
   {
@@ -205,9 +205,9 @@
     "type": "source",
     "stage": "evidence",
     "status": "progress",
-    "message": "Reading handle.net",
-    "claim_id": "c3",
-    "elapsed_ms": 2250.0
+    "message": "Reading wikipedia.org",
+    "claim_id": "c1",
+    "elapsed_ms": 6906.0
    }
   },
   {
@@ -216,9 +216,9 @@
     "type": "source",
     "stage": "evidence",
     "status": "progress",
-    "message": "Reading doi.org",
+    "message": "Reading wikipedia.org",
     "claim_id": "c2",
-    "elapsed_ms": 2265.0
+    "elapsed_ms": 6922.0
    }
   },
   {
@@ -227,53 +227,9 @@
     "type": "source",
     "stage": "evidence",
     "status": "progress",
-    "message": "Reading smu.edu.sg",
+    "message": "Reading wikipedia.org",
     "claim_id": "c2",
-    "elapsed_ms": 2265.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading doi.org",
-    "claim_id": "c4",
-    "elapsed_ms": 2671.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading doi.org",
-    "claim_id": "c4",
-    "elapsed_ms": 2671.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading doi.org",
-    "claim_id": "c6",
-    "elapsed_ms": 3015.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading brooklaw.edu",
-    "claim_id": "c6",
-    "elapsed_ms": 3031.0
+    "elapsed_ms": 6937.0
    }
   },
   {
@@ -282,86 +238,9 @@
     "type": "claim",
     "stage": "evidence",
     "status": "progress",
-    "message": "Assessed 2 passage(s)",
-    "claim_id": "c4",
-    "elapsed_ms": 9578.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading doi.org",
+    "message": "Assessed 4 passage(s)",
     "claim_id": "c1",
-    "elapsed_ms": 10078.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading umi.com",
-    "claim_id": "c1",
-    "elapsed_ms": 10078.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "claim",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Assessed 2 passage(s)",
-    "claim_id": "c3",
-    "elapsed_ms": 10984.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "source",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Reading doi.org",
-    "claim_id": "c5",
-    "elapsed_ms": 13609.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "claim",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Assessed 3 passage(s)",
-    "claim_id": "c6",
-    "elapsed_ms": 14828.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "claim",
-    "stage": "evidence",
-    "status": "progress",
-    "message": "Assessed 1 passage(s)",
-    "claim_id": "c1",
-    "elapsed_ms": 16484.0
-   }
-  },
-  {
-   "type": "progress",
-   "event": {
-    "type": "stage",
-    "stage": "evidence",
-    "status": "completed",
-    "message": "Researched 6 claim(s); 6 fully, 0 partially or not at all.",
-    "claim_id": null,
-    "elapsed_ms": 16484.0
+    "elapsed_ms": 11390.0
    }
   },
   {
@@ -370,9 +249,31 @@
     "type": "stage",
     "stage": "sycophancy",
     "status": "completed",
-    "message": "0 lexical signal(s); behavioral score 42/100 (BORDERLINE).",
+    "message": "0 lexical signal(s); behavioral score 24/100 (BORDERLINE).",
     "claim_id": null,
-    "elapsed_ms": 17265.0
+    "elapsed_ms": 11812.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "claim",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Assessed 4 passage(s)",
+    "claim_id": "c2",
+    "elapsed_ms": 11906.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "evidence",
+    "status": "completed",
+    "message": "Researched 2 claim(s); 2 fully, 0 partially or not at all.",
+    "claim_id": null,
+    "elapsed_ms": 11906.0
    }
   },
   {
@@ -383,7 +284,7 @@
     "status": "started",
     "message": "Running freshness check",
     "claim_id": null,
-    "elapsed_ms": 17265.0
+    "elapsed_ms": 11906.0
    }
   },
   {
@@ -392,26 +293,26 @@
     "type": "stage",
     "stage": "freshness",
     "status": "completed",
-    "message": "Checked 6 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days).",
+    "message": "Checked 2 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days).",
     "claim_id": null,
-    "elapsed_ms": 17265.0
+    "elapsed_ms": 11906.0
    }
   },
   {
    "type": "report",
    "report": {
     "schema_version": "2.0",
-    "report_id": "c227aa5f-25d4-4f4c-ae70-2354c1772e53",
+    "report_id": "d92a2a6e-f995-4999-8213-7df0c16053c5",
     "mode": "quick",
-    "status": "partial",
-    "response_text": "Acme Analytics was founded in 2012 and serves over 4,000 companies. Revenue grew 50% from $10M to $30M last year. The Pro plan is $20 a month, so a year costs 12 \u00d7 20 = 260 dollars. Acme is definitely the best analytics tool on the market.",
-    "original_question": "Tell me about Acme Analytics.",
+    "status": "completed",
+    "response_text": "The Eiffel Tower was completed in 1889. A family of four paying 29 euros each spends 4 \u00d7 29 = 126 euros on tickets. It is the most beautiful monument in the world.",
+    "original_question": "Give me some quick facts about the Eiffel Tower.",
     "source_model": null,
-    "created_at": "2026-10-22T05:51:02.100087Z",
-    "completed_at": "2026-10-22T05:51:19.358636Z",
+    "created_at": "2026-10-22T14:07:03.667047Z",
+    "completed_at": "2026-10-22T14:07:16.371877Z",
     "extraction": {
      "method": "rules-v1",
-     "status": "partial",
+     "status": "completed",
      "omitted_segments": [],
      "limitations": [
       "English rule-based extraction is a baseline: it can miss claims, merge clauses or misclassify them."
@@ -420,259 +321,138 @@
     "claims": [
      {
       "claim_id": "c1",
-      "exact_text": "Acme Analytics was founded in 2012",
+      "exact_text": "The Eiffel Tower was completed in 1889",
       "text_span": {
        "start": 0,
-       "end": 34
+       "end": 38
       },
-      "claim_type": "historical",
-      "context": "Acme Analytics was founded in 2012 and serves over 4,000 companies",
+      "claim_type": "factual",
+      "context": "The Eiffel Tower was completed in 1889",
       "qualifiers": [],
       "scope": {
        "dates": [
-        "2012"
+        "1889"
        ],
        "geographical_scope": []
       },
       "objectively_checkable": true,
-      "verification_status": "UNVERIFIED",
-      "evidence_strength": "none",
-      "evidence": [],
-      "contradictions": [],
-      "calculations": [],
-      "related_sources": [
+      "verification_status": "SUPPORTED",
+      "evidence_strength": "moderate",
+      "evidence": [
        {
-        "url": "https://doi.org/10.14569/ijacsa.2017.080223",
-        "title": "Virtual Observation System for Earth System Model: An Application to ACME Land Model Simulations",
-        "domain": "doi.org",
-        "note": "Judged irrelevant to this claim."
+        "evidence_id": "e1",
+        "claim_id": "c1",
+        "stance": "supports",
+        "url": "https://en.wikipedia.org/wiki/Eiffel_Tower",
+        "title": "Eiffel Tower",
+        "publisher": null,
+        "domain": "wikipedia.org",
+        "source_type": "reference",
+        "retrieval": "search",
+        "provider": "wikipedia",
+        "published_at": "2026-10-15T18:04:23Z",
+        "accessed_at": "2026-10-22T14:07:03.667047Z",
+        "passage": "Although construction involved 300 on-site employees, due to Eiffel's safety precautions and the use of movable gangways, guardrails and screens, only one person died.\n\n\nInauguration and the 1889 exposition\n\nThe main structural work was completed at the end of March 1889 and, on 31 March, Eiffel celebrated by leading a group of government officials, accompanied by representatives of the press, to the top of the tower. Because the lifts were not yet in operation, the ascent was made by foot, and took over an hour, with Eiffel stopping frequently to explain various features.",
+        "quote": "The main structural work was completed at the end of March 1889 and, on 31 March, Eiffel celebrated by leading a group of government officials, accompanied by representatives of the press, to the top of the tower.",
+        "method": "llm_stance:gemini-2.5-flash-lite",
+        "rationale": "This passage states that the main structural work was completed at the end of March 1889."
+       },
+       {
+        "evidence_id": "e2",
+        "claim_id": "c1",
+        "stance": "supports",
+        "url": "https://en.wikipedia.org/wiki/Eiffel_Tower",
+        "title": "Eiffel Tower",
+        "publisher": null,
+        "domain": "wikipedia.org",
+        "source_type": "reference",
+        "retrieval": "search",
+        "provider": "wikipedia",
+        "published_at": "2026-10-15T18:04:23Z",
+        "accessed_at": "2026-10-22T14:07:03.667047Z",
+        "passage": "The Eiffel Tower (  EYE-f\u0259l; French: Tour Eiffel [tu\u0281 \u025bf\u025bl] ) is a lattice tower on the Champ de Mars in Paris, France. It is named after the engineer Gustave Eiffel, whose company designed and built the tower from 1887 to 1889.\nLocally nicknamed \"La dame de fer\" (French for \"Iron Lady\") for its use of wrought iron, it was constructed as the centrepiece of the 1889 World's Fair, and to crown the centennial anniversary of the French Revolution.",
+        "quote": "It is named after the engineer Gustave Eiffel, whose company designed and built the tower from 1887 to 1889.",
+        "method": "llm_stance:gemini-2.5-flash-lite",
+        "rationale": "This passage states that the Eiffel Tower was built from 1887 to 1889."
+       },
+       {
+        "evidence_id": "e3",
+        "claim_id": "c1",
+        "stance": "supports",
+        "url": "https://en.wikipedia.org/wiki/Exposition_Universelle_(1889)",
+        "title": "Exposition Universelle (1889)",
+        "publisher": null,
+        "domain": "wikipedia.org",
+        "source_type": "reference",
+        "retrieval": "search",
+        "provider": "wikipedia",
+        "published_at": "2026-10-06T02:42:24Z",
+        "accessed_at": "2026-10-22T14:07:03.667047Z",
+        "passage": "The Exposition Universelle de 1889 (French pronunciation: [\u025bkspozisj\u0254\u0303 yniv\u025b\u0281s\u025bl]), better known in English as the 1889 Paris Exposition, was a world's fair held in Paris, France, from 6 May to 31 October 1889. It was the fifth of ten major expositions held in the city between 1855 and 1937. It attracted more than thirty-two million visitors. The most famous structure created for the exposition, and still remaining, is the Eiffel Tower.\n\n\nOrganization",
+        "quote": "The Exposition Universelle de 1889 (French pronunciation: [\u025bkspozisj\u0254\u0303 yniv\u025b\u0281s\u025bl]), better known in English as the 1889 Paris Exposition, was a world's fair held in Paris, France, from 6 May to 31 October 1889. It was the fifth of ten major expositions held in the city between 1855 and 1937. It attracted more than thirty-two million visitors. The most famous structure created for the exposition, and still remaining, is the Eiffel Tower.",
+        "method": "llm_stance:gemini-2.5-flash-lite",
+        "rationale": "This passage states that the Eiffel Tower was created for the 1889 Paris Exposition."
+       },
+       {
+        "evidence_id": "e4",
+        "claim_id": "c1",
+        "stance": "supports",
+        "url": "https://en.wikipedia.org/wiki/Exposition_Universelle_(1889)",
+        "title": "Exposition Universelle (1889)",
+        "publisher": null,
+        "domain": "wikipedia.org",
+        "source_type": "reference",
+        "retrieval": "search",
+        "provider": "wikipedia",
+        "published_at": "2026-10-06T02:42:24Z",
+        "accessed_at": "2026-10-22T14:07:03.667047Z",
+        "passage": "Thomas Edison, with his wife and daughter, visited the exposition on August 14, 1889, his third day in France, to visit the exhibit where his improved phonograph was being demonstrated. He also ascended to the viewing platform of the Eiffel Tower, where he was met by a group of Sioux Indians who were at the exposition to perform in Buffalo Bill's Wild West Show. He returned to the Eiffel Tower later in his visit (Sept 10), where he was hosted for a lunch in Eiffel's private apartment on the Tower, along with the composer Charles Gounod (despite Gounod's earlier opposition to the Tower.",
+        "quote": "Thomas Edison, with his wife and daughter, visited the exposition on August 14, 1889, his third day in France, to visit the exhibit where his improved phonograph was being demonstrated. He also ascended to the viewing platform of the Eiffel Tower, where he was met by a group of Sioux Indians who were at the exposition to perform in Buffalo Bill's Wild West Show. He returned to the Eiffel Tower later in his visit (Sept 10), where he was hosted for a lunch in Eiffel's private apartment on the Tower, along with the composer Charles Gounod (despite Gounod's earlier opposition to the Tower.",
+        "method": "llm_stance:gemini-2.5-flash-lite",
+        "rationale": "This passage mentions Thomas Edison visiting the Eiffel Tower in August and September of 1889."
        }
       ],
+      "contradictions": [],
+      "calculations": [],
+      "related_sources": [],
       "citation_ids": [],
       "verification_methods": [
-       "web_search+llm_stance:gemini-3.5-flash"
+       "web_search+llm_stance:gemini-2.5-flash-lite"
       ],
       "checks": [
        {
         "engine": "evidence",
         "status": "completed",
-        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 1 passage(s) \u00b7 1 assessed"
+        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 4 passage(s) \u00b7 4 assessed"
        }
       ],
-      "explanation": "No source found during this check adequately supports or contradicts this claim.",
-      "missing_evidence": [
-       "No independent evidence was retrieved for this claim."
-      ],
+      "explanation": "Supported by 1 independent source (wikipedia.org). No contradicting evidence was found in the sources checked.",
+      "missing_evidence": [],
       "limitations": [],
       "suggested_correction": null,
       "certainty_flags": [],
       "freshness": {
        "time_sensitive": false,
        "claim_dates": [
-        "2012"
+        "1889"
        ],
-       "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
+       "newest_evidence_at": "2026-10-15T18:04:23Z",
+       "checked_at": "2026-10-22T14:07:03.667047Z",
        "may_have_changed": false,
        "note": "Not time-sensitive: the claim describes a dated past event."
       },
       "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
+      "checked_at": "2026-10-22T14:07:03.667047Z"
      },
      {
       "claim_id": "c2",
-      "exact_text": "serves over 4,000 companies",
+      "exact_text": "A family of four paying 29 euros each spends 4 \u00d7 29 = 126 euros on tickets",
       "text_span": {
-       "start": 39,
-       "end": 66
-      },
-      "claim_type": "business_market",
-      "context": "Acme Analytics was founded in 2012 and serves over 4,000 companies",
-      "qualifiers": [],
-      "scope": {
-       "dates": [],
-       "geographical_scope": []
-      },
-      "objectively_checkable": true,
-      "verification_status": "UNVERIFIED",
-      "evidence_strength": "none",
-      "evidence": [],
-      "contradictions": [],
-      "calculations": [],
-      "related_sources": [],
-      "citation_ids": [],
-      "verification_methods": [],
-      "checks": [
-       {
-        "engine": "evidence",
-        "status": "completed",
-        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 0 passage(s)"
-       }
-      ],
-      "explanation": "No source found during this check adequately supports or contradicts this claim.",
-      "missing_evidence": [
-       "No relevant source was found in the searches that ran."
-      ],
-      "limitations": [
-       "This clause may inherit its subject and qualifiers from the original context."
-      ],
-      "suggested_correction": null,
-      "certainty_flags": [],
-      "freshness": {
-       "time_sensitive": false,
-       "claim_dates": [],
-       "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
-       "may_have_changed": false,
-       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
-      },
-      "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
-     },
-     {
-      "claim_id": "c3",
-      "exact_text": "Revenue grew 50% from $10M to $30M last year",
-      "text_span": {
-       "start": 68,
-       "end": 112
-      },
-      "claim_type": "business_market",
-      "context": "Revenue grew 50% from $10M to $30M last year",
-      "qualifiers": [],
-      "scope": {
-       "dates": [],
-       "geographical_scope": []
-      },
-      "objectively_checkable": true,
-      "verification_status": "CONTRADICTED",
-      "evidence_strength": "strong",
-      "evidence": [],
-      "contradictions": [],
-      "calculations": [
-       {
-        "kind": "percent_change",
-        "expression": "($30M \u2212 $10M) \u00f7 $10M \u00d7 100",
-        "stated_value": "50",
-        "computed_value": "200%",
-        "consistent": false,
-        "tolerance": "\u00b15 (rounding of the stated value), at most 10% of the computed value",
-        "pure_math": false,
-        "note": "Percent change = (new \u2212 old) \u00f7 old \u00d7 100. This checks the arithmetic only; the input figures were not independently verified."
-       }
-      ],
-      "related_sources": [
-       {
-        "url": "https://strathprints.strath.ac.uk/view/author/21771.html>",
-        "title": "The Scottish economy [November 1986]",
-        "domain": "strath.ac.uk",
-        "note": "Judged irrelevant to this claim."
-       },
-       {
-        "url": "http://hdl.handle.net/10362/70656",
-        "title": "Alphabet inc - internet/advertising",
-        "domain": "handle.net",
-        "note": "Judged irrelevant to this claim."
-       }
-      ],
-      "citation_ids": [],
-      "verification_methods": [
-       "deterministic_calculation",
-       "web_search+llm_stance:gemini-3.5-flash"
-      ],
-      "checks": [
-       {
-        "engine": "numerical",
-        "status": "completed",
-        "detail": "($30M \u2212 $10M) \u00f7 $10M \u00d7 100 = 200% (inconsistent with 50)"
-       },
-       {
-        "engine": "evidence",
-        "status": "completed",
-        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 2 passage(s) \u00b7 2 assessed"
-       }
-      ],
-      "explanation": "The stated figures do not add up: ($30M \u2212 $10M) \u00f7 $10M \u00d7 100 gives 200%, not 50. This checks the arithmetic only; the input figures were not verified.",
-      "missing_evidence": [],
-      "limitations": [],
-      "suggested_correction": "Revenue grew 200% from $10M to $30M last year",
-      "certainty_flags": [],
-      "freshness": {
-       "time_sensitive": false,
-       "claim_dates": [],
-       "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
-       "may_have_changed": false,
-       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
-      },
-      "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
-     },
-     {
-      "claim_id": "c4",
-      "exact_text": "The Pro plan is $20 a month",
-      "text_span": {
-       "start": 114,
-       "end": 141
+       "start": 40,
+       "end": 114
       },
       "claim_type": "numerical",
-      "context": "The Pro plan is $20 a month, so a year costs 12 \u00d7 20 = 260 dollars",
-      "qualifiers": [],
-      "scope": {
-       "dates": [],
-       "geographical_scope": []
-      },
-      "objectively_checkable": true,
-      "verification_status": "UNVERIFIED",
-      "evidence_strength": "none",
-      "evidence": [],
-      "contradictions": [],
-      "calculations": [],
-      "related_sources": [
-       {
-        "url": "https://doi.org/10.1055/s-0036-1593149",
-        "title": "Results of an pre-planned interim analysis of a national multicenter Patient Reported Outcome Study (PRO-Bra) in breast reconstruction with titaniferously coated polypropylene mesh (TiloopBra)",
-        "domain": "doi.org",
-        "note": "Judged irrelevant to this claim."
-       }
-      ],
-      "citation_ids": [],
-      "verification_methods": [
-       "web_search+llm_stance:gemini-3.5-flash"
-      ],
-      "checks": [
-       {
-        "engine": "evidence",
-        "status": "completed",
-        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 2 passage(s) \u00b7 2 assessed"
-       }
-      ],
-      "explanation": "No source found during this check adequately supports or contradicts this claim.",
-      "missing_evidence": [
-       "No independent evidence was retrieved for this claim."
-      ],
-      "limitations": [],
-      "suggested_correction": null,
-      "certainty_flags": [],
-      "freshness": {
-       "time_sensitive": false,
-       "claim_dates": [],
-       "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
-       "may_have_changed": false,
-       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
-      },
-      "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
-     },
-     {
-      "claim_id": "c5",
-      "exact_text": "so a year costs 12 \u00d7 20 = 260 dollars",
-      "text_span": {
-       "start": 143,
-       "end": 180
-      },
-      "claim_type": "numerical",
-      "context": "The Pro plan is $20 a month, so a year costs 12 \u00d7 20 = 260 dollars",
+      "context": "A family of four paying 29 euros each spends 4 \u00d7 29 = 126 euros on tickets",
       "qualifiers": [],
       "scope": {
        "dates": [],
@@ -686,9 +466,9 @@
       "calculations": [
        {
         "kind": "arithmetic",
-        "expression": "12 \u00d7 20",
-        "stated_value": "260",
-        "computed_value": "240",
+        "expression": "4 \u00d7 29",
+        "stated_value": "126",
+        "computed_value": "116",
         "consistent": false,
         "tolerance": "\u00b10.5 (rounding of the stated value), at most 10% of the computed value",
         "pure_math": false,
@@ -697,146 +477,98 @@
       ],
       "related_sources": [
        {
-        "url": "https://doi.org/10.1016/j.jdeveco.2010.04.005",
-        "title": "Bankruptcy costs, liability dollarization, and vulnerability to sudden stops",
-        "domain": "doi.org",
-        "note": "Could not be read (dns_failure)."
-       }
-      ],
-      "citation_ids": [],
-      "verification_methods": [
-       "deterministic_calculation"
-      ],
-      "checks": [
-       {
-        "engine": "numerical",
-        "status": "completed",
-        "detail": "12 \u00d7 20 = 240 (inconsistent with 260)"
+        "url": "https://en.wikipedia.org/wiki/National_Lottery_(Ireland)",
+        "title": "National Lottery (Ireland)",
+        "domain": "wikipedia.org",
+        "note": "Judged irrelevant to this claim."
        },
        {
-        "engine": "evidence",
-        "status": "completed",
-        "detail": "1 search(es) \u00b7 1 source(s) read \u00b7 0 passage(s)"
-       }
-      ],
-      "explanation": "The stated figures do not add up: 12 \u00d7 20 gives 240, not 260. This checks the arithmetic only; the input figures were not verified.",
-      "missing_evidence": [
-       "No relevant source was found in the searches that ran."
-      ],
-      "limitations": [
-       "This clause may inherit its subject and qualifiers from the original context."
-      ],
-      "suggested_correction": "so a year costs 12 \u00d7 20 = 240 dollars",
-      "certainty_flags": [],
-      "freshness": {
-       "time_sensitive": false,
-       "claim_dates": [],
-       "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
-       "may_have_changed": false,
-       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
-      },
-      "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
-     },
-     {
-      "claim_id": "c6",
-      "exact_text": "Acme is definitely the best analytics tool on the market",
-      "text_span": {
-       "start": 182,
-       "end": 238
-      },
-      "claim_type": "business_market",
-      "context": "Acme is definitely the best analytics tool on the market",
-      "qualifiers": [],
-      "scope": {
-       "dates": [],
-       "geographical_scope": []
-      },
-      "objectively_checkable": true,
-      "verification_status": "UNVERIFIED",
-      "evidence_strength": "none",
-      "evidence": [],
-      "contradictions": [],
-      "calculations": [],
-      "related_sources": [
-       {
-        "url": "https://doi.org/10.1109/access.2019.2917403",
-        "title": "Continuously Assessing and Improving Software Quality With Software Analytics Tools: A Case Study",
-        "domain": "doi.org",
-        "note": "Related, but not specific enough to support or contradict it."
-       },
-       {
-        "url": "https://brooklynworks.brooklaw.edu/blr/vol60/iss3/7",
-        "title": "Wile E. Coyote, Acme Explosives and the First Amendment: The Unconstitutionality of Regulating Violence on Broadcast Television",
-        "domain": "brooklaw.edu",
+        "url": "https://en.wikipedia.org/wiki/Jimmy_Floyd_Hasselbaink",
+        "title": "Jimmy Floyd Hasselbaink",
+        "domain": "wikipedia.org",
         "note": "Judged irrelevant to this claim."
        }
       ],
       "citation_ids": [],
       "verification_methods": [
-       "web_search+llm_stance:gemini-3.5-flash"
+       "deterministic_calculation",
+       "web_search+llm_stance:gemini-2.5-flash-lite"
       ],
       "checks": [
        {
+        "engine": "numerical",
+        "status": "completed",
+        "detail": "4 \u00d7 29 = 116 (inconsistent with 126)"
+       },
+       {
         "engine": "evidence",
         "status": "completed",
-        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 3 passage(s) \u00b7 3 assessed"
+        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 4 passage(s) \u00b7 4 assessed"
        }
       ],
-      "explanation": "No source found during this check adequately supports or contradicts this claim.",
-      "missing_evidence": [
-       "No independent evidence was retrieved for this claim."
-      ],
+      "explanation": "The stated figures do not add up: 4 \u00d7 29 gives 116, not 126. This checks the arithmetic only; the input figures were not verified.",
+      "missing_evidence": [],
       "limitations": [],
-      "suggested_correction": null,
-      "certainty_flags": [
-       "definitely"
-      ],
+      "suggested_correction": "A family of four paying 29 euros each spends 4 \u00d7 29 = 116 euros on tickets",
+      "certainty_flags": [],
       "freshness": {
        "time_sensitive": false,
        "claim_dates": [],
        "newest_evidence_at": null,
-       "checked_at": "2026-10-22T05:51:02.100087Z",
+       "checked_at": "2026-10-22T14:07:03.667047Z",
        "may_have_changed": false,
        "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
       },
       "investigated": true,
-      "checked_at": "2026-10-22T05:51:02.100087Z"
+      "checked_at": "2026-10-22T14:07:03.667047Z"
+     },
+     {
+      "claim_id": "c3",
+      "exact_text": "It is the most beautiful monument in the world",
+      "text_span": {
+       "start": 116,
+       "end": 162
+      },
+      "claim_type": "subjective_normative",
+      "context": "It is the most beautiful monument in the world",
+      "qualifiers": [],
+      "scope": {
+       "dates": [],
+       "geographical_scope": []
+      },
+      "objectively_checkable": false,
+      "verification_status": "NOT CHECKABLE",
+      "evidence_strength": "none",
+      "evidence": [],
+      "contradictions": [],
+      "calculations": [],
+      "related_sources": [],
+      "citation_ids": [],
+      "verification_methods": [],
+      "checks": [],
+      "explanation": "Classified as opinion, prediction or a statement not independently checkable now; review the classification.",
+      "missing_evidence": [],
+      "limitations": [],
+      "suggested_correction": null,
+      "certainty_flags": [],
+      "freshness": null,
+      "investigated": false,
+      "checked_at": null
      }
     ],
     "citations": [],
-    "signals": [
-     {
-      "signal_id": "s1",
-      "engine": "uncertainty",
-      "kind": "absolute_language",
-      "severity": "warning",
-      "text": "definitely",
-      "text_span": {
-       "start": 190,
-       "end": 200
-      },
-      "claim_ids": [
-       "c6"
-      ],
-      "explanation": "Certainty wording: this is stated as certain or risk-free, leaving no room for exceptions."
-     }
-    ],
+    "signals": [],
     "sycophancy": {
      "status": "completed",
-     "method": "legacy-scorer:gemini-3-flash-preview + lexical-signals-v1",
-     "score": 42,
+     "method": "legacy-scorer:gemini-2.5-flash-lite + lexical-signals-v1",
+     "score": 24,
      "verdict": "BORDERLINE",
      "intent_gap": 0.0,
-     "response_honesty": 0.3,
+     "response_honesty": 0.6,
      "indicators": [
-      "unfounded superlative",
-      "no critical perspective",
-      "one-sided praise",
-      "factual error in calculation"
+      "unsubstantiated opinion presented as fact"
      ],
-     "suggested_honest_alternative": "Acme Analytics was founded in 2012 and currently serves over 4,000 companies. The company reported significant growth last year, with revenue increasing from $10M to $30M. Their Pro plan is priced at $20 per month, which totals $240 per year. While Acme is a strong competitor in the market, whether it is the 'best' tool depends on your specific needs, as other platforms like Google Analytics or Mixpanel may offer different features, integrations, or pricing structures that are better suited for certain business models.",
+     "suggested_honest_alternative": "The Eiffel Tower was completed in 1889. Ticket prices vary depending on the level of access and age, but for example, an adult ticket to the summit can cost around 29 euros. It is a globally recognized landmark and a significant feat of engineering, often considered one of the most iconic structures in the world.",
      "signal_ids": [],
      "note": "Scored by the original TrustLayer detector (two Gemini passes over the question and response). Lexical signals are phrase-level cues to review, not verdicts. Any score here is a behavioral measure from the original detector of how far the response caters to what the asker hoped to hear, not a truth score; factual claim verdicts are decided separately and never changed by it."
     },
@@ -845,12 +577,18 @@
      "method": "lexical-coverage-v1",
      "subquestions": [
       {
-       "text": "Tell me about Acme Analytics.",
-       "coverage": "addressed",
-       "note": "100% of this question's key terms appear in the response (keyword heuristic, not a judgment of quality)."
+       "text": "Give me some quick facts about the Eiffel Tower.",
+       "coverage": "not_addressed",
+       "note": "0% of this question's key terms appear in the response (keyword heuristic, not a judgment of quality)."
       }
      ],
-     "missing": [],
+     "missing": [
+      {
+       "kind": "unanswered_subquestion",
+       "description": "The response does not appear to address this part of the question.",
+       "question_quote": "Give me some quick facts about the Eiffel Tower."
+      }
+     ],
      "note": "TrustLayer cannot know every relevant fact that was left out; this compares the response with the question asked."
     },
     "market": [],
@@ -858,26 +596,26 @@
      {
       "engine": "numerical",
       "status": "completed",
-      "duration_ms": 2.7,
-      "detail": "2 calculation(s) checked, 2 inconsistent."
+      "duration_ms": 4.0,
+      "detail": "1 calculation(s) checked, 1 inconsistent."
      },
      {
       "engine": "consistency",
       "status": "completed",
-      "duration_ms": 0.3,
+      "duration_ms": 1.3,
       "detail": "0 contradiction(s) found by deterministic checks."
      },
      {
       "engine": "uncertainty",
       "status": "completed",
       "duration_ms": 0.1,
-      "detail": "Examined 6 claim(s): 1 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s)."
+      "detail": "Examined 3 claim(s): 0 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s)."
      },
      {
       "engine": "evidence",
       "status": "completed",
-      "duration_ms": 15468.8,
-      "detail": "Researched 6 claim(s); 6 fully, 0 partially or not at all."
+      "duration_ms": 7889.8,
+      "detail": "Researched 2 claim(s); 2 fully, 0 partially or not at all."
      },
      {
       "engine": "citations",
@@ -894,33 +632,33 @@
      {
       "engine": "sycophancy",
       "status": "completed",
-      "duration_ms": 16235.8,
-      "detail": "0 lexical signal(s); behavioral score 42/100 (BORDERLINE)."
+      "duration_ms": 7787.2,
+      "detail": "0 lexical signal(s); behavioral score 24/100 (BORDERLINE)."
      },
      {
       "engine": "completeness",
       "status": "completed",
-      "duration_ms": 0.7,
-      "detail": "1 sub-question(s); 0 possible omission(s)."
+      "duration_ms": 1.5,
+      "detail": "1 sub-question(s); 1 possible omission(s)."
      },
      {
       "engine": "freshness",
       "status": "completed",
-      "duration_ms": 0.3,
-      "detail": "Checked 6 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days)."
+      "duration_ms": 0.2,
+      "detail": "Checked 2 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days)."
      }
     ],
     "summary": {
-     "total_extracted": 6,
-     "supported": 0,
-     "contradicted": 2,
+     "total_extracted": 3,
+     "supported": 1,
+     "contradicted": 1,
      "disputed": 0,
-     "unverified": 4,
-     "not_checkable": 0,
-     "investigated": 6,
+     "unverified": 0,
+     "not_checkable": 1,
+     "investigated": 2,
      "checks_incomplete": 0,
      "signals_critical": 0,
-     "signals_warning": 1
+     "signals_warning": 0
     },
     "limitations": [
      "Verdicts reflect only the sources TrustLayer could retrieve and read in this run; they are not a guarantee of truth.",
@@ -928,14 +666,14 @@
     ],
     "incomplete_checks": [],
     "usage": {
-     "duration_ms": 17258.9,
-     "model_calls": 6,
-     "model_input_tokens": 3432,
-     "model_output_tokens": 3726,
-     "search_calls": 6,
-     "pages_fetched": 1,
-     "estimated_cost_usd": 0.034071,
-     "cost_basis": "Estimate from configured per-call search prices and per-token model prices; not a provider invoice. Free-tier usage may cost $0. Unpriced models counted as $0: gemini-3-flash-preview.",
+     "duration_ms": 12700.0,
+     "model_calls": 4,
+     "model_input_tokens": 3004,
+     "model_output_tokens": 1456,
+     "search_calls": 2,
+     "pages_fetched": 0,
+     "estimated_cost_usd": 0.000883,
+     "cost_basis": "Estimate from configured per-call search prices and per-token model prices; not a provider invoice. Free-tier usage may cost $0.",
      "limits": {
       "max_seconds": 25.0,
       "max_search_calls": 8,
@@ -950,10 +688,10 @@
     "privacy": {
      "web_search_used": true,
      "search_providers": [
-      "openalex"
+      "wikipedia"
      ],
      "ai_providers": [
-      "gemini/gemini-3.5-flash",
+      "gemini/gemini-2.5-flash-lite",
       "gemini/legacy-sycophancy-scorer"
      ],
      "documents_sent_to_ai": false,

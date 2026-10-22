@@ -23,7 +23,8 @@ export function Vision() {
 
   return (
     <section ref={root} id="vision" className="relative overflow-hidden py-32 md:py-48">
-      <Meteors count={16} />
+      {/* Streaks fall beside the headline, on the globe side only: never across text. */}
+      <Meteors count={12} className="hidden bottom-auto h-[42%] lg:block [mask-image:linear-gradient(90deg,transparent_0,transparent_58%,#000_78%)]" />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <Kicker tone="violet">Where we're going</Kicker>
         <h2 data-split className="t-hero mt-8 max-w-[12ch]">A trust grade for every AI.</h2>

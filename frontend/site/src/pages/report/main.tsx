@@ -45,7 +45,7 @@ function Report() {
       <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 print:max-w-none print:px-0">
         <div className="toolbar no-print glass mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl px-4 py-3">
           <span className="flex items-center gap-2 text-sm text-ink-2">
-            <span className="rounded-full border border-gold/50 bg-gold/15 px-2.5 py-0.5 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-gold">Sample</span>
+            <span className="rounded-full border border-gold/50 bg-gold/15 px-2.5 py-0.5 font-mono text-xs uppercase tracking-[0.14em] text-gold">Sample</span>
             Fictional company, invented results
           </span>
           <span className="flex flex-wrap gap-2">
@@ -58,7 +58,7 @@ function Report() {
 
         <article ref={paper} className="paper rounded-[1.75rem] bg-paper px-6 py-10 text-paper-ink shadow-[0_60px_160px_-40px_rgb(0_0_0/0.9),0_0_0_1px_rgb(255_255_255/0.08)] sm:px-14 sm:py-16">
           <header>
-            <div className="flex flex-wrap items-center justify-between gap-4 text-[0.7rem] font-semibold uppercase tracking-[0.18em] text-[#5d6270]">
+            <div className="flex flex-wrap items-center justify-between gap-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#5d6270]">
               <span className="flex items-center gap-2"><Mark size={22} light /> TrustLayer · Bot Check-up</span>
               <span>{report.report_id}</span>
             </div>

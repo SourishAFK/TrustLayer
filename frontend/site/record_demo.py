@@ -10,6 +10,7 @@ A run whose AI calls failed (quota, outage) is not saved unless --force: a repla
 what the engine does, not a bad day at the provider.
 """
 import json
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -21,6 +22,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SITE = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 load_dotenv(ROOT / ".env")
+# Same public contact as render.yaml, so Wikipedia is searched here as it is in production.
+os.environ.setdefault("TRUSTLAYER_CONTACT", "https://github.com/SourishAFK/TrustLayer")
 
 from backend.verification import pipeline  # noqa: E402
 from backend.verification.report import VerificationRequest  # noqa: E402

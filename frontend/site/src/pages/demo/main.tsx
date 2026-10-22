@@ -4,11 +4,11 @@ import type { Look } from '../../components/FieldCanvas';
 import { mount, Shell } from '../../components/Shell';
 import { Aurora, Cta, Kicker, VerdictChip } from '../../fx/fx';
 import { Alert, Arrow, ArrowUpRight, Check } from '../../fx/icons';
-import { DemoUnavailable, openDemoStream, type DemoBody } from '../../lib/api';
+import { DemoUnavailable, openDemoStream, UNREACHABLE, type DemoBody } from '../../lib/api';
 import { VERDICTS, type Verdict } from '../../lib/content';
 import { gsap, reducedMotion, useGSAP } from '../../lib/motion';
 import { PRESETS, presetFrom, type PresetId } from '../../lib/presets';
-import { CITATION_LABEL, segments, SOURCE_KIND, STAGES, type Claim, type Progress, type Report, type StreamLine } from '../../lib/report';
+import { CITATION_LABEL, CLAIM_KIND, plainStage, segments, SOURCE_KIND, STAGES, type Claim, type Progress, type Report, type StreamLine } from '../../lib/report';
 import answerRun from './recorded/answer.json';
 import documentRun from './recorded/document.json';
 import supportRun from './recorded/support.json';
@@ -70,7 +70,7 @@ function useRunner() {
       }
     } catch (err) {
       if (controller.signal.aborted) return;
-      const reason = err instanceof DemoUnavailable ? err.message : 'We could not reach the checker.';
+      const reason = err instanceof DemoUnavailable ? err.message : UNREACHABLE;
       if (preset && !(err instanceof DemoUnavailable && err.status === 422)) {
         await replay(RECORDED[preset], controller.signal, reason);
       } else {
@@ -113,7 +113,7 @@ function Timeline({ run }: { run: Run }) {
               </span>
               <span className="min-w-0">
                 <span className={`block text-sm ${status === 'waiting' || status === 'skipped' ? 'text-muted' : 'text-ink'}`}>{s.label}{status === 'skipped' && <span className="text-muted"> · not needed</span>}</span>
-                {state?.message && status !== 'skipped' && <span className="block truncate font-mono text-[0.7rem] text-muted">{state.message}</span>}
+                {state && plainStage(s.key, state.status, state.message) && <span className="block text-xs leading-snug text-muted">{plainStage(s.key, state.status, state.message)}</span>}
               </span>
             </li>
           );
@@ -130,7 +130,7 @@ function ClaimCard({ claim, focused, onFocus }: { claim: Claim; focused: boolean
       className={`claim-card glass spotlight rounded-2xl p-5 [overflow-wrap:anywhere] transition-shadow ${focused ? 'shadow-[0_0_0_1px_rgb(56_214_255/0.5),0_0_40px_-10px_rgb(56_214_255/0.6)]' : ''}`}>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <VerdictChip verdict={claim.verification_status} />
-        <span className="t-label text-muted">{claim.claim_type.replace(/_/g, ' ')}</span>
+        <span className="t-label text-muted">{CLAIM_KIND[claim.claim_type] ?? 'Claim'}</span>
       </div>
       <p className="mt-4 font-serif text-xl leading-snug text-ink">“{claim.exact_text}”</p>
       <p className="mt-3 text-sm text-ink-2">{claim.explanation}</p>
@@ -325,7 +325,7 @@ function DemoPage() {
             {run.recordedAt && (
               <p role="status" className="mb-4 flex items-start gap-3 rounded-2xl border border-gold/40 bg-gold/10 px-4 py-3 text-sm text-ink">
                 <Alert className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-                <span>{run.error} Showing a recorded run of this example from {new Date(run.recordedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}, replayed at speed.</span>
+                <span>{run.error}, so here's a recorded run of this example from {new Date(run.recordedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}, replayed at speed.</span>
               </p>
             )}
             {run.phase === 'idle' && (
@@ -338,7 +338,7 @@ function DemoPage() {
             )}
             {run.phase === 'error' && (
               <div role="alert" className="glass rounded-[1.75rem] p-8">
-                <p className="text-ink">{run.error}</p>
+                <p className="text-ink">{run.error?.replace(/\.$/, '')}. Pick one of the examples above to watch a recorded run, or ask us for a free check.</p>
                 <div className="mt-6 flex flex-wrap gap-3"><Cta href="/report/sample/" size="sm">Read the sample report</Cta><Cta href="/check/?for=general" variant="ghost" size="sm">Get a free check</Cta></div>
               </div>
             )}
@@ -350,7 +350,8 @@ function DemoPage() {
                     <div className="glass rounded-2xl p-5">
                       <div className="t-label text-muted">Live feed</div>
                       <ul className="mt-4 space-y-1.5 font-mono text-xs text-ink-2">
-                        {run.log.slice(-12).map((e, i) => <li key={i} className="truncate"><span className="text-muted">{(e.elapsed_ms / 1000).toFixed(1)}s</span> {e.message}</li>)}
+                        {run.log.map(e => ({ e, line: plainStage(e.stage, e.status, e.message) })).filter(x => x.line).slice(-12)
+                          .map(({ e, line }, i) => <li key={i}><span className="text-muted">{(e.elapsed_ms / 1000).toFixed(1)}s</span> {line}</li>)}
                         <li className="caret text-muted" />
                       </ul>
                     </div>

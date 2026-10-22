@@ -715,6 +715,8 @@ class LeadRequest(BaseModel):
     message: Optional[str] = Field(None, max_length=4000)
     link: Optional[str] = Field(None, max_length=2048)
     consent: bool
+    # "Would you pay for a full check?": the first signal of who is a buyer, not just curious.
+    would_pay: Optional[Literal["yes", "maybe", "no"]] = None
     website: str = Field("", max_length=200)  # honeypot: hidden from people, filled by bots
     source: dict[str, str] = Field(default_factory=dict)  # utm_* tags, landing page, referrer
 

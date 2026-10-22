@@ -84,7 +84,7 @@ export function HowItWorks() {
                 <span key={c.text}>
                   <span className="claim relative bg-no-repeat pb-0.5 [background-image:linear-gradient(#38d6ff,#38d6ff)] [background-position:0_100%] [background-size:0%_2px]">
                     {c.text}
-                    <span className="tag t-label ml-2 inline-block overflow-hidden whitespace-nowrap rounded-full border border-cyan/40 bg-cyan/10 px-2 py-0.5 align-middle text-[0.6rem] text-ice">→ {c.engine}</span>
+                    <span className="tag t-label ml-2 inline-block overflow-hidden whitespace-nowrap rounded-full border border-cyan/40 bg-cyan/10 px-2 py-0.5 align-middle text-ice">→ {c.engine}</span>
                   </span>{' '}
                 </span>
               ))}

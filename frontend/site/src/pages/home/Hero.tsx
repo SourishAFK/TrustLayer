@@ -93,10 +93,10 @@ export function Hero() {
                 </span>
               </div>
               <p className="mt-2.5 text-[0.88rem] leading-snug text-ink">{c.text}</p>
-              <p className="proof mt-2.5 border-t border-line pt-2.5 font-mono text-[0.68rem] leading-relaxed text-ink-2">{c.proof}</p>
+              <p className="proof mt-2.5 border-t border-line pt-2.5 font-mono text-xs leading-relaxed text-ink-2">{c.proof}</p>
             </div>
           ))}
-          <p className="t-label absolute -bottom-8 left-0 text-muted/70">Illustrative examples</p>
+          <p className="t-label absolute -bottom-8 left-0 text-muted">Illustrative examples</p>
         </div>
       </div>
       <div className="no-print absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-muted md:flex" aria-hidden="true">

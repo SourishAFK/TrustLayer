@@ -1,9 +1,9 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import type { Look } from '../../components/FieldCanvas';
 import { mount, Shell } from '../../components/Shell';
-import { Aurora, Cta, Kicker, Meteors } from '../../fx/fx';
+import { Aurora, Cta, Kicker } from '../../fx/fx';
 import { Arrow, Check } from '../../fx/icons';
-import { audienceFrom, AUDIENCES, leadSource, sendLead, type Audience, type LeadForm } from '../../lib/api';
+import { audienceFrom, AUDIENCES, CONTACT_EMAIL, leadSource, leadSummary, sendLead, type Audience, type LeadForm } from '../../lib/api';
 import { gsap, reducedMotion, useGSAP } from '../../lib/motion';
 
 const LOOK: Look = {
@@ -48,7 +48,11 @@ const COPY: Record<Audience, { title: string; sub: string; gets: string[]; place
 
 const STEPS = ['You tell us what to check', 'We run the check, by hand where it matters', 'You get every finding, with its proof'];
 
-const EMPTY: Omit<LeadForm, 'audience'> = { name: '', email: '', company: '', role: '', message: '', link: '', consent: false, website: '' };
+const EMPTY: Omit<LeadForm, 'audience'> = { name: '', email: '', company: '', role: '', message: '', link: '', consent: false, website: '', would_pay: '' };
+
+const PAY: { value: LeadForm['would_pay']; label: string }[] = [
+  { value: 'yes', label: 'Yes' }, { value: 'maybe', label: 'Maybe' }, { value: 'no', label: 'No, just curious' },
+];
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
@@ -59,7 +63,7 @@ function Field({ label, children, hint }: { label: string; children: React.React
   );
 }
 
-const input = 'w-full rounded-xl border border-line-2 bg-black/30 px-4 py-3 text-ink placeholder:text-muted/70 outline-none transition-[border-color,box-shadow] focus:border-cyan/70 focus:shadow-[0_0_0_4px_rgb(56_214_255/0.12),0_0_30px_-6px_rgb(56_214_255/0.5)]';
+const input = 'w-full rounded-xl border border-line-2 bg-black/30 px-4 py-3 text-ink placeholder:text-muted outline-none transition-[border-color,box-shadow] focus:border-cyan/70 focus:shadow-[0_0_0_4px_rgb(56_214_255/0.12),0_0_30px_-6px_rgb(56_214_255/0.5)]';
 
 function Success({ name, email }: { name: string; email: string }) {
   const root = useRef<HTMLDivElement>(null);
@@ -93,6 +97,27 @@ function Success({ name, email }: { name: string; email: string }) {
         <Cta href="/demo/" size="sm">Try the live demo</Cta>
         <Cta href="/report/sample/" variant="ghost" size="sm">Read the sample report</Cta>
       </div>
+    </div>
+  );
+}
+
+/** The form could not be sent: never lose the lead. Offer a ready-made email and a copy button. */
+function SendFailed({ message, summary, subject }: { message: string; summary: string; subject: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try { await navigator.clipboard.writeText(summary); setCopied(true); } catch { setCopied(false); }
+  };
+  return (
+    <div role="alert" className="space-y-3 rounded-xl border border-bad/50 bg-bad/10 px-4 py-3 text-sm text-ink">
+      <p>{message}</p>
+      <p className="text-ink-2">
+        {CONTACT_EMAIL ? <>Or send it by email to{' '}
+          <a className="font-medium text-ink underline" href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary)}`}>{CONTACT_EMAIL}</a>
+          , with your details already filled in.</> : 'Your details are still in the form, so nothing is lost.'}
+      </p>
+      <button type="button" onClick={copy} className="rounded-full border border-line-2 px-3 py-1.5 text-xs text-ink hover:bg-white/5">
+        {copied ? 'Copied' : 'Copy my details'}
+      </button>
     </div>
   );
 }
@@ -133,7 +158,6 @@ function CheckPage() {
   return (
     <section className="relative overflow-hidden pb-24 pt-36">
       <Aurora blobs={[{ c: 'rgb(59 108 255 / 0.18)', x: '40%', y: '-20%' }, { c: 'rgb(139 92 255 / 0.12)', x: '-15%', y: '30%' }]} />
-      <Meteors count={10} />
       <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div role="tablist" aria-label="Who is this check for?" className="glass inline-flex max-w-full flex-wrap gap-1 rounded-full p-1">
@@ -184,6 +208,19 @@ function CheckPage() {
                   <Field label={`${copy.link} (optional)`}>
                     <input className={input} type="url" maxLength={2048} placeholder="https://" value={form.link} onChange={set('link')} />
                   </Field>
+                  <fieldset>
+                    <legend className="t-label text-muted">Would you pay for a full check? (optional)</legend>
+                    <p className="mt-2 text-sm text-ink-2">The full Bot Check-up: 100 questions, 20 pushback tests and a written report.</p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {PAY.map(p => (
+                        <label key={p.value} className={`rounded-full border px-4 py-2 text-sm transition-colors ${form.would_pay === p.value ? 'border-cyan bg-cyan/15 text-ink' : 'border-line-2 text-ink-2 hover:border-white/30'}`}>
+                          <input type="radio" name="would_pay" value={p.value} checked={form.would_pay === p.value}
+                            onChange={() => setForm(f => ({ ...f, would_pay: p.value }))} className="sr-only" />
+                          {p.label}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
                   <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
                     <label>Website<input tabIndex={-1} autoComplete="off" value={form.website} onChange={set('website')} /></label>
                   </div>
@@ -192,7 +229,7 @@ function CheckPage() {
                       className="mt-0.5 h-4 w-4 shrink-0 accent-cyan" />
                     <span>I agree that TrustLayer may keep these details and email me about this check. We also note which page or campaign link brought you here, and keep a one-way scrambled form of your IP address to stop spam.</span>
                   </label>
-                  {error && <p role="alert" className="rounded-xl border border-bad/50 bg-bad/10 px-4 py-3 text-sm text-ink">{error}</p>}
+                  {error && <SendFailed message={error} summary={leadSummary({ ...form, audience }, TABS[audience])} subject={`Free check: ${TABS[audience]}`} />}
                   <button type="submit" disabled={state === 'sending'} data-magnetic
                     className="btn btn-primary w-full justify-center disabled:cursor-wait disabled:opacity-70">
                     {state === 'sending'

@@ -31,8 +31,20 @@ export function leadSource(url: URL, referrer: string): Record<string, string> {
 
 export type LeadForm = {
   audience: Audience; name: string; email: string; company: string; role: string;
-  message: string; link: string; consent: boolean; website: string;
+  message: string; link: string; consent: boolean; website: string; would_pay: '' | 'yes' | 'maybe' | 'no';
 };
+
+/** Where to write when the sign-up form cannot reach us. Set VITE_CONTACT_EMAIL at build time. */
+export const CONTACT_EMAIL = String(import.meta.env.VITE_CONTACT_EMAIL ?? '').trim();
+
+/** The sign-up as plain text, for an email or the clipboard when the form cannot be sent. */
+export function leadSummary(form: LeadForm, audienceLabel: string) {
+  return [
+    `Name: ${form.name}`, `Email: ${form.email}`, `Company: ${form.company}`, `Role: ${form.role}`,
+    `Check for: ${audienceLabel}`, `Would pay for a full check: ${form.would_pay || 'not answered'}`,
+    `Link: ${form.link}`, '', 'What should we check?', form.message,
+  ].join('\n');
+}
 
 export type SendResult = { ok: true } | { ok: false; message: string };
 
@@ -40,7 +52,7 @@ export async function sendLead(form: LeadForm, source: Record<string, string>): 
   try {
     const response = await fetch(`${API_BASE}/v1/leads`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...form, source }),
+      body: JSON.stringify({ ...form, would_pay: form.would_pay || undefined, source }),
     });
     if (response.ok) return { ok: true };
     return { ok: false, message: leadError(response.status) };
@@ -76,15 +88,17 @@ export type DemoBody = {
   answer_key?: { name: string; text: string };
 };
 
-const DEMO_ERRORS: Record<number, string> = {
-  404: 'The live demo is switched off right now.',
-  422: 'The demo takes up to 3,000 characters of answer and 6,000 of policy text.',
-  429: 'The live demo has reached its limit for now.',
+// Phrases, not sentences: the demo page finishes them ("…, so here's a recorded run").
+const DEMO_PAUSED: Record<number, string> = {
+  404: 'Live checks are paused',
+  422: 'The demo takes up to 3,000 characters of answer and 6,000 of policy text',
+  429: "Live checks have reached today's limit",
 };
+export const UNREACHABLE = "We couldn't reach the live checker";
 
 export class DemoUnavailable extends Error {
   constructor(public status: number) {
-    super(DEMO_ERRORS[status] ?? 'The live demo could not start.');
+    super(DEMO_PAUSED[status] ?? UNREACHABLE);
   }
 }
 

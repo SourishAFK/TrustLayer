@@ -7,7 +7,7 @@ only through `POST /v1/leads` and `POST /v1/demo/verify/stream`.
 | Page | Path | What it does |
 | --- | --- | --- |
 | Home | `/` | Hero with the 3D Trust Clock, cited incidents, one section per audience, how a check works, the pushback test, the Trust Clock, benchmark proof, the vision |
-| Free check | `/check/?for=product-teams\|documents\|support-bots\|general` | Sign-up form. Saves the audience tag, the page and campaign the visitor arrived from, and nothing confidential |
+| Free check | `/check/?for=product-teams\|documents\|support-bots\|general` | Sign-up form. Saves the audience tag, the page and campaign the visitor arrived from, and whether they would pay for a full check; nothing confidential |
 | Live demo | `/demo/?preset=answer\|document\|support` | Streams a real Quick Check. When the demo is off or busy, replays a labelled recording of the same example |
 | Sample report | `/report/sample/` | A fictional lender's Bot Check-up, built from `src/pages/report/sample-report.json`; prints as a clean document |
 
@@ -37,7 +37,8 @@ service. Two build-time settings:
 | Setting | Example | Why |
 | --- | --- | --- |
 | `VITE_API_BASE` | `https://trustlayer-api.onrender.com` | Where the API lives. Leave empty when the site and API share a domain |
-| `SITE_URL` | `https://your-domain.example` | Makes the link-preview image absolute; LinkedIn, X and WhatsApp ignore relative ones |
+| `SITE_URL` | `https://your-domain.example` | Makes the link-preview image absolute; LinkedIn, X and WhatsApp ignore relative ones. The build warns when it is missing |
+| `VITE_CONTACT_EMAIL` | `hello@your-domain.example` | If a sign-up cannot be sent, the form offers this address with the visitor's details filled in, plus a copy button, so no lead is lost |
 
 On the API, allow the site's origin in `TRUSTLAYER_CORS_ORIGINS`, set `TRUSTLAYER_IP_SALT`,
 and turn on `TRUSTLAYER_PUBLIC_DEMO` only with a key that can take the traffic

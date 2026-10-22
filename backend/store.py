@@ -139,12 +139,14 @@ CREATE TABLE IF NOT EXISTS leads (
     message    TEXT,
     link       TEXT,
     source     JSONB NOT NULL DEFAULT '{}'::jsonb,
-    ip_hash    TEXT
+    ip_hash    TEXT,
+    would_pay  TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_leads_audience ON leads (audience);
 
 -- Migrations for already-created tables (idempotent).
 ALTER TABLE api_keys  ADD COLUMN IF NOT EXISTS log_inputs BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE leads     ADD COLUMN IF NOT EXISTS would_pay TEXT;
 ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS user_query TEXT;
 ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS ai_response TEXT;
 ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS context TEXT;
@@ -407,10 +409,11 @@ def save_lead(lead: dict, ip_hash: str) -> int:
     try:
         with _get_pool().connection() as conn:
             row = conn.execute(
-                "INSERT INTO leads (audience, name, email, company, role, message, link, source, ip_hash) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s) RETURNING id",
+                "INSERT INTO leads (audience, name, email, company, role, message, link, source, ip_hash, would_pay) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s) RETURNING id",
                 (lead["audience"], lead["name"], lead["email"], lead.get("company"), lead.get("role"),
-                 lead.get("message"), lead.get("link"), json.dumps(lead.get("source") or {}), ip_hash),
+                 lead.get("message"), lead.get("link"), json.dumps(lead.get("source") or {}), ip_hash,
+                 lead.get("would_pay")),
             ).fetchone()
         return row["id"]
     except Exception as exc:  # noqa: BLE001
@@ -418,12 +421,12 @@ def save_lead(lead: dict, ip_hash: str) -> int:
 
 
 def lead_counts() -> list[dict]:
-    """Sign-ups per audience lane, most first — which group wants this most."""
+    """Sign-ups per audience lane, most first, with how many would pay for a full check."""
     try:
         with _get_pool().connection() as conn:
             return conn.execute(
-                "SELECT audience, count(*) AS signups, max(created_at) AS latest "
-                "FROM leads GROUP BY audience ORDER BY signups DESC"
+                "SELECT audience, count(*) AS signups, count(*) FILTER (WHERE would_pay = 'yes') AS would_pay, "
+                "max(created_at) AS latest FROM leads GROUP BY audience ORDER BY signups DESC"
             ).fetchall()
     except Exception as exc:  # noqa: BLE001
         raise StoreError(f"Could not count leads: {type(exc).__name__}") from exc
@@ -433,7 +436,7 @@ def recent_leads(limit: int = 20) -> list[dict]:
     try:
         with _get_pool().connection() as conn:
             return conn.execute(
-                "SELECT id, created_at, audience, name, email, company, role, message, link, source "
+                "SELECT id, created_at, audience, name, email, company, role, message, link, source, would_pay "
                 "FROM leads ORDER BY created_at DESC LIMIT %s", (limit,)
             ).fetchall()
     except Exception as exc:  # noqa: BLE001

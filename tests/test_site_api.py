@@ -13,7 +13,7 @@ with patch("dotenv.load_dotenv", return_value=False):
     from backend.verification.contracts import Providers
 
 LEAD = {"audience": "documents", "name": "Asha Rao", "email": "asha@lawfirm.example", "company": "Rao & Co",
-        "message": "Our associates use AI for first drafts.", "consent": True,
+        "message": "Our associates use AI for first drafts.", "consent": True, "would_pay": "maybe",
         "source": {"utm_source": "linkedin", "page": "/check/?for=documents"}}
 
 
@@ -37,12 +37,14 @@ def test_a_lead_is_stored_with_its_audience_and_nothing_extra(client):
     assert response.status_code == 201 and response.json() == {"ok": True}
     saved, visitor = store.save_lead.call_args.args
     assert saved["audience"] == "documents" and saved["email"] == "asha@lawfirm.example"
+    assert saved["would_pay"] == "maybe"
     assert "consent" not in saved and "website" not in saved and len(visitor) == 16
 
 
 @pytest.mark.parametrize("change", [
     {"email": "not-an-email"}, {"email": "x@localhost"}, {"consent": False}, {"name": "   "},
     {"audience": "everyone"}, {"link": "javascript:alert(1)"}, {"source": {"cookie": "x"}}, {"extra": 1},
+    {"would_pay": "definitely"},
 ])
 def test_invalid_leads_are_rejected(client, change):
     assert client.post("/v1/leads", json={**LEAD, **change}).status_code == 422

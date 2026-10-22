@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { Aurora, Cta, Kicker, Meteors } from '../../fx/fx';
+import { Aurora, Cta, Kicker } from '../../fx/fx';
 import { Arrow } from '../../fx/icons';
 import { gsap, reducedMotion, useGSAP } from '../../lib/motion';
 import { PRESETS, type PresetId } from '../../lib/presets';
@@ -45,7 +45,7 @@ export function ReportTeaser() {
           {[0, 1, 2].map(i => (
             <div key={i} className="page absolute left-[6%] top-[10%] w-[78%] rounded-2xl bg-paper p-6 text-paper-ink shadow-[0_40px_120px_-30px_rgb(0_0_0/0.9),0_0_0_1px_rgb(255_255_255/0.1)] [transform-style:preserve-3d] sm:p-8"
               style={{ zIndex: 3 - i, transform: `rotateY(-12deg) rotateZ(${-2 + i * 2}deg) translate(${i * 22}px, ${i * -14}px)` }}>
-              <div className="flex items-center justify-between text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6b7080]">
+              <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-[#6b7080]">
                 <span>TrustLayer · Bot Check-up</span><span>Sample</span>
               </div>
               <div className="mt-6 font-serif text-3xl leading-tight">The bot got 82 of 100 questions right.</div>
@@ -57,7 +57,7 @@ export function ReportTeaser() {
               <div className="mt-6 space-y-3">
                 {['Prepayment charge stated as zero', 'Processing fee miscalculated', 'Lowest rate in India claim'].map(t => (
                   <div key={t} className="flex items-center justify-between rounded-lg border border-black/10 px-3 py-2 text-sm">
-                    <span>{t}</span><span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-bad">Wrong</span>
+                    <span>{t}</span><span className="text-xs font-semibold uppercase tracking-[0.12em] text-bad">Wrong</span>
                   </div>
                 ))}
               </div>
@@ -72,7 +72,6 @@ export function ReportTeaser() {
 export function DemoBand() {
   return (
     <section id="demo-band" className="relative overflow-hidden py-28">
-      <Meteors count={12} />
       <div className="relative z-10 mx-auto max-w-7xl px-6">
         <div data-reveal className="glass beam spotlight overflow-hidden rounded-[2rem] p-8 sm:p-12">
           <div className="grid items-center gap-10 lg:grid-cols-2">

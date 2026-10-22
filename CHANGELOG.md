@@ -36,6 +36,27 @@
 - Corrections drawn from the caller's documents read "(per your answer key)" instead of
   the internal "(per answer-key)".
 
+### After an outside review (Playwright, desktop and phone)
+
+- Fixed: the home page scrolled sideways by 144px on desktop, and on phones the overflow
+  widened the page so the menu button sat half off screen. The section glows bled 10%
+  past each side; they now bleed only above and below. Browser tests now check page and
+  nav width on every page at 390px (with phone emulation) and 1440px.
+- Praise with no yardstick ("the best analytics tool", "amazing", "the most beautiful")
+  is now NOT CHECKABLE instead of UNVERIFIED. Measurable superlatives ("best-selling",
+  "the fastest", "the lowest fees") stay checkable. Both benchmarks unchanged.
+- The demo's main example now shows a fact confirmed from Wikipedia, a math slip caught,
+  and an opinion marked not checkable. Its step list and claim labels use plain words
+  instead of engine messages, and the recorded-run banner says "Live checks are paused,
+  so here's a recorded run…" instead of sounding broken.
+- Sign-ups: a "Would you pay for a full check?" question (stored as `would_pay`, counted
+  by `admin leads`), and a fallback when sending fails: a pre-filled email to
+  `VITE_CONTACT_EMAIL` and a "Copy my details" button.
+- Readability: every visible text is at least 12px (now a browser test), muted labels are
+  lighter, the light streaks stay out of text and forms, and the custom cursor gives way
+  to the normal one over forms, buttons and messages. The build warns when `SITE_URL`
+  is missing, since link previews then have no image.
+
 ### Known gaps
 
 - "Revenue grew from $10M to $30M, a 2x increase" is not caught: extraction splits the

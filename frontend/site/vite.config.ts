@@ -10,6 +10,10 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), {
     // Social sites need an absolute image URL: build with SITE_URL=https://your-domain.
     name: 'absolute-og-image',
+    apply: 'build',
+    buildStart() {
+      if (!process.env.SITE_URL) this.warn('SITE_URL is not set: link previews (LinkedIn, X, WhatsApp) will have no image.');
+    },
     transformIndexHtml: html => html.replaceAll('content="/og.jpg"', `content="${(process.env.SITE_URL ?? '').replace(/\/+$/, '')}/og.jpg"`),
   }],
   build: {

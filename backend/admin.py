@@ -106,13 +106,13 @@ def cmd_leads(args: argparse.Namespace) -> None:
     if not counts:
         print("No sign-ups yet.")
         return
-    print(f"\n{'AUDIENCE':<16} {'SIGN-UPS':>8}  LATEST")
+    print(f"\n{'AUDIENCE':<16} {'SIGN-UPS':>8} {'WOULD PAY':>9}  LATEST")
     for r in counts:
-        print(f"{r['audience']:<16} {r['signups']:>8}  {r['latest']:%Y-%m-%d %H:%M}")
+        print(f"{r['audience']:<16} {r['signups']:>8} {r['would_pay']:>9}  {r['latest']:%Y-%m-%d %H:%M}")
     print(f"\nLatest {args.recent}:")
     for r in store.recent_leads(args.recent):
         print(f"  {r['created_at']:%Y-%m-%d %H:%M}  {r['audience']:<14} {r['name']} <{r['email']}>"
-              f"  {r['company'] or ''}")
+              f"  {r['company'] or ''}  would pay: {r['would_pay'] or '-'}")
     print()
 
 
