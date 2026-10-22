@@ -1,5 +1,48 @@
 # Changelog
 
+## 2026-10-18–22 — The website, answer-key checks, and two reliability fixes
+
+### Added
+
+- `frontend/site`: the public website (Vite, React 19, TypeScript, Tailwind 4, GSAP,
+  Lenis, three.js). A landing page with a 3D "Trust Clock", cited incidents, one section
+  and one sign-up link per audience, how a check works, the pushback test, the Trust
+  Clock (simulated data, labelled), the blind-benchmark results with their caveats, and
+  the "trust grade for every AI" vision. Also an audience-tagged sign-up page, a live
+  demo that streams a real Quick Check (with labelled, dated recordings when the demo is
+  off), and a printable sample Bot Check-up report for a fictional lender. Every number
+  links to its source. Unit tests (vitest) and browser tests (Playwright, API mocked).
+- `POST /v1/leads`: website sign-ups tagged with their audience, campaign and landing
+  page; consent required, honeypot, per-visitor and daily limits, salted IP hash.
+  `python -m backend.admin leads` counts sign-ups per audience.
+- `POST /v1/demo/verify/stream`: the website's live demo. Off unless
+  `TRUSTLAYER_PUBLIC_DEMO` is on; Quick Checks only; capped per visitor and per day;
+  never stored. With an answer key it checks a bot's answer only against that policy.
+- Answer-key mode (`documents_role: "answer_key"`): the caller's documents become the
+  ground truth for the check (authoritative, labelled as such in the report).
+- `frontend/site/record_demo.py` re-records the demo's fallback runs through the real
+  engine, and refuses to save a run whose AI calls failed.
+- `render.yaml` gains the `trustlayer-site` static service and the website settings.
+
+### Fixed
+
+- Gemini judge calls whose connection dropped before any reply (`RemoteProtocolError`)
+  failed the claim outright. They are now retried once; timeouts are still not retried.
+  The website's support-bot example went from 2 of 4 runs right to 4 of 4.
+- Passages were cut at abbreviations ("prime vs. | composite"), so the sentence holding
+  the evidence could be split and a real citation judged "does not support". A period
+  followed by a lowercase letter no longer ends a sentence. Offline benchmark unchanged
+  (dev 100% / 0 false approvals with the ideal reader; held-out post-hoc 77.7% / 0).
+- Corrections drawn from the caller's documents read "(per your answer key)" instead of
+  the internal "(per answer-key)".
+
+### Known gaps
+
+- "Revenue grew from $10M to $30M, a 2x increase" is not caught: extraction splits the
+  appositive "a 2x increase" into its own claim, so the multiple has nothing to compare.
+  "Revenue grew 50% from $10M to $30M" is caught. Arithmetic written with currency
+  symbols ("12 × $20 = $260") is not checked; plain numbers are.
+
 ## 2026-10-12–17 — TrustLayer 2.0, Levels 2–5 (backend)
 
 ### Added

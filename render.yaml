@@ -31,6 +31,14 @@ services:
         value: "4"
       - key: TRUSTLAYER_REPORT_RETENTION_HOURS
         value: "0"
+      # --- website: sign-ups and the live demo (see .env.example) ---
+      # Turn the demo on once a paid model key is set; free-tier keys run out within a day.
+      - key: TRUSTLAYER_PUBLIC_DEMO
+        value: "false"
+      - key: TRUSTLAYER_DEMO_DAILY_LIMIT
+        value: "50"
+      - key: TRUSTLAYER_IP_SALT
+        generateValue: true
       # --- secrets: set these in the Render dashboard (sync:false) ---
       - key: BRAVE_SEARCH_API_KEY
         sync: false
@@ -45,4 +53,18 @@ services:
       - key: GEMINI_API_KEY_4
         sync: false
       - key: DATABASE_URL
+        sync: false
+
+  # The website (frontend/site): static pages that call the API above.
+  - type: web
+    name: trustlayer-site
+    runtime: static
+    buildCommand: cd frontend/site && npm ci && npm run build
+    staticPublishPath: frontend/site/dist
+    envVars:
+      # The API's public URL, e.g. https://trustlayer-api.onrender.com (read at build time).
+      - key: VITE_API_BASE
+        sync: false
+      # The site's own public URL, for link previews on LinkedIn, X and WhatsApp.
+      - key: SITE_URL
         sync: false

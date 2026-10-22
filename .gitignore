@@ -6,6 +6,7 @@ venv/
 .streamlit/secrets.toml
 node_modules/
 frontend/web/dist/
+frontend/site/dist/
 .pytest_cache/
 .ruff_cache/
 playwright-report/

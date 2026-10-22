@@ -61,6 +61,15 @@ def test_passages_are_exact_slices_even_when_hard_split():
     assert passages[0] == "Acme was founded in 2015.  It sells robots!"
 
 
+def test_abbreviations_do_not_end_a_sentence():
+    text = ("We find that behavior can vary greatly over time. For example, GPT-4 (March 2023) was reasonable at "
+            "identifying prime vs. composite numbers (84% accuracy) but GPT-4 (June 2023) was poor on these same "
+            "questions (51% accuracy). This is partly explained by a drop in chain-of-thought.")
+    passages = split_passages(text, max_chars=230)
+    assert any("March 2023" in p and "prime vs. composite" in p and "84%" in p for p in passages)
+    assert split_passages("One.  Two.", max_chars=4) == ["One.", "Two."]  # extra spaces never hide a real break
+
+
 def test_ranking_prefers_numbers_and_excludes_unrelated():
     passages = ["Acme sells robots.", "Acme revenue was $50 billion.", "Weather is nice."]
     assert rank_passages(passages, "Acme revenue $50 billion", top_k=3) == passages[1::-1]

@@ -152,7 +152,8 @@ They are planning estimates, not delivery promises.
 - [ ] Meet the Level 1 reliability gate; the current rule baseline has weak category accuracy.
 - [x] Implement Level 2 independent evidence and citation verification (`/v1/verify`, see ARCHITECTURE.md).
 - [x] Implement Level 3 specialist engines and separate sycophancy result in the new report.
-- [ ] Build the Level 4 verification UI and run its usability study (not built in this pass).
+- [x] Build the Level 4 verification UI: the website's live demo (verdict-colored claims, evidence, progress) and the sample report (`frontend/site`, October 2026).
+- [ ] Run a usability study of the demo and report with real visitors.
 - [x] Resolve most legacy privacy/ownership/fail-open debt (see the status table above).
 - [x] Level 5 controls: consent switches, budgets, deadlines, concurrency cap, audit log, opt-in retention and deletion, runbook (DEPLOYMENT.md).
 - [ ] Level 5 exit gate: production deployment and three external pilot users (requires real people).

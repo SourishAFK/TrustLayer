@@ -146,6 +146,8 @@ def build_stance_prompt(claim: Claim, candidates: list[Candidate]) -> str:
     return "\n".join(lines)
 
 
+# How corrections name the caller's own documents (their pseudo-domains are not readable).
+DOCUMENT_SOURCES = {"answer-key": "your answer key", "user-documents": "your documents"}
 NEGATION = re.compile(r"\b(?:not|no|never|none|neither|nor|without|cannot)\b|n['’]t\b", re.I)
 
 
@@ -361,10 +363,11 @@ class EvidenceEngine:
                                       domain=registrable_domain(page.final_url) or "unknown",
                                       source_type="user_provided", retrieval="user_url", provider="user",
                                       published_at=page.published_at, accessed_at=page.fetched_at)
+        answer_key = ctx.request.documents_role == "answer_key"
         for index, document in enumerate(ctx.request.documents, start=1):
             # All of the user's documents share one independence key: two copies of one
             # file (or two files from the same person) are not two independent sources.
-            url, domain = f"document://{index}", "user-documents"
+            url, domain = f"document://{index}", "answer-key" if answer_key else "user-documents"
             if not ctx.request.share_documents_with_ai:
                 findings.note(claim.claim_id, related=SourceRef(
                     url=url, title=_clip(document.name, 300), domain=domain,
@@ -373,7 +376,8 @@ class EvidenceEngine:
                                           "with AI providers is turned off.")
                 continue
             candidates += _candidates(document.text, query, ids, url=url, title=document.name,
-                                      publisher=None, domain=domain, source_type="user_provided",
+                                      publisher=None, domain=domain,
+                                      source_type="answer_key" if answer_key else "user_provided",
                                       retrieval="user_document", provider="user", published_at=None,
                                       accessed_at=ctx.now)
         return candidates
@@ -459,7 +463,8 @@ class EvidenceEngine:
                 method=f"llm_stance:{ctx.llm.model}", rationale=j.rationale or None)
             if j.stance == "contradicts" and j.correction and len(j.correction) <= 300:
                 # Tagged with its source, so a verdict only shows corrections from evidence it counted.
-                findings.note(claim.claim_id, correction=(f"{j.correction} (per {c.domain})", c.domain))
+                source = DOCUMENT_SOURCES.get(c.domain, c.domain)
+                findings.note(claim.claim_id, correction=(f"{j.correction} (per {source})", c.domain))
             return
         note = ("Judged irrelevant to this claim." if j.stance == "irrelevant"
                 else "Related, but not specific enough to support or contradict it.")

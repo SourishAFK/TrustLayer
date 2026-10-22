@@ -126,6 +126,23 @@ CREATE TABLE IF NOT EXISTS verification_reports (
 );
 CREATE INDEX IF NOT EXISTS idx_verification_reports_expires ON verification_reports (expires_at);
 
+-- Website sign-ups ("Get a free check"), tagged by the audience lane they came from.
+-- ip_hash is a salted hash used only for abuse limits; raw IPs are never stored.
+CREATE TABLE IF NOT EXISTS leads (
+    id         BIGSERIAL PRIMARY KEY,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    audience   TEXT NOT NULL,
+    name       TEXT NOT NULL,
+    email      TEXT NOT NULL,
+    company    TEXT,
+    role       TEXT,
+    message    TEXT,
+    link       TEXT,
+    source     JSONB NOT NULL DEFAULT '{}'::jsonb,
+    ip_hash    TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_leads_audience ON leads (audience);
+
 -- Migrations for already-created tables (idempotent).
 ALTER TABLE api_keys  ADD COLUMN IF NOT EXISTS log_inputs BOOLEAN NOT NULL DEFAULT FALSE;
 ALTER TABLE usage_log ADD COLUMN IF NOT EXISTS user_query TEXT;
@@ -379,3 +396,45 @@ def delete_report(report_id: str, api_key: str) -> bool:
         return bool(res.rowcount)
     except Exception as exc:  # noqa: BLE001
         raise StoreError(f"Could not delete report: {type(exc).__name__}") from exc
+
+
+# --------------------------------------------------------------------------- #
+# Website sign-ups
+# --------------------------------------------------------------------------- #
+
+def save_lead(lead: dict, ip_hash: str) -> int:
+    """Store one "Get a free check" sign-up; returns its id."""
+    try:
+        with _get_pool().connection() as conn:
+            row = conn.execute(
+                "INSERT INTO leads (audience, name, email, company, role, message, link, source, ip_hash) "
+                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s::jsonb, %s) RETURNING id",
+                (lead["audience"], lead["name"], lead["email"], lead.get("company"), lead.get("role"),
+                 lead.get("message"), lead.get("link"), json.dumps(lead.get("source") or {}), ip_hash),
+            ).fetchone()
+        return row["id"]
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not save lead: {type(exc).__name__}") from exc
+
+
+def lead_counts() -> list[dict]:
+    """Sign-ups per audience lane, most first — which group wants this most."""
+    try:
+        with _get_pool().connection() as conn:
+            return conn.execute(
+                "SELECT audience, count(*) AS signups, max(created_at) AS latest "
+                "FROM leads GROUP BY audience ORDER BY signups DESC"
+            ).fetchall()
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not count leads: {type(exc).__name__}") from exc
+
+
+def recent_leads(limit: int = 20) -> list[dict]:
+    try:
+        with _get_pool().connection() as conn:
+            return conn.execute(
+                "SELECT id, created_at, audience, name, email, company, role, message, link, source "
+                "FROM leads ORDER BY created_at DESC LIMIT %s", (limit,)
+            ).fetchall()
+    except Exception as exc:  # noqa: BLE001
+        raise StoreError(f"Could not read leads: {type(exc).__name__}") from exc

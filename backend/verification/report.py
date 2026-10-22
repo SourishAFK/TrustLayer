@@ -28,7 +28,9 @@ from backend.verification.schemas import (
 
 Mode = Literal["quick", "deep"]
 RunStatus = Literal["completed", "partial", "skipped", "failed", "not_applicable"]
-SourceType = Literal["primary", "official", "academic", "reference", "news", "user_provided", "other"]
+# "answer_key": a document the caller designates as the ground truth for this check (a company's
+# own rate sheet or policy when checking its bot). Authoritative, and labeled as such in the report.
+SourceType = Literal["primary", "official", "academic", "reference", "news", "user_provided", "answer_key", "other"]
 Retrieval = Literal["search", "citation", "user_url", "user_document"]
 Severity = Literal["info", "warning", "critical"]
 Url = Annotated[str, Field(min_length=8, max_length=2048)]
@@ -60,11 +62,16 @@ class VerificationRequest(StrictModel):
     allow_web_search: bool = True
     allow_ai_processing: bool = True
     share_documents_with_ai: bool = False
+    # "context": documents are ordinary sources (never authoritative). "answer_key": they are the
+    # ground truth this answer must match — e.g. checking a company's bot against its own policy.
+    documents_role: Literal["context", "answer_key"] = "context"
 
     @model_validator(mode="after")
     def bounded_and_nonblank(self):
         if not self.response_text.strip():
             raise ValueError("response_text must contain non-whitespace text.")
+        if self.documents_role == "answer_key" and not self.documents:
+            raise ValueError("documents_role 'answer_key' needs at least one document.")
         if any(not u.lower().startswith(("http://", "https://")) for u in self.source_urls):
             raise ValueError("source_urls must be http(s) URLs.")
         if sum(len(d.text) for d in self.documents) > 100_000:

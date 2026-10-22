@@ -330,3 +330,27 @@ def test_a_negated_quote_never_supports_the_plain_claim():
                      "Colloidal silver isn't safe or effective for treating sinus infections.",
                      "Colloidal silver isn't safe or effective for treating sinus infections")
     assert guard("Acme has no debt.", "Acme has no debt, its filings show.", "Acme has no debt")
+
+
+POLICY = {"name": "Refund policy", "text": "Refunds must be requested within 30 days of booking. "
+                                           "Refunds are paid to the original card."}
+
+
+def test_an_answer_key_document_decides_alone_and_says_so():
+    def judge(text):
+        return "contradicts", "Refunds must be requested within 30 days of booking", "Refunds: within 30 days."
+
+    kw = dict(results=[], documents=[POLICY], share_documents_with_ai=True, allow_web_search=False)
+    _, _, verdicts, _ = run("You can get a refund within 60 days of booking.", judge=judge,
+                            documents_role="answer_key", **kw)
+    v = verdicts[0]
+    assert v.verification_status == "CONTRADICTED" and v.contradictions[0].source_type == "answer_key"
+    assert "your answer-key documents" in v.explanation
+    assert v.suggested_correction == "Refunds: within 30 days. (per your answer key)"
+    _, _, verdicts, _ = run("You can get a refund within 60 days of booking.", judge=judge, **kw)
+    assert verdicts[0].verification_status == "UNVERIFIED"  # the same text as ordinary context cannot decide
+
+    _, _, verdicts, _ = run("Refunds must be requested within 30 days of booking.",
+                            judge=supports("Refunds must be requested within 30 days of booking"),
+                            documents_role="answer_key", **kw)
+    assert verdicts[0].verification_status == "SUPPORTED" and "answer key" in verdicts[0].explanation

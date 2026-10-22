@@ -140,7 +140,10 @@ def _domain_forms(name: str) -> set[str]:
 # Passages
 # --------------------------------------------------------------------------- #
 
-_BREAK = re.compile(r"(?<=[.!?])\s+|\n+")
+# A sentence ends at . ! or ? plus whitespace, unless a lowercase letter follows ("prime vs.
+# composite", "e.g. the"). The lookahead also refuses whitespace, so the space run cannot
+# backtrack around it.
+_BREAK = re.compile(r"(?<=[.!?])\s+(?![\sa-z])|\n+")
 
 
 def split_passages(text: str, *, max_chars: int = 700) -> list[str]:
@@ -363,7 +366,7 @@ today currently recently historically overall however also additionally furtherm
 notably importantly generally typically usually studies study research researchers experts scientists
 doctors analysts reports data according based despite although while since after before during yes no
 here there now then so thus therefore later earlier first second third finally next most many some
-several all every each both these those such other another his her their its our your my
+several all every each both these those such other another his her their its our your my you
 between during among across against around through throughout within without under over above below
 beyond toward towards upon via per unlike like besides because when where why how what which who whose
 whether if unless until once though even only just still yet instead tomorrow yesterday from with into

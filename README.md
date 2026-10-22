@@ -29,7 +29,7 @@ separate section.
 | 1 | Claim extraction with exact spans (`/v1/claims/extract`), React workbench | Done; extraction categories are weak |
 | 2 | Evidence research, SSRF-safe fetching, citation checks, verdict policy (`/v1/verify`) | Done |
 | 3 | Math, consistency, market/competitor, sycophancy, completeness, freshness engines | Done |
-| 4 | Verification web UI | **Not built** (out of scope for this pass) |
+| 4 | Website ([frontend/site](frontend/site/README.md)): landing page, audience-tagged sign-ups, live demo with claims colored by verdict and their evidence, printable sample Bot Check-up report | Built and tested; the live demo stays off until a paid model key is set (labelled recordings play meanwhile) |
 | 5 | Consent, budgets, deadlines, concurrency cap, audit log, retention, runbook | Done; **not deployed, no external pilots yet** |
 
 Read: [architecture](docs/ARCHITECTURE.md) · [security model](docs/SECURITY.md) ·
@@ -79,6 +79,7 @@ curl -X POST http://127.0.0.1:8000/v1/verify \
 | `source_urls`, `documents` | Optional sources of your own (≤5 URLs, ≤3 documents) |
 | `source_model` | Who wrote the answer, e.g. `gpt-4o`, so a different family judges it |
 | `allow_web_search`, `allow_ai_processing`, `share_documents_with_ai` | Consent switches (documents are never sent to an AI provider unless the last one is `true`) |
+| `documents_role` | `context` (default) or `answer_key`: your documents become the ground truth, e.g. checking a support bot against your own policy |
 
 The report (schema 2.0) contains every claim with its exact span, verdict,
 evidence (URL, domain, source type, dates, passage and exact quote),
@@ -90,6 +91,15 @@ received text) and `incomplete_checks`.
 - `POST /v1/verify/stream` — the same, as NDJSON progress lines ending with the report.
 - `GET /v1/status` — limits per mode and configured provider names (never keys).
 - `GET`/`DELETE /v1/reports/{id}` — only when `TRUSTLAYER_REPORT_RETENTION_HOURS` > 0; owner-only.
+
+## Website
+
+`frontend/site` is the public site: a landing page with a 3D "Trust Clock", one section
+and one sign-up link per audience (AI product teams, AI-written documents, support
+bots), a live demo that streams a real Quick Check, and a printable sample report.
+Sign-ups land in the `leads` table tagged with their audience; count them with
+`python -m backend.admin leads`. See [its README](frontend/site/README.md) to run,
+test and deploy it.
 
 ## Independent research collection
 
@@ -109,7 +119,8 @@ cd frontend/web; npm ci; npm run dev     # open the Vite URL at /workbench/
 ```
 
 Or `npm run build` and visit `http://127.0.0.1:8000/workbench/`. The workbench
-does not call `/v1/verify` yet (Level 4).
+shows extraction only; the full verification view is the website's live demo
+(`frontend/site`).
 
 ## Original detector and SDK
 

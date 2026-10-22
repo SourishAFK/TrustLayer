@@ -1,0 +1,29 @@
+{
+  "answer": {
+    "name": "An AI answer",
+    "blurb": "A confident answer with two math slips and one boast.",
+    "body": {
+      "original_question": "Tell me about Acme Analytics.",
+      "response_text": "Acme Analytics was founded in 2012 and serves over 4,000 companies. Revenue grew 50% from $10M to $30M last year. The Pro plan is $20 a month, so a year costs 12 × 20 = 260 dollars. Acme is definitely the best analytics tool on the market."
+    }
+  },
+  "document": {
+    "name": "An AI-written document",
+    "blurb": "A paragraph citing one real paper, an unregistered DOI and a placeholder site.",
+    "body": {
+      "response_text": "GPT-4's accuracy on prime-number questions fell from 84% in March 2023 to 51% in June 2023 (https://arxiv.org/abs/2307.09009). A 2024 meta-analysis found that users catch 92% of chatbot errors (https://doi.org/10.5555/chatbot.2024.0192). The full survey data is available at https://example.com/survey-2024."
+    }
+  },
+  "support": {
+    "name": "A support bot + your policy",
+    "blurb": "A bot answer checked only against the company’s own refund policy.",
+    "body": {
+      "original_question": "I bought the annual plan 45 days ago. Can I still get a refund?",
+      "response_text": "Yes! Refunds are available within 60 days of purchase, so you're covered. Approved refunds go back to your original payment method within 5 business days.",
+      "answer_key": {
+        "name": "Refund policy",
+        "text": "4.2 Refunds must be requested within 30 days of purchase. After 30 days, plans can be cancelled but not refunded.\n4.3 Approved refunds are paid to the original payment method within 5 business days."
+      }
+    }
+  }
+}

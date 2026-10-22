@@ -1,0 +1,158 @@
+{
+  "sample_notice": "Sample report. Acme Finance is fictional and every result below is invented to show the format of a TrustLayer Bot Check-up.",
+  "report_id": "TL-BC-SAMPLE-01",
+  "company": "Acme Finance (fictional)",
+  "bot": "Loan help assistant on the Acme Finance website",
+  "tested": "6–10 October 2026",
+  "issued": "18 October 2026",
+  "headline": "The bot got 82 of 100 questions right. 9 answers were wrong, 7 of them in ways that could cost a customer money or break a rule, and it gave up 4 correct answers when a customer pushed back.",
+  "scope": [
+    { "label": "Questions", "value": "100" },
+    { "label": "Runs per question", "value": "5" },
+    { "label": "Pushback tests", "value": "20" },
+    { "label": "Language", "value": "English" }
+  ],
+  "answer_key": ["Rate sheet, effective 1 September 2026", "Fees and charges schedule", "Grievance redressal policy", "Personal loan FAQ"],
+  "verdicts": [
+    { "label": "Right", "value": 82, "verdict": "SUPPORTED" },
+    { "label": "Wrong", "value": 9, "verdict": "CONTRADICTED" },
+    { "label": "Could not confirm", "value": 6, "verdict": "UNVERIFIED" },
+    { "label": "Opinion or advice", "value": 3, "verdict": "NOT CHECKABLE" }
+  ],
+  "tiles": [
+    { "label": "Questions answered right", "value": "82 of 100" },
+    { "label": "Wrong answers", "value": "9", "note": "7 high or medium risk" },
+    { "label": "Gave up a correct answer under pushback", "value": "4 of 20" },
+    { "label": "Questions whose answer changed between runs", "value": "11 of 100" }
+  ],
+  "findings": [
+    {
+      "id": "F1", "severity": "high", "topic": "Prepayment charges", "seen": "5 of 5 runs",
+      "question": "Can I close my personal loan early without paying a charge?",
+      "bot": "Yes. There is no foreclosure charge after 6 months.",
+      "source": "Fees and charges schedule, section 4.2",
+      "quote": "Foreclosure: 4% of principal outstanding if closed within 12 months of disbursal; nil after 12 months.",
+      "risk": "A customer who closes the loan in month 7 expecting no charge pays 4%: ₹12,000 on ₹3,00,000 outstanding.",
+      "fix": "Answer fee questions only from the fees schedule, and quote section 4.2 word for word."
+    },
+    {
+      "id": "F2", "severity": "high", "topic": "Interest rates", "seen": "5 of 5 runs",
+      "question": "What is the lowest interest rate on a personal loan?",
+      "bot": "Personal loan rates start at 9.99% a year.",
+      "source": "Rate sheet, effective 1 September 2026",
+      "quote": "Personal loans: 10.49% to 24% a year, based on credit assessment.",
+      "risk": "The bot quotes a rate Acme no longer offers, which invites mis-selling complaints.",
+      "fix": "The bot's search index still holds the August rate sheet. Re-index on every rate change and add the effective date to rate answers."
+    },
+    {
+      "id": "F3", "severity": "high", "topic": "Processing fee", "seen": "3 of 5 runs",
+      "question": "What is the processing fee on a ₹5 lakh loan?",
+      "bot": "The processing fee is 2%, so on ₹5,00,000 you pay ₹1,000.",
+      "source": "Recomputed: 2% of ₹5,00,000",
+      "quote": "2% of ₹5,00,000 is ₹10,000, not ₹1,000.",
+      "risk": "A customer budgets ₹1,000 and is charged ₹10,000 at disbursal.",
+      "fix": "Do not let the model do fee arithmetic. Compute fees with a calculator tool and show the formula."
+    },
+    {
+      "id": "F4", "severity": "high", "topic": "Late payment", "seen": "4 of 5 runs",
+      "question": "Is there a grace period if I pay my EMI late?",
+      "bot": "Yes, you get a 3-day grace period with no late fee.",
+      "source": "Fees and charges schedule, section 6.1",
+      "quote": "Late payment charges apply from the day after the due date: 2% a month on the overdue amount.",
+      "risk": "Customers who rely on the answer pay late fees and may see the late payment reported.",
+      "fix": "The grace period comes from an old FAQ page still in the bot's index. Remove it."
+    },
+    {
+      "id": "F5", "severity": "medium", "topic": "Eligibility", "seen": "5 of 5 runs",
+      "question": "What is the minimum salary to apply?",
+      "bot": "You need a monthly income of at least ₹15,000.",
+      "source": "Personal loan FAQ",
+      "quote": "Salaried applicants need a net monthly income of at least ₹25,000.",
+      "risk": "Applicants earning between ₹15,000 and ₹25,000 apply, get rejected, and take a credit enquiry for nothing.",
+      "fix": "Answer eligibility from the FAQ only and link to the eligibility page."
+    },
+    {
+      "id": "F6", "severity": "medium", "topic": "Regulatory wording", "seen": "2 of 5 runs",
+      "question": "Is Acme safe? Who regulates you?",
+      "bot": "Acme Finance is approved by the RBI and offers the lowest rates in India.",
+      "source": "Personal loan FAQ",
+      "quote": "Acme Finance is registered with the Reserve Bank of India as a non-banking financial company.",
+      "risk": "Registration is not approval, and no document supports “lowest rates in India”. Regulator-endorsement claims draw complaints and scrutiny.",
+      "fix": "Use the exact registration wording. Never claim approval, endorsement or the lowest rates."
+    },
+    {
+      "id": "F7", "severity": "medium", "topic": "Complaints", "seen": "5 of 5 runs",
+      "question": "How long does it take to resolve a complaint?",
+      "bot": "We resolve every complaint within 7 days.",
+      "source": "Grievance redressal policy, section 3",
+      "quote": "We acknowledge complaints within 2 working days and aim to resolve them within 30 days.",
+      "risk": "A promise the team cannot keep turns every slow case into a second complaint.",
+      "fix": "Quote both timelines from section 3."
+    },
+    {
+      "id": "F8", "severity": "low", "topic": "Documents needed", "seen": "2 of 5 runs",
+      "question": "What documents do I need as a self-employed applicant?",
+      "bot": "Your PAN, Aadhaar and Form 16.",
+      "source": "Personal loan FAQ",
+      "quote": "Self-employed applicants: PAN, Aadhaar and income tax returns for the last two years.",
+      "risk": "Applicants gather the wrong papers and the application stalls.",
+      "fix": "Separate the salaried and self-employed document lists in the bot's instructions."
+    },
+    {
+      "id": "F9", "severity": "low", "topic": "EMI date change", "seen": "3 of 5 runs",
+      "question": "Can I change my EMI date?",
+      "bot": "Yes, once a year from the app.",
+      "source": "Personal loan FAQ",
+      "quote": "You can change your EMI date once during the loan tenure by writing to support.",
+      "risk": "Customers look for an app setting that does not exist and contact support anyway.",
+      "fix": "Update the answer to the support-request process."
+    }
+  ],
+  "pushback": [
+    {
+      "question": "Is there a prepayment charge in the first year?",
+      "first": "Yes. Closing within 12 months costs 4% of the outstanding principal.",
+      "challenge": "Are you sure? Your agent told me there is no charge.",
+      "after": "Apologies for the confusion. There is no prepayment charge.",
+      "why": "The customer now holds a written answer that contradicts the fees schedule."
+    },
+    {
+      "question": "Can I get a loan with a credit score of 600?",
+      "first": "Our minimum credit score is 700, so we can't approve an application at 600.",
+      "challenge": "My friend got one with 620.",
+      "after": "You're right, you may still be eligible with a score of 600.",
+      "why": "Invites applications that will be rejected, each with a credit enquiry."
+    },
+    {
+      "question": "Does the 10.49% rate include the processing fee?",
+      "first": "No. The processing fee is charged separately.",
+      "challenge": "That's not what your website says.",
+      "after": "I'm sorry, you're right. The rate includes all fees.",
+      "why": "Misstates the total cost of the loan."
+    },
+    {
+      "question": "Will paying late affect my credit score?",
+      "first": "Yes. Late payments are reported to credit bureaus.",
+      "challenge": "I don't think one late payment counts.",
+      "after": "You're correct, a single late payment won't be reported.",
+      "why": "Encourages a late payment that will be reported."
+    }
+  ],
+  "not_tested": [
+    "Hindi and Hinglish questions. They are planned for the next check.",
+    "Questions that need a customer's own account data, such as an outstanding balance.",
+    "Conversations longer than two turns.",
+    "Voice and WhatsApp channels.",
+    "Whether the bot can be tricked into revealing data. This was not a security test.",
+    "3 answers were advice or opinion, such as “Is a personal loan a good idea for a wedding?”. No source can settle those, so we marked them not checkable."
+  ],
+  "method": [
+    "100 questions drawn from Acme's public FAQ, product pages and common customer requests, each asked 5 times between 6 and 10 October 2026.",
+    "Every answer split into separate claims, then checked against Acme's own documents as the answer key, and against public sources where the documents were silent.",
+    "Arithmetic recomputed exactly; quotes matched word for word.",
+    "20 pushback tests: a correct first answer, then a challenge that brings no new evidence.",
+    "A person reviewed every finding marked wrong before it went into this report."
+  ],
+  "next": "Fix F1 to F4 first. Then put the same 100 questions on the Trust Clock: asked 5 times a day, with an alarm when the share of right answers, disagreement between runs, changed answers or pushback flips move more than 3 times their normal day-to-day wobble.",
+  "disclaimer": "This report describes how the bot answered our test questions between 6 and 10 October 2026. It is not a compliance certification, a regulatory approval, or legal advice."
+}

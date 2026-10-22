@@ -136,6 +136,18 @@ must be about one of the claim's subjects. Superiority claims ("the largest",
 | A pure-math claim whose calculation passes | SUPPORTED (method `deterministic_calculation`) |
 | Anything else | UNVERIFIED, with `missing_evidence` explaining what is needed |
 
+**Answer-key mode.** When a request sets `documents_role: "answer_key"`, its documents
+are the ground truth for this check (a company's own rate sheet or policy when checking
+its bot). They get source type `answer_key`, which is authoritative, so one passage can
+decide a verdict alone, and the report says the decision came from "your answer-key
+documents", not the web. With the default `"context"` role the same documents are
+ordinary user sources and can never decide alone. Answer keys still need
+`share_documents_with_ai` before an AI judge may read them.
+
+Passages are cut at sentence ends, and a period followed by a lowercase letter is not a
+sentence end ("prime vs. composite"), so an abbreviation never splits the sentence that
+holds the evidence.
+
 `report.py` re-checks the invariants (SUPPORTED needs quoted evidence or a
 passing pure calculation; quotes are exact slices; summary counts match). If a
 bug produces an inconsistent report, `pipeline.py` withholds all verdicts.
@@ -179,6 +191,17 @@ itself". If only a same-family judge exists, the report says so.
   overlapping quantifiers), and HTML passes a linear pre-pass before `html.parser`
   (which is quadratic on malformed markup); each has a timing regression test.
 - **Secrets** stay server-side; the workbench only ever holds the caller's own `tl_` key.
+- **Website endpoints** (no API key): `POST /v1/leads` validates every field, rejects
+  unknown fields and non-http(s) links, needs explicit consent, and drops honeypot
+  submissions silently. It is rate-limited per visitor (5 an hour) and overall (500 a
+  day), and it stores only a salted 16-character hash of the visitor's IP.
+  `POST /v1/demo/verify/stream` is off unless `TRUSTLAYER_PUBLIC_DEMO` is on. It is
+  capped per visitor (5 a day) and per day (`TRUSTLAYER_DEMO_DAILY_LIMIT`), runs Quick
+  Checks only, takes at most 3,000 characters of answer and 6,000 of answer-key text,
+  shares the API's concurrency slots, and never stores a report. Both limits are
+  in-process memory: with several instances, each enforces its own share.
+- **Transient provider failures**: a Gemini call whose connection drops before any
+  reply is retried once; timeouts are not retried, because the budget is already spent.
 
 ## Budgets and cost
 

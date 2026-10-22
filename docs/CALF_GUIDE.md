@@ -21,7 +21,7 @@ one, so read in order the first time:
 | [5. Level 1 — pulling the bale apart](#5-level-1--pulling-the-bale-apart-claim-extraction) | Splitting an AI answer into claims |
 | [6. Level 2 — taking stalks to the lab](#6-level-2--taking-stalks-to-the-lab-the-evidence-investigator) | Searching, reading sources, judging evidence safely |
 | [7. Level 3 — the specialist vets](#7-level-3--the-specialist-vets) | Math, logic, market, sycophancy, completeness, freshness |
-| [8. Level 4 — the report card](#8-level-4--the-report-card-the-web-app) | What exists today, and what the web app will add (not built yet) |
+| [8. Level 4 — the website](#8-level-4--the-website-the-live-demo-and-the-report) | The sales site, tagged sign-ups, the live demo, the sample report, and two engine bugs the demo exposed |
 | [9. Level 5 — opening the farm to visitors](#9-level-5--opening-the-farm-to-visitors) | Security, privacy, costs, deployment |
 | [10. The file atlas](#10-the-file-atlas) | Every file in one table |
 | [11. Interview practice](#11-interview-practice) | Questions you will be asked, and strong answers |
@@ -113,7 +113,7 @@ zooms in.
   7. REPORT     a self-checking report: claims, evidence, quotes, links,
                 what could not be checked, costs, privacy
                                   │
-        a web app will highlight every claim and show its evidence (Level 4, not built yet)
+        the website's demo highlights every claim and shows its evidence (Level 4)
 ```
 
 Every claim ends with exactly one of five labels, like tags tied to each stalk:
@@ -1210,27 +1210,178 @@ change.
 
 ---
 
-## 8. Level 4 — the report card (the web app)
+## 8. Level 4 — the website, the live demo and the report
 
-**Status: not built in this pass.** The founder scoped this round to
-"everything except the frontend", so be precise about what exists:
+**Status: built and tested** ([frontend/site](../frontend/site/README.md)). The live demo
+is switched off on the server until a paid model key is set; until then the site plays
+real, dated recordings of the same examples and says so.
 
-- The **Level 1 workbench** ([frontend/web](../frontend/web/README.md)) — a
-  React + TypeScript app that shows extracted claims highlighted in the
-  original text. It calls the Level 1 extraction endpoint, not `/v1/verify`.
-- The **original Streamlit app** and the public chat page still work.
-- The **API contract a Level 4 app needs is ready**: `/v1/verify/stream`
-  sends progress lines then the report; every claim has exact spans for
-  highlighting, a verdict, evidence with quotes and links, related sources,
-  missing evidence and its checks; the report has signals, citations, market
-  investigations, sycophancy, completeness, usage and privacy blocks.
+### 8.1 What the site is for
 
-What Level 4 will add: claim highlighting colored by verdict, an evidence
-drawer showing each quote in context with its link, live progress during
-Deep investigations, a market-investigation panel, and exports. In an
-interview, say clearly: *"The verification engine and API are built and
-tested; the verification UI is the next milestone."* Claiming more is the
-exact overconfidence this product exists to catch.
+A sales site has one job: get the right person to ask for a check. TrustLayer sells to
+three groups, so the home page has one section per group, each with its own promise,
+one real incident with a source, and a **Get a free check** button that carries a tag:
+
+| Group | Promise | Real incident on the page | Button goes to |
+| --- | --- | --- | --- |
+| AI product teams | "Switching models? See exactly which answers broke, before your users do." | OpenAI removes GPT-4o and GPT-4.1 from its API on 14 January 2027; GPT-4 fell from 84% to 51% on the same questions in three months (2023) | `/check/?for=product-teams` |
+| People sending AI-written documents | "Paste your AI-written report. Every claim and citation checked, with proof." | 2,199 legal decisions about AI-hallucinated filings; Deloitte refunded more than A$97,000 | `/check/?for=documents` |
+| Customer-support bots | "Your bot quoted the wrong policy today. Here's which answers, and why." | Moffatt v. Air Canada: the airline had to pay for its chatbot's wrong answer | `/check/?for=support-bots` |
+
+The tag is saved with every sign-up, together with the landing page and any campaign
+tags (`utm_source` and friends). `python -m backend.admin leads` then answers the most
+important early question: *which group wants this most?*
+
+**Honesty rules are part of the design, not decoration.** Every number links to a
+numbered source in the footer. Every illustration says "Illustration". The sample report
+says "fictional" on screen and in print. Demo recordings say they are recordings, with
+their date. The benchmark section shows our misses (66% on the blind test) next to the
+headline (0 false approvals). A company that sells *catching false claims* cannot make
+one on its own homepage.
+
+### 8.2 How the pages are built
+
+- **Vite** is the build tool: a dev server with instant reloads, and a bundler for
+  production. Each page is its own HTML file (`index.html`, `check/index.html`,
+  `demo/index.html`, `report/sample/index.html`). That is a *multi-page app*: no
+  client-side router, every page has its own title and link preview, and any static
+  host can serve it.
+- **React** builds the page from components (`Hero`, `Audiences`, `Proof`…), and
+  **TypeScript** catches wrong shapes before the browser does.
+- **Tailwind** writes layout as class names (`grid lg:grid-cols-12 gap-16`). The
+  signature look is plain CSS in `styles.css`: color tokens, glass panels, the rotating
+  "beam" border (a `conic-gradient` whose angle is an animated CSS `@property`), cursor
+  spotlights, aurora glows and film grain.
+- One lesson from building it: CSS written outside Tailwind's *layers* beats Tailwind's
+  own classes. A card marked `absolute` stayed `relative` because the spotlight style
+  said so. Putting the custom classes in `@layer components` fixed it.
+
+### 8.3 Motion: GSAP, ScrollTrigger and Lenis
+
+- **GSAP** animates anything over time. A *timeline* is a script: this, then that,
+  overlapping by this much.
+- **ScrollTrigger** ties an animation to scrolling. *Scrub* means the scroll bar is the
+  timeline's playhead, so scrolling back plays it backwards. *Once* means it plays the
+  first time a section appears.
+- **Sticky storytelling.** Each audience section keeps its picture fixed (`position:
+  sticky`) while the text scrolls past, and the picture's timeline is scrubbed by the
+  scroll: the model switch re-checks rows, the document gets stamped, the bot's wrong
+  answer is linked to the policy line it broke. On phones the same timeline simply
+  plays once. With *reduced motion* switched on, the page shows the final state.
+- **SplitText** splits headlines into words or letters so they can rise in one by one.
+  **ScrambleText** decodes text like a terminal. **Lenis** smooths the wheel, driven by
+  the same clock as GSAP so the two never fight.
+- A bug worth remembering: a timeline that is created *paused* never draws its opening
+  `.set()` calls. On phones the "waiting…" and "Same answer" labels showed on top of each
+  other until the start states were set outright, before the timeline existed.
+
+### 8.4 The 3D Trust Clock
+
+The background ([src/three/field.ts](../frontend/site/src/three/field.ts)) is drawn with
+**three.js** (WebGL). Thousands of points sit on a clock face, and a hand sweeps round.
+Each point is a "claim":
+
+- The **vertex shader** (a tiny program run on the graphics card for every point)
+  works out how long ago the hand passed: `d = mod(angle - sweep, 2π)`. Just after
+  the hand passes, the point flashes: cyan for most, ember for about 5% ("caught
+  mistakes"), which also stay lit longer.
+- The **fragment shader** paints each point as a soft glow, and *additive blending*
+  makes overlapping glows brighter, which gives a bloom look without any extra
+  rendering pass.
+- Every point also has a position on a globe. A single number, `morph`, slides each
+  point from ring to globe, staggered by a per-point seed so the change ripples. The
+  globe appears in "Where we're going: a trust grade for every AI".
+- Each section sets a *look* for the scene (position, size, tilt, brightness, speed),
+  and the render loop eases toward it, so scrolling glides the clock around the page.
+  Under the pushback section the hand even runs backwards.
+- Cost control: three.js loads after the first paint as its own file, the pixel ratio
+  is capped, the loop skips hidden tabs, and if WebGL is missing the CSS glows carry
+  the page.
+
+### 8.5 The live demo
+
+1. The browser sends the answer to `POST /v1/demo/verify/stream`.
+2. The server answers with **NDJSON**: one JSON object per line, sent as soon as it
+   exists (progress events, then the report). The page reads the response body as a
+   stream and updates a stage list as each check starts and finishes.
+3. When the report arrives, the answer is redrawn with every claim highlighted in its
+   verdict's color, followed by a card per claim: verdict, explanation, the math or the
+   quoted passage, the source link, and the suggested fix.
+4. Claim positions are counted in **Unicode code points** on both sides. JavaScript
+   strings count UTF-16 units, so "😀" is 2 for JavaScript and 1 for Python; the page
+   uses `Array.from(text)` to count the way the server does (a unit test pins this).
+5. **When the demo is off or busy**, the page plays a recording of the *same example*,
+   labelled with its date. If the visitor edited the text, no recording is shown,
+   because that would pass someone else's result off as theirs.
+6. Recordings come from [record_demo.py](../frontend/site/record_demo.py), which sends
+   exactly the request the demo endpoint builds through the real engine. It refuses to
+   save a run whose AI calls failed.
+
+### 8.6 Sign-ups
+
+`POST /v1/leads` is public, so it is built like a front door:
+
+- strict validation (real email shape, http(s) links only, no unknown fields, explicit
+  consent);
+- a **honeypot**: a field people never see. Bots fill it, get a cheerful "OK", and
+  nothing is saved;
+- rate limits per visitor and per day;
+- no raw IP address: only a salted, one-way 16-character hash, enough to slow spam;
+- a 503 with no details if the database is down, so internals never leak.
+
+### 8.7 The sample report
+
+[src/pages/report/sample-report.json](../frontend/site/src/pages/report/sample-report.json)
+holds the content and the page is a template, so a real customer report is a new JSON
+file. It follows the plan's outline: a one-line result, every wrong answer with proof,
+risk and fix, the correct answers given up under pushback, what was not tested, how we
+checked, and the next step (the Trust Clock). Print styles turn the dark page into a
+plain document, and sections that never scrolled into view still print.
+
+### 8.8 Charts, done carefully
+
+The charts follow the dataviz rules: thin bars from one baseline, a 2px line, an
+expected-range band as a light wash, labels in ink rather than the data color, hover
+and keyboard tooltips, and a table view for every chart. The verdict colors were run
+through the palette validator (colorblind separation, contrast) in dark and light mode
+before any chart used them.
+
+### 8.9 Tests
+
+- **Unit tests** (vitest): sign-up tagging and clipping, the NDJSON reader (lines split
+  across network chunks), code-point highlighting, and the Trust Clock alarm rule.
+- **Browser tests** (Playwright, API mocked): each audience button carries its tag; a
+  sign-up sends audience and source; switching audience re-tags but keeps the landing
+  page; a refused sign-up keeps what was typed; the demo streams and shows proof; the
+  fallback is labelled; an edited answer never gets a recording; the report prints
+  cleanly; the intro curtain lifts; no text runs off a phone screen.
+
+### 8.10 Two engine bugs the website found
+
+Building the demo meant running real checks end to end, and two real bugs surfaced:
+
+1. **Dropped connections.** About half the support-bot runs failed one Gemini call with
+   `RemoteProtocolError` (the server closed a reused connection). The provider never
+   retried, so the wrong refund window stayed UNVERIFIED. Fix: retry once on a dropped
+   connection, never on a timeout. Measured: 2 of 4 runs right before, 4 of 4 after.
+2. **Abbreviations split sentences.** "GPT-4 (March 2023) was reasonable at identifying
+   prime vs. composite numbers (84% accuracy)" was cut at "vs.", so the passage handed
+   to the judge lost "March" and "prime", and a real citation was judged "does not
+   support". Fix: a period followed by a lowercase letter does not end a sentence.
+   Measured: the citation is now SUPPORTED, and the offline benchmark is unchanged.
+
+The interview lesson: *a demo is a test you run in public*. Both bugs would have hit
+customers.
+
+### 8.11 Honest limits
+
+- The live demo is off until a paid model key is set; free-tier Gemini keys have a
+  per-model daily cap, and one afternoon of testing used it up.
+- "Revenue grew from $10M to $30M, a 2x increase" is still not caught (the extractor
+  splits off "a 2x increase"); "grew 50% from $10M to $30M" is. Math written with
+  currency symbols is not checked yet.
+- The Trust Clock section uses simulated data, labelled as such: the product is still
+  being built. The sample report is fictional.
 
 ---
 
@@ -1364,9 +1515,13 @@ Every one was reproduced, fixed at its root, and pinned with a regression test
 | [backend/verification/freshness.py](../backend/verification/freshness.py) | Engine H: certainty language and staleness | 3 |
 | [evaluation/run.py](../evaluation/run.py), [evaluation/metrics.py](../evaluation/metrics.py) | Level 1 extraction benchmark | 1 |
 | [evaluation/verification/](../evaluation/verification/README.md) | Levels 2–3 benchmark: frozen web, judges, baselines, dev and heldout cases | 2–3 |
-| [tests/](../tests) | 750+ offline tests, one file per module | all |
+| [tests/](../tests) | 780+ offline tests, one file per module | all |
 | [ARCHITECTURE.md](ARCHITECTURE.md), [SECURITY.md](SECURITY.md), [DEPLOYMENT.md](DEPLOYMENT.md), [LEVEL_0_AUDIT.md](LEVEL_0_AUDIT.md) | Design, threat model, operations, audit history | all |
 | [frontend/web/](../frontend/web/README.md) | Level 1 React workbench (extraction only) | 1 |
+| [frontend/site/](../frontend/site/README.md) | The website: landing page, tagged sign-ups, live demo, sample report | 4 |
+| [frontend/site/src/three/field.ts](../frontend/site/src/three/field.ts) | The 3D Trust Clock background (shaders, ring-to-globe morph) | 4 |
+| [frontend/site/src/lib/content.ts](../frontend/site/src/lib/content.ts) | Every cited source and benchmark number the site shows | 4 |
+| [frontend/site/record_demo.py](../frontend/site/record_demo.py) | Re-records the demo's fallback runs through the real engine | 4 |
 | [clients/python/](../clients/python/README.md) | Python SDK for the original `/score` API | 0 |
 
 ---
@@ -1424,11 +1579,11 @@ of the pattern.
 **"How do you test something that searches the web?"**
 We freeze the web. Each benchmark case brings its own small set of pages,
 served by fake search and fetch providers. Every external service sits behind
-a Protocol, so all 750+ tests run offline, free and deterministically.
+a Protocol, so all 780+ tests run offline, free and deterministically.
 
 **"What's not done?"**
-The verification web UI (Level 4), a production deployment, external pilot
-users, and independent human review of the benchmark labels. The extractor's
+A production deployment with the live demo switched on, external pilot
+users, the Trust Clock itself, and independent human review of the benchmark labels. The extractor's
 category accuracy is weak. I'd rather say that than oversell it.
 
 **"How would you scale it?"**
@@ -1452,6 +1607,12 @@ respects freshness, and per-tenant budgets.
 | False-supported rate | The share of SUPPORTED verdicts that are wrong |
 | Blackboard (`Findings`) | Shared notes engines write; only the judge reads them to decide |
 | Fail closed | When unsure or broken, refuse rather than approve |
+| NDJSON | Newline-delimited JSON: one JSON object per line, so results can stream as they happen |
+| Answer key | A customer's own documents used as the ground truth for a check (`documents_role: "answer_key"`) |
+| Honeypot | A form field people never see; anything that fills it is a bot |
+| Scrub | Tying an animation's playhead to the scroll bar |
+| Shader | A small program the graphics card runs for every point or pixel |
+| Multi-page app | A site where each page is its own HTML file, with no client-side router |
 | SSRF | Making a server fetch internal addresses |
 | DNS rebinding | A domain that answers "public" for the check and "private" for the connection |
 | Prompt injection | Text that tries to give instructions to a model |

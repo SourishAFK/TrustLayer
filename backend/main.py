@@ -14,18 +14,21 @@ from __future__ import annotations
 
 import base64
 import binascii
+import hashlib
 import json
 import logging
 import os
+import re
+import secrets
 import threading
 import time
 from contextlib import asynccontextmanager
 from enum import Enum
 from functools import lru_cache
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator, Literal, Optional
 
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi import Path as FastAPIPath
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, StreamingResponse
@@ -501,10 +504,10 @@ if not audit_log.handlers:
     audit_log.propagate = False
 
 
-def _finalizer(api_key: str):
+def _finalizer(api_key: str, retain: bool = True):
     """Report post-processing for one caller: optional retention, then the audit line."""
     def finalize(report: VerificationReport) -> VerificationReport:
-        hours = pipeline.retention_hours()
+        hours = pipeline.retention_hours() if retain else 0
         if hours:
             report.privacy.stored = True
             report.privacy.note += (f" This report is stored for {hours} hours; delete it any "
@@ -533,7 +536,7 @@ def _finalizer(api_key: str):
 
 
 def _stream_holding_slot(req: VerificationRequest, slots: threading.BoundedSemaphore,
-                         api_key: str) -> Iterator[str]:
+                         api_key: str, retain: bool = True) -> Iterator[str]:
     """Pipeline NDJSON lines while holding a capacity slot until the verification work ends.
 
     Once the worker thread runs, it frees the slot when it finishes: a client that drops the
@@ -556,7 +559,8 @@ def _stream_holding_slot(req: VerificationRequest, slots: threading.BoundedSemap
         # The route consumes this item, so the finally is armed before Starlette gets
         # the stream: a client that leaves before streaming starts still frees its slot.
         yield ""
-        yield from pipeline.stream_ndjson(req, finalize=_finalizer(api_key), on_start=started, on_done=release)
+        yield from pipeline.stream_ndjson(req, finalize=_finalizer(api_key, retain), on_start=started,
+                                          on_done=release)
     except Exception as exc:  # noqa: BLE001 — status 200 is already sent; end with an error line
         logger.error("Verification stream failed (%s)", type(exc).__name__)
         yield json.dumps({"type": "error", "message": _VERIFY_FAILED}) + "\n"
@@ -657,6 +661,149 @@ def verification_status() -> dict:
         "fetching": {"ssrf_protection": True, "respects_robots_txt": respects_robots()},
         "retention_hours": retention,
     }
+
+
+# --------------------------------------------------------------------------- #
+# Website: "Get a free check" sign-ups and the public live demo.
+# Both are keyless, so both are capped per visitor (salted IP hash) and site-wide.
+# --------------------------------------------------------------------------- #
+
+class _WindowLimit:
+    """Sliding-window counter per key. ponytail: in-process memory; move it to the database if the
+    API ever runs on several instances (each would otherwise allow its own share)."""
+
+    def __init__(self, limit: int, seconds: int):
+        self.limit, self.seconds = limit, seconds
+        self._hits: dict[str, list[float]] = {}
+        self._lock = threading.Lock()
+
+    def allow(self, key: str, limit: Optional[int] = None) -> bool:
+        now = time.monotonic()
+        with self._lock:
+            hits = [t for t in self._hits.get(key, []) if now - t < self.seconds]
+            allowed = len(hits) < (self.limit if limit is None else limit)
+            if allowed:
+                hits.append(now)
+            self._hits[key] = hits
+            if len(self._hits) > 10_000:  # bound memory: forget idle visitors
+                self._hits = {k: v for k, v in self._hits.items() if v and now - v[-1] < self.seconds}
+            return allowed
+
+
+_IP_SALT = os.getenv("TRUSTLAYER_IP_SALT") or secrets.token_hex(16)
+
+
+def _visitor(request: Request) -> str:
+    """Salted hash of the caller's address. Behind a proxy the last X-Forwarded-For entry is the
+    one the proxy saw (earlier entries are whatever the client claimed)."""
+    forwarded = [p.strip() for p in request.headers.get("x-forwarded-for", "").split(",") if p.strip()]
+    address = forwarded[-1] if forwarded else (request.client.host if request.client else "unknown")
+    return hashlib.sha256(f"{_IP_SALT}:{address}".encode()).hexdigest()[:16]
+
+
+_EMAIL = re.compile(r"[^@\s]{1,64}@[^@\s.]+(?:\.[^@\s.]+)+")
+_SOURCE_KEYS = {"utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "page", "referrer"}
+
+
+class LeadRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    audience: Literal["product-teams", "documents", "support-bots", "general"]
+    name: str = Field(..., min_length=1, max_length=100)
+    email: str = Field(..., min_length=3, max_length=254)
+    company: Optional[str] = Field(None, max_length=120)
+    role: Optional[str] = Field(None, max_length=80)
+    message: Optional[str] = Field(None, max_length=4000)
+    link: Optional[str] = Field(None, max_length=2048)
+    consent: bool
+    website: str = Field("", max_length=200)  # honeypot: hidden from people, filled by bots
+    source: dict[str, str] = Field(default_factory=dict)  # utm_* tags, landing page, referrer
+
+    @model_validator(mode="after")
+    def valid(self):
+        self.name, self.email = self.name.strip(), self.email.strip()
+        if not self.name:
+            raise ValueError("Please enter your name.")
+        if not _EMAIL.fullmatch(self.email):
+            raise ValueError("Please enter a valid email address.")
+        if not self.consent:
+            raise ValueError("Please agree to be contacted about your check.")
+        if self.link and not self.link.strip().lower().startswith(("http://", "https://")):
+            raise ValueError("Links must start with http:// or https://.")
+        if set(self.source) - _SOURCE_KEYS or any(len(v) > 300 for v in self.source.values()):
+            raise ValueError("Unknown or oversized source fields.")
+        return self
+
+
+_LEADS_PER_VISITOR = _WindowLimit(5, 3600)
+_LEADS_PER_DAY = _WindowLimit(500, 86_400)
+
+
+@app.post("/v1/leads", status_code=201, tags=["Website"])
+def create_lead(lead: LeadRequest, request: Request) -> dict:
+    """A "Get a free check" sign-up from the website, tagged with its audience lane."""
+    if lead.website:  # a bot filled the honeypot: look successful, keep nothing
+        return {"ok": True}
+    visitor = _visitor(request)
+    if not _LEADS_PER_VISITOR.allow(visitor) or not _LEADS_PER_DAY.allow("site"):
+        raise HTTPException(429, "Too many requests right now. Please try again in a while.")
+    try:
+        lead_id = store.save_lead(lead.model_dump(exclude={"website", "consent"}), visitor)
+    except store.StoreError:
+        raise HTTPException(503, "We couldn't save your request just now. Please try again shortly.")
+    logger.info("Lead saved (id=%s, audience=%s)", lead_id, lead.audience)  # never the person's details
+    return {"ok": True}
+
+
+class DemoDocument(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    name: str = Field(..., min_length=1, max_length=120)
+    text: str = Field(..., min_length=1, max_length=6000)
+
+
+class DemoRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    response_text: str = Field(..., min_length=1, max_length=3000)
+    original_question: Optional[str] = Field(None, max_length=500)
+    # The support-bot demo: check the answer against this policy text only (no web search).
+    answer_key: Optional[DemoDocument] = None
+    source_model: Optional[str] = Field(None, max_length=80)
+
+
+_DEMO_PER_VISITOR = _WindowLimit(5, 86_400)
+_DEMO_PER_DAY = _WindowLimit(100, 86_400)
+
+
+def _demo_enabled() -> bool:
+    return os.getenv("TRUSTLAYER_PUBLIC_DEMO", "").strip().lower() in ("1", "true", "yes", "on")
+
+
+def _demo_daily_limit() -> int:
+    try:
+        return max(0, int(os.getenv("TRUSTLAYER_DEMO_DAILY_LIMIT", "100")))
+    except ValueError:
+        return 0  # a typo must not mean "unlimited spend"
+
+
+@app.post("/v1/demo/verify/stream", tags=["Website"])
+def demo_verify_stream(req: DemoRequest, request: Request):
+    """The website's live demo: a Quick Check of a short text, streamed as NDJSON.
+
+    Off unless TRUSTLAYER_PUBLIC_DEMO is on. Capped per visitor and per day, never stored.
+    """
+    if not _demo_enabled():
+        raise HTTPException(404, "Not Found")
+    if not _DEMO_PER_VISITOR.allow(_visitor(request)) or not _DEMO_PER_DAY.allow("site", _demo_daily_limit()):
+        raise HTTPException(429, "The live demo is busy right now. Try again later, or open the sample report.")
+    key = req.answer_key
+    verification = VerificationRequest(
+        response_text=req.response_text, original_question=req.original_question, mode="quick",
+        source_model=req.source_model, allow_web_search=key is None, share_documents_with_ai=key is not None,
+        documents=[{"name": key.name, "text": key.text}] if key else [],
+        documents_role="answer_key" if key else "context")
+    lines = _stream_holding_slot(verification, _acquire_verification_slot("quick"), "public-demo", retain=False)
+    next(lines)
+    return StreamingResponse(lines, media_type="application/x-ndjson",
+                             headers={"Cache-Control": "no-store", "X-Accel-Buffering": "no"})
 
 
 # --------------------------------------------------------------------------- #

@@ -31,7 +31,7 @@ from backend.verification.contracts import ClaimNotes
 from backend.verification.report import Evidence, SourceRef, VerifiedClaim
 from backend.verification.schemas import Claim, ClaimType, VerificationStatus
 
-AUTHORITATIVE = {"primary", "official", "academic", "reference"}
+AUTHORITATIVE = {"primary", "official", "academic", "reference", "answer_key"}
 S = VerificationStatus
 # Existential / exclusivity wording that search can never confirm ("absence of
 # evidence"). Checked on the text too, so the guard does not depend on the
@@ -89,6 +89,8 @@ def weigh(items: list[Evidence], authoritative_kinds: set[str] = AUTHORITATIVE) 
 
 def _domains(items: list[Evidence]) -> str:
     names = list(dict.fromkeys(e.domain for e in items))
+    if names == ["answer-key"]:
+        return "your answer-key documents"
     shown = ", ".join(names[:3]) + (f" and {len(names) - 3} more" if len(names) > 3 else "")
     return f"{len(names)} independent source{'s' if len(names) != 1 else ''} ({shown})"
 
@@ -205,6 +207,8 @@ def decide(claim: Claim, notes: ClaimNotes, now: datetime) -> VerifiedClaim:
                                "evidence was found in the sources checked.")
             if all(e.source_type == "user_provided" for e in support_counted):
                 explanation.append("All supporting sources were provided by you, not found independently.")
+            elif all(e.source_type == "answer_key" for e in support_counted):
+                explanation.append("Checked against the documents you marked as the answer key, not the web.")
             return build(S.supported, sup_strength)
         if not withheld:
             explanation.append(f"Only {_domains(support_counted)} supports this claim.")

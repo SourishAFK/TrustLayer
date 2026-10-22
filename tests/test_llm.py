@@ -7,6 +7,7 @@ so these tests run whether or not it is installed.
 import sys
 from types import SimpleNamespace
 
+import httpx
 import pytest
 from google.genai import errors
 
@@ -170,6 +171,20 @@ def test_gemini_other_errors_neither_rotate_nor_leak(monkeypatch, exc):
         ask(GeminiProvider())
     assert str(err.value) == f"gemini: {type(exc).__name__}" and made == ["key-1"]
     assert err.value.__cause__ is None and err.value.__suppress_context__
+
+
+def test_gemini_retries_a_dropped_connection_once_but_never_a_timeout():
+    dropped = lambda: httpx.RemoteProtocolError("Server disconnected without sending a response.")  # noqa: E731
+    client = FakeGemini(dropped(), reply())
+    assert ask(GeminiProvider(client=client)).data == {"stance": "supports"} and len(client.calls) == 2
+    client = FakeGemini(dropped(), dropped(), reply())
+    with pytest.raises(LLMError, match="^gemini: RemoteProtocolError$"):
+        ask(GeminiProvider(client=client))
+    assert len(client.calls) == 2
+    client = FakeGemini(httpx.ReadTimeout("slow"), reply())
+    with pytest.raises(LLMError, match="^gemini: ReadTimeout$"):
+        ask(GeminiProvider(client=client))
+    assert len(client.calls) == 1
 
 
 def test_gemini_without_a_key_or_quota_fails_cleanly(monkeypatch):

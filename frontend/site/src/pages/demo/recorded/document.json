@@ -1,0 +1,840 @@
+{
+ "recorded_at": "2026-10-22T05:53:05.537994+00:00",
+ "lines": [
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "extraction",
+    "status": "completed",
+    "message": "Found 3 claim(s)",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "numerical",
+    "status": "started",
+    "message": "Running numerical check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "numerical",
+    "status": "skipped",
+    "message": "0 calculation(s) checked, 0 inconsistent.",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "consistency",
+    "status": "started",
+    "message": "Running consistency check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "consistency",
+    "status": "completed",
+    "message": "0 contradiction(s) found by deterministic checks.",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "uncertainty",
+    "status": "started",
+    "message": "Running uncertainty check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "uncertainty",
+    "status": "completed",
+    "message": "Examined 3 claim(s): 0 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s).",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "planning",
+    "status": "completed",
+    "message": "Researching 3 of 3 checkable claim(s)",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "evidence",
+    "status": "started",
+    "message": "Running evidence check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "citations",
+    "status": "started",
+    "message": "Running citations check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "citations",
+    "status": "progress",
+    "message": "Checking citation r1",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "market",
+    "status": "started",
+    "message": "Running market check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "market",
+    "status": "skipped",
+    "message": "No market or competitor claims to investigate.",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "sycophancy",
+    "status": "started",
+    "message": "Running sycophancy check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "sycophancy",
+    "status": "completed",
+    "message": "0 lexical signal(s); no behavioral score (no original question).",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "completeness",
+    "status": "started",
+    "message": "Running completeness check",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "completeness",
+    "status": "skipped",
+    "message": "No original question supplied.",
+    "claim_id": null,
+    "elapsed_ms": 1578.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading doi.org",
+    "claim_id": "c2",
+    "elapsed_ms": 2750.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading doi.org",
+    "claim_id": "c2",
+    "elapsed_ms": 2750.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading doi.org",
+    "claim_id": "c1",
+    "elapsed_ms": 2828.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading doi.org",
+    "claim_id": "c3",
+    "elapsed_ms": 3078.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading doi.org",
+    "claim_id": "c3",
+    "elapsed_ms": 3078.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Reading nature.com",
+    "claim_id": "c1",
+    "elapsed_ms": 6719.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "claim",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Assessed 4 passage(s)",
+    "claim_id": "c1",
+    "elapsed_ms": 11656.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "citations",
+    "status": "progress",
+    "message": "Checking citation r2",
+    "claim_id": null,
+    "elapsed_ms": 12047.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "source",
+    "stage": "citations",
+    "status": "progress",
+    "message": "Checking citation r3",
+    "claim_id": null,
+    "elapsed_ms": 12391.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "citations",
+    "status": "completed",
+    "message": "3 citation(s): 1 supports, 2 invalid or fabricated",
+    "claim_id": null,
+    "elapsed_ms": 12391.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "claim",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Assessed 3 passage(s)",
+    "claim_id": "c3",
+    "elapsed_ms": 12531.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "claim",
+    "stage": "evidence",
+    "status": "progress",
+    "message": "Assessed 3 passage(s)",
+    "claim_id": "c2",
+    "elapsed_ms": 12781.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "evidence",
+    "status": "completed",
+    "message": "Researched 3 claim(s); 3 fully, 0 partially or not at all.",
+    "claim_id": null,
+    "elapsed_ms": 12781.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "freshness",
+    "status": "started",
+    "message": "Running freshness check",
+    "claim_id": null,
+    "elapsed_ms": 12781.0
+   }
+  },
+  {
+   "type": "progress",
+   "event": {
+    "type": "stage",
+    "stage": "freshness",
+    "status": "completed",
+    "message": "Checked 3 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days).",
+    "claim_id": null,
+    "elapsed_ms": 12781.0
+   }
+  },
+  {
+   "type": "report",
+   "report": {
+    "schema_version": "2.0",
+    "report_id": "35bfdf3a-b797-4b2e-9256-4df2817372b1",
+    "mode": "quick",
+    "status": "completed",
+    "response_text": "GPT-4's accuracy on prime-number questions fell from 84% in March 2023 to 51% in June 2023 (https://arxiv.org/abs/2307.09009). A 2024 meta-analysis found that users catch 92% of chatbot errors (https://doi.org/10.5555/chatbot.2024.0192). The full survey data is available at https://example.com/survey-2024.",
+    "original_question": null,
+    "source_model": null,
+    "created_at": "2026-10-22T05:52:52.402292Z",
+    "completed_at": "2026-10-22T05:53:05.537994Z",
+    "extraction": {
+     "method": "rules-v1",
+     "status": "completed",
+     "omitted_segments": [],
+     "limitations": [
+      "English rule-based extraction is a baseline: it can miss claims, merge clauses or misclassify them."
+     ]
+    },
+    "claims": [
+     {
+      "claim_id": "c1",
+      "exact_text": "GPT-4's accuracy on prime-number questions fell from 84% in March 2023 to 51% in June 2023 (https://arxiv.org/abs/2307.09009)",
+      "text_span": {
+       "start": 0,
+       "end": 125
+      },
+      "claim_type": "numerical",
+      "context": "GPT-4's accuracy on prime-number questions fell from 84% in March 2023 to 51% in June 2023 (https://arxiv.org/abs/2307.09009)",
+      "qualifiers": [],
+      "scope": {
+       "dates": [
+        "2023"
+       ],
+       "geographical_scope": []
+      },
+      "objectively_checkable": true,
+      "verification_status": "SUPPORTED",
+      "evidence_strength": "moderate",
+      "evidence": [
+       {
+        "evidence_id": "e1",
+        "claim_id": "c1",
+        "stance": "supports",
+        "url": "https://arxiv.org/abs/2307.09009",
+        "title": "[2307.09009] How is ChatGPT's behavior changing over time?",
+        "publisher": "arXiv.org",
+        "domain": "arxiv.org",
+        "source_type": "academic",
+        "retrieval": "citation",
+        "provider": "cited",
+        "published_at": "2023-07-18T00:00:00Z",
+        "accessed_at": "2026-10-22T05:52:54.324609Z",
+        "passage": "For example, GPT-4 (March 2023) was reasonable at identifying prime vs. composite numbers (84% accuracy) but GPT-4 (June 2023) was poor on these same questions (51% accuracy). This is partly explained by a drop in GPT-4's amenity to follow chain-of-thought prompting. Interestingly, GPT-3.5 was much better in June than in March in this task. GPT-4 became less willing to answer sensitive questions and opinion survey questions in June than in March. GPT-4 performed better at multi-hop questions in June than in March, while GPT-3.5's performance dropped on this task.",
+        "quote": "GPT-4 (March 2023) was reasonable at identifying prime vs. composite numbers (84% accuracy) but GPT-4 (June 2023) was poor on these same questions (51% accuracy).",
+        "method": "citation_check+llm_stance:gemini-3.5-flash",
+        "rationale": "The passage explicitly states that GPT-4's accuracy on identifying prime numbers dropped from 84% in March 2023 to 51% in June 2023."
+       }
+      ],
+      "contradictions": [],
+      "calculations": [],
+      "related_sources": [
+       {
+        "url": "https://doi.org/10.1101/2023.07.13.23292577",
+        "title": "Coding Inequity: Assessing GPT-4\u2019s Potential for Perpetuating Racial and Gender Biases in Healthcare",
+        "domain": "doi.org",
+        "note": "Judged irrelevant to this claim."
+       },
+       {
+        "url": "https://www.nature.com/articles/s42256-025-01014-w",
+        "title": "A comprehensive large-scale biomedical knowledge graph for AI-powered data-driven biomedical research | Nature Machine IntelligenceClose bannerClose banner",
+        "domain": "nature.com",
+        "note": "Judged irrelevant to this claim."
+       }
+      ],
+      "citation_ids": [
+       "r1"
+      ],
+      "verification_methods": [
+       "web_search+llm_stance:gemini-3.5-flash",
+       "citation_check"
+      ],
+      "checks": [
+       {
+        "engine": "evidence",
+        "status": "completed",
+        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 4 passage(s) \u00b7 4 assessed"
+       },
+       {
+        "engine": "citations",
+        "status": "completed",
+        "detail": "Citation r1: supports"
+       }
+      ],
+      "explanation": "Supported by 1 independent source (arxiv.org). No contradicting evidence was found in the sources checked.",
+      "missing_evidence": [],
+      "limitations": [],
+      "suggested_correction": null,
+      "certainty_flags": [],
+      "freshness": {
+       "time_sensitive": false,
+       "claim_dates": [
+        "2023"
+       ],
+       "newest_evidence_at": "2023-07-18T00:00:00Z",
+       "checked_at": "2026-10-22T05:52:52.402292Z",
+       "may_have_changed": false,
+       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
+      },
+      "investigated": true,
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     },
+     {
+      "claim_id": "c2",
+      "exact_text": "A 2024 meta-analysis found that users catch 92% of chatbot errors (https://doi.org/10.5555/chatbot.2024.0192)",
+      "text_span": {
+       "start": 127,
+       "end": 236
+      },
+      "claim_type": "numerical",
+      "context": "A 2024 meta-analysis found that users catch 92% of chatbot errors (https://doi.org/10.5555/chatbot.2024.0192)",
+      "qualifiers": [],
+      "scope": {
+       "dates": [
+        "2024"
+       ],
+       "geographical_scope": []
+      },
+      "objectively_checkable": true,
+      "verification_status": "UNVERIFIED",
+      "evidence_strength": "none",
+      "evidence": [],
+      "contradictions": [],
+      "calculations": [],
+      "related_sources": [
+       {
+        "url": "https://doi.org/10.1145/3637228",
+        "title": "Measuring and Clustering Heterogeneous Chatbot Designs",
+        "domain": "doi.org",
+        "note": "Judged irrelevant to this claim."
+       },
+       {
+        "url": "https://doi.org/10.12973/eu-jer.13.4.1607",
+        "title": "Integration of Chatbots in Additional Language Education: A Systematic Review",
+        "domain": "doi.org",
+        "note": "Related, but not specific enough to support or contradict it."
+       }
+      ],
+      "citation_ids": [
+       "r2"
+      ],
+      "verification_methods": [
+       "web_search+llm_stance:gemini-3.5-flash"
+      ],
+      "checks": [
+       {
+        "engine": "evidence",
+        "status": "completed",
+        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 3 passage(s) \u00b7 3 assessed"
+       }
+      ],
+      "explanation": "No source found during this check adequately supports or contradicts this claim.",
+      "missing_evidence": [
+       "No independent evidence was retrieved for this claim."
+      ],
+      "limitations": [],
+      "suggested_correction": null,
+      "certainty_flags": [],
+      "freshness": {
+       "time_sensitive": false,
+       "claim_dates": [
+        "2024"
+       ],
+       "newest_evidence_at": null,
+       "checked_at": "2026-10-22T05:52:52.402292Z",
+       "may_have_changed": false,
+       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
+      },
+      "investigated": true,
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     },
+     {
+      "claim_id": "c3",
+      "exact_text": "The full survey data is available at https://example.com/survey-2024",
+      "text_span": {
+       "start": 238,
+       "end": 306
+      },
+      "claim_type": "factual",
+      "context": "The full survey data is available at https://example.com/survey-2024",
+      "qualifiers": [],
+      "scope": {
+       "dates": [
+        "2024"
+       ],
+       "geographical_scope": []
+      },
+      "objectively_checkable": true,
+      "verification_status": "UNVERIFIED",
+      "evidence_strength": "none",
+      "evidence": [],
+      "contradictions": [],
+      "calculations": [],
+      "related_sources": [
+       {
+        "url": "https://doi.org/10.1214/16-sts605",
+        "title": "Fitting Regression Models to Survey Data",
+        "domain": "doi.org",
+        "note": "Judged irrelevant to this claim."
+       },
+       {
+        "url": "https://doi.org/10.4324/9780203168219-32",
+        "title": "FOREIGN EXCHANGE RATE EXPECTATIONS: MICRO SURVEY DATA",
+        "domain": "doi.org",
+        "note": "Judged irrelevant to this claim."
+       }
+      ],
+      "citation_ids": [
+       "r3"
+      ],
+      "verification_methods": [
+       "web_search+llm_stance:gemini-3.5-flash"
+      ],
+      "checks": [
+       {
+        "engine": "evidence",
+        "status": "completed",
+        "detail": "1 search(es) \u00b7 2 source(s) read \u00b7 3 passage(s) \u00b7 3 assessed"
+       }
+      ],
+      "explanation": "No source found during this check adequately supports or contradicts this claim.",
+      "missing_evidence": [
+       "No independent evidence was retrieved for this claim."
+      ],
+      "limitations": [],
+      "suggested_correction": null,
+      "certainty_flags": [],
+      "freshness": {
+       "time_sensitive": false,
+       "claim_dates": [
+        "2024"
+       ],
+       "newest_evidence_at": null,
+       "checked_at": "2026-10-22T05:52:52.402292Z",
+       "may_have_changed": false,
+       "note": "Not time-sensitive: the claim does not describe a current role, price, rate or other changing figure."
+      },
+      "investigated": true,
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     }
+    ],
+    "citations": [
+     {
+      "citation_id": "r1",
+      "raw_text": "https://arxiv.org/abs/2307.09009",
+      "text_span": {
+       "start": 92,
+       "end": 124
+      },
+      "url": "https://arxiv.org/abs/2307.09009",
+      "doi": null,
+      "claim_ids": [
+       "c1"
+      ],
+      "status": "supports",
+      "http_status": 200,
+      "final_url": "https://arxiv.org/abs/2307.09009",
+      "title": "[2307.09009] How is ChatGPT's behavior changing over time?",
+      "published_at": "2023-07-18T00:00:00Z",
+      "outdated": null,
+      "quote_check": "not_applicable",
+      "exaggeration_flags": [],
+      "explanation": "The cited page supports the claim it is attached to.",
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     },
+     {
+      "citation_id": "r2",
+      "raw_text": "https://doi.org/10.5555/chatbot.2024.0192",
+      "text_span": {
+       "start": 194,
+       "end": 235
+      },
+      "url": "https://doi.org/10.5555/chatbot.2024.0192",
+      "doi": "10.5555/chatbot.2024.0192",
+      "claim_ids": [
+       "c2"
+      ],
+      "status": "invalid_or_fabricated",
+      "http_status": 404,
+      "final_url": null,
+      "title": null,
+      "published_at": null,
+      "outdated": null,
+      "quote_check": "not_applicable",
+      "exaggeration_flags": [],
+      "explanation": "The DOI is not registered, so this reference may be fabricated.",
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     },
+     {
+      "citation_id": "r3",
+      "raw_text": "https://example.com/survey-2024",
+      "text_span": {
+       "start": 275,
+       "end": 306
+      },
+      "url": "https://example.com/survey-2024",
+      "doi": null,
+      "claim_ids": [
+       "c3"
+      ],
+      "status": "invalid_or_fabricated",
+      "http_status": null,
+      "final_url": null,
+      "title": null,
+      "published_at": null,
+      "outdated": null,
+      "quote_check": "not_applicable",
+      "exaggeration_flags": [],
+      "explanation": "The link uses a placeholder or reserved domain that cannot host a real source.",
+      "checked_at": "2026-10-22T05:52:52.402292Z"
+     }
+    ],
+    "signals": [
+     {
+      "signal_id": "s1",
+      "engine": "citations",
+      "kind": "unsupported_citation",
+      "severity": "critical",
+      "text": "https://doi.org/10.5555/chatbot.2024.0192",
+      "text_span": {
+       "start": 194,
+       "end": 235
+      },
+      "claim_ids": [
+       "c2"
+      ],
+      "explanation": "The DOI is not registered, so this reference may be fabricated."
+     },
+     {
+      "signal_id": "s2",
+      "engine": "citations",
+      "kind": "unsupported_citation",
+      "severity": "critical",
+      "text": "https://example.com/survey-2024",
+      "text_span": {
+       "start": 275,
+       "end": 306
+      },
+      "claim_ids": [
+       "c3"
+      ],
+      "explanation": "The link uses a placeholder or reserved domain that cannot host a real source."
+     }
+    ],
+    "sycophancy": {
+     "status": "skipped",
+     "method": "lexical-signals-v1",
+     "score": null,
+     "verdict": null,
+     "intent_gap": null,
+     "response_honesty": null,
+     "indicators": [],
+     "suggested_honest_alternative": null,
+     "signal_ids": [],
+     "note": "The behavioral scorer needs the original question, which was not supplied. Only lexical signals were checked. Lexical signals are phrase-level cues to review, not verdicts. Any score here is a behavioral measure from the original detector of how far the response caters to what the asker hoped to hear, not a truth score; factual claim verdicts are decided separately and never changed by it."
+    },
+    "completeness": {
+     "status": "limited",
+     "method": "none",
+     "subquestions": [],
+     "missing": [],
+     "note": "The original question was not supplied, so completeness could only be assessed in a limited way: nothing was compared. TrustLayer cannot know every relevant fact that was left out; this compares the response with the question asked."
+    },
+    "market": [],
+    "engines": [
+     {
+      "engine": "numerical",
+      "status": "not_applicable",
+      "duration_ms": 0.4,
+      "detail": "0 calculation(s) checked, 0 inconsistent."
+     },
+     {
+      "engine": "consistency",
+      "status": "completed",
+      "duration_ms": 1.0,
+      "detail": "0 contradiction(s) found by deterministic checks."
+     },
+     {
+      "engine": "uncertainty",
+      "status": "completed",
+      "duration_ms": 0.1,
+      "detail": "Examined 3 claim(s): 0 absolute-language phrase(s), 0 overconfident prediction(s), 0 missing caveat(s)."
+     },
+     {
+      "engine": "evidence",
+      "status": "completed",
+      "duration_ms": 11201.4,
+      "detail": "Researched 3 claim(s); 3 fully, 0 partially or not at all."
+     },
+     {
+      "engine": "citations",
+      "status": "completed",
+      "duration_ms": 10806.1,
+      "detail": "3 citation(s): 1 supports, 2 invalid or fabricated"
+     },
+     {
+      "engine": "market",
+      "status": "not_applicable",
+      "duration_ms": 0.0,
+      "detail": "No market or competitor claims to investigate."
+     },
+     {
+      "engine": "sycophancy",
+      "status": "completed",
+      "duration_ms": 0.2,
+      "detail": "0 lexical signal(s); no behavioral score (no original question)."
+     },
+     {
+      "engine": "completeness",
+      "status": "skipped",
+      "duration_ms": 0.0,
+      "detail": "No original question supplied."
+     },
+     {
+      "engine": "freshness",
+      "status": "completed",
+      "duration_ms": 0.4,
+      "detail": "Checked 3 claim(s): 0 time-sensitive, 0 may have changed (freshness window 365 days)."
+     }
+    ],
+    "summary": {
+     "total_extracted": 3,
+     "supported": 1,
+     "contradicted": 0,
+     "disputed": 0,
+     "unverified": 2,
+     "not_checkable": 0,
+     "investigated": 3,
+     "checks_incomplete": 0,
+     "signals_critical": 2,
+     "signals_warning": 0
+    },
+    "limitations": [
+     "Verdicts reflect only the sources TrustLayer could retrieve and read in this run; they are not a guarantee of truth.",
+     "Counts describe extracted claims, not guaranteed verification coverage. There is no overall truth score."
+    ],
+    "incomplete_checks": [],
+    "usage": {
+     "duration_ms": 13133.1,
+     "model_calls": 4,
+     "model_input_tokens": 2875,
+     "model_output_tokens": 4402,
+     "search_calls": 3,
+     "pages_fetched": 3,
+     "estimated_cost_usd": 0.04393,
+     "cost_basis": "Estimate from configured per-call search prices and per-token model prices; not a provider invoice. Free-tier usage may cost $0.",
+     "limits": {
+      "max_seconds": 25.0,
+      "max_search_calls": 8,
+      "max_page_fetches": 10,
+      "max_model_calls": 12,
+      "max_model_tokens": 60000,
+      "max_cost_usd": 0.1,
+      "max_claims_investigated": 6
+     },
+     "exhausted": []
+    },
+    "privacy": {
+     "web_search_used": true,
+     "search_providers": [
+      "openalex"
+     ],
+     "ai_providers": [
+      "gemini/gemini-3.5-flash"
+     ],
+     "documents_sent_to_ai": false,
+     "stored": false,
+     "retention_hours": 0,
+     "note": "Claim text was sent only to the providers listed here."
+    }
+   }
+  }
+ ]
+}

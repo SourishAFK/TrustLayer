@@ -16,7 +16,9 @@ import json
 import logging
 import os
 import re
+import threading
 
+import httpx
 from google import genai
 from google.genai import errors, types
 
@@ -68,6 +70,12 @@ def _quota_exhausted(exc: Exception) -> bool:
     return isinstance(exc, errors.APIError) and (exc.code == 429 or exc.status == "RESOURCE_EXHAUSTED")
 
 
+def _dropped_connection(exc: Exception) -> bool:
+    """The connection died before any answer (e.g. a stale keep-alive socket): safe to send again.
+    Timeouts are excluded: the request may still be running and the budget is already spent."""
+    return isinstance(exc, httpx.TransportError) and not isinstance(exc, httpx.TimeoutException)
+
+
 def _tokens(usage: object, *fields: str) -> int:
     return sum(getattr(usage, f, None) or 0 for f in fields)
 
@@ -85,6 +93,20 @@ class GeminiProvider:
         # One SDK client per key, made on first use. An injected client is the only slot.
         self._clients = [client] if client is not None else [None] * len(self._keys)
         self._slot = 0  # first slot not known to be out of quota
+        self._lock = threading.Lock()  # engines judge in parallel; make each client once
+
+    def _generate(self, slot: int, prompt: str, config):
+        with self._lock:
+            if self._clients[slot] is None:
+                self._clients[slot] = genai.Client(api_key=self._keys[slot])
+            client = self._clients[slot]
+        try:
+            return client.models.generate_content(model=self.model, contents=prompt, config=config)
+        except Exception as exc:  # noqa: BLE001
+            if not _dropped_connection(exc):
+                raise
+            logger.info("Gemini connection dropped before a reply; retrying once")
+            return client.models.generate_content(model=self.model, contents=prompt, config=config)
 
     def complete_json(self, *, system: str, prompt: str, schema: dict, max_output_tokens: int,
                       timeout: float) -> LLMResult:
@@ -95,10 +117,7 @@ class GeminiProvider:
             http_options=types.HttpOptions(timeout=max(1, round(timeout * 1000))))
         for slot in range(self._slot, len(self._clients)):
             try:
-                if self._clients[slot] is None:
-                    self._clients[slot] = genai.Client(api_key=self._keys[slot])
-                response = self._clients[slot].models.generate_content(
-                    model=self.model, contents=prompt, config=config)
+                response = self._generate(slot, prompt, config)
             except Exception as exc:  # noqa: BLE001 — SDK messages may quote the request
                 if _quota_exhausted(exc) and slot + 1 < len(self._clients):
                     logger.info("Gemini key %d of %d is out of quota; rotating", slot + 1, len(self._clients))

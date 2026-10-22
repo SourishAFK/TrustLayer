@@ -9,6 +9,7 @@ Usage:
     python -m backend.admin list
     python -m backend.admin revoke tl_xxxxxxxxxxxxxxxxxxxx
     python -m backend.admin usage           # recent scored requests
+    python -m backend.admin leads           # website sign-ups per audience
 """
 
 from __future__ import annotations
@@ -99,6 +100,22 @@ def cmd_usage(args: argparse.Namespace) -> None:
     print()
 
 
+def cmd_leads(args: argparse.Namespace) -> None:
+    """Website sign-ups per audience lane (which group wants this most), then the latest ones."""
+    counts = store.lead_counts()
+    if not counts:
+        print("No sign-ups yet.")
+        return
+    print(f"\n{'AUDIENCE':<16} {'SIGN-UPS':>8}  LATEST")
+    for r in counts:
+        print(f"{r['audience']:<16} {r['signups']:>8}  {r['latest']:%Y-%m-%d %H:%M}")
+    print(f"\nLatest {args.recent}:")
+    for r in store.recent_leads(args.recent):
+        print(f"  {r['created_at']:%Y-%m-%d %H:%M}  {r['audience']:<14} {r['name']} <{r['email']}>"
+              f"  {r['company'] or ''}")
+    print()
+
+
 def main() -> None:
     p = argparse.ArgumentParser(prog="trustlayer-admin", description="Manage API keys.")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -131,6 +148,10 @@ def main() -> None:
     u = sub.add_parser("usage", help="Show recent scored requests.")
     u.add_argument("--limit", type=int, default=20, help="How many rows to show.")
     u.set_defaults(func=cmd_usage)
+
+    s = sub.add_parser("leads", help="Website sign-ups per audience, then the latest ones.")
+    s.add_argument("--recent", type=int, default=20, help="How many recent sign-ups to list.")
+    s.set_defaults(func=cmd_leads)
 
     args = p.parse_args()
     try:
