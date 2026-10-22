@@ -17,13 +17,15 @@ export function ReportTeaser() {
   useGSAP(() => {
     if (reducedMotion()) return;
     const q = gsap.utils.selector(root);
-    gsap.fromTo(q('.page'), { rotateY: -28, rotateX: 12, rotateZ: (i: number) => -8 + i * 5, x: (i: number) => i * 46, y: (i: number) => i * -26 },
-      { rotateY: -10, rotateX: 4, rotateZ: (i: number) => -2 + i * 2, x: (i: number) => i * 22, y: (i: number) => i * -14, ease: 'none',
+    // The fan is narrower on phones: at full spread the back pages reached past the screen edge.
+    const k = window.innerWidth < 640 ? 0.35 : 1;
+    gsap.fromTo(q('.page'), { rotateY: -28 * k, rotateX: 12 * k, rotateZ: (i: number) => (-8 + i * 5) * k, x: (i: number) => i * 46 * k, y: (i: number) => i * -26 * k },
+      { rotateY: -10 * k, rotateX: 4 * k, rotateZ: (i: number) => (-2 + i * 2) * k, x: (i: number) => i * 22 * k, y: (i: number) => i * -14 * k, ease: 'none',
         scrollTrigger: { trigger: root.current, start: 'top bottom', end: 'bottom 40%', scrub: 1 } });
   }, { scope: root });
 
   return (
-    <section ref={root} id="report" className="relative py-32 md:py-44">
+    <section ref={root} id="report" className="relative overflow-x-clip py-32 md:py-44">
       <Aurora blobs={[{ c: 'rgb(255 200 97 / 0.08)', x: '55%', y: '15%' }, { c: 'rgb(59 108 255 / 0.12)', x: '0%', y: '40%' }]} />
       <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-16 px-6 lg:grid-cols-12">
         <div className="lg:col-span-5">

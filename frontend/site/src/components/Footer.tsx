@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { ArrowUpRight, Mark } from '../fx/icons';
+import { analyticsOn } from '../lib/analytics';
 import { SOURCE_ORDER, SOURCES } from '../lib/content';
 
 const COLUMNS = [
@@ -65,7 +66,7 @@ export function Footer() {
       </div>
       <div className="mx-auto flex max-w-6xl flex-wrap justify-between gap-4 px-6 pb-10 text-xs text-muted">
         <span>© 2026 TrustLayer</span>
-        <span>Every number on this site links to its source.</span>
+        <span>Every number on this site links to its source.{analyticsOn && ' We count visits with Plausible, which uses no cookies.'}</span>
       </div>
     </footer>
   );

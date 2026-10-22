@@ -31,8 +31,14 @@ export function leadSource(url: URL, referrer: string): Record<string, string> {
 
 export type LeadForm = {
   audience: Audience; name: string; email: string; company: string; role: string;
-  message: string; link: string; consent: boolean; website: string; would_pay: '' | 'yes' | 'maybe' | 'no';
+  message: string; link: string; consent: boolean; website: string; would_pay: '' | WouldPay;
 };
+
+export type WouldPay = 'no' | 'up-to-50' | '50-200' | '200-plus';
+export const WOULD_PAY: { value: WouldPay; label: string }[] = [
+  { value: 'no', label: 'No, just curious' }, { value: 'up-to-50', label: 'Up to $50' },
+  { value: '50-200', label: '$50–200' }, { value: '200-plus', label: '$200+' },
+];
 
 /** Where to write when the sign-up form cannot reach us. Set VITE_CONTACT_EMAIL at build time. */
 export const CONTACT_EMAIL = String(import.meta.env.VITE_CONTACT_EMAIL ?? '').trim();
@@ -41,7 +47,8 @@ export const CONTACT_EMAIL = String(import.meta.env.VITE_CONTACT_EMAIL ?? '').tr
 export function leadSummary(form: LeadForm, audienceLabel: string) {
   return [
     `Name: ${form.name}`, `Email: ${form.email}`, `Company: ${form.company}`, `Role: ${form.role}`,
-    `Check for: ${audienceLabel}`, `Would pay for a full check: ${form.would_pay || 'not answered'}`,
+    `Check for: ${audienceLabel}`,
+    `Would pay for a full check: ${WOULD_PAY.find(p => p.value === form.would_pay)?.label ?? 'not answered'}`,
     `Link: ${form.link}`, '', 'What should we check?', form.message,
   ].join('\n');
 }

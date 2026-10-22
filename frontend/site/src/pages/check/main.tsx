@@ -3,7 +3,7 @@ import type { Look } from '../../components/FieldCanvas';
 import { mount, Shell } from '../../components/Shell';
 import { Aurora, Cta, Kicker } from '../../fx/fx';
 import { Arrow, Check } from '../../fx/icons';
-import { audienceFrom, AUDIENCES, CONTACT_EMAIL, leadSource, leadSummary, sendLead, type Audience, type LeadForm } from '../../lib/api';
+import { audienceFrom, AUDIENCES, CONTACT_EMAIL, leadSource, leadSummary, sendLead, WOULD_PAY, type Audience, type LeadForm } from '../../lib/api';
 import { gsap, reducedMotion, useGSAP } from '../../lib/motion';
 
 const LOOK: Look = {
@@ -49,10 +49,6 @@ const COPY: Record<Audience, { title: string; sub: string; gets: string[]; place
 const STEPS = ['You tell us what to check', 'We run the check, by hand where it matters', 'You get every finding, with its proof'];
 
 const EMPTY: Omit<LeadForm, 'audience'> = { name: '', email: '', company: '', role: '', message: '', link: '', consent: false, website: '', would_pay: '' };
-
-const PAY: { value: LeadForm['would_pay']; label: string }[] = [
-  { value: 'yes', label: 'Yes' }, { value: 'maybe', label: 'Maybe' }, { value: 'no', label: 'No, just curious' },
-];
 
 function Field({ label, children, hint }: { label: string; children: React.ReactNode; hint?: string }) {
   return (
@@ -210,9 +206,9 @@ function CheckPage() {
                   </Field>
                   <fieldset>
                     <legend className="t-label text-muted">Would you pay for a full check? (optional)</legend>
-                    <p className="mt-2 text-sm text-ink-2">The full Bot Check-up: 100 questions, 20 pushback tests and a written report.</p>
+                    <p className="mt-2 text-sm text-ink-2">The full Bot Check-up: 100 questions, 20 pushback tests and a written report. What would it be worth to you?</p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {PAY.map(p => (
+                      {WOULD_PAY.map(p => (
                         <label key={p.value} className={`rounded-full border px-4 py-2 text-sm transition-colors ${form.would_pay === p.value ? 'border-cyan bg-cyan/15 text-ink' : 'border-line-2 text-ink-2 hover:border-white/30'}`}>
                           <input type="radio" name="would_pay" value={p.value} checked={form.would_pay === p.value}
                             onChange={() => setForm(f => ({ ...f, would_pay: p.value }))} className="sr-only" />

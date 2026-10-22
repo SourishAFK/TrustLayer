@@ -1389,6 +1389,16 @@ A second session reviewed the site with a real browser on desktop and phone. Les
   tool" as UNVERIFIED (we tried and failed) instead of NOT CHECKABLE (no source could ever
   settle it). The extractor now treats praise without a yardstick as opinion, but keeps
   measurable superlatives ("best-selling", "the fastest") checkable.
+- **Test with the motion on.** The first fix passed a test that ran with animations
+  switched off. A second review found the page still 426px wide on a phone, because the
+  fanned report pages only spread past the edge *while animating*. The real test runs the
+  animations, scrolls to the bottom, and checks the viewport width itself (on a phone,
+  overflow makes the browser widen the page, so "page width equals viewport width" stays
+  true while both are wrong).
+- **Count what matters, without cookies.** Plausible (switched on with
+  `VITE_ANALYTICS_DOMAIN`) counts visits, how far people scroll, and which audience
+  button they press, without cookies or personal data. Together with the sign-up form's
+  price question, that shows which group is interested and which would pay.
 - **Words matter.** "The live demo could not start" read like a crash; "Live checks are
   paused, so here's a recorded run" says the same thing honestly. Engine messages such as
   "0 lexical signal(s)" became "No overconfident wording".

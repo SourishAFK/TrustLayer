@@ -71,3 +71,6 @@ services:
       # Shown when a sign-up cannot be sent, with the visitor's details pre-filled in an email.
       - key: VITE_CONTACT_EMAIL
         sync: false
+      # Optional: the domain as registered in Plausible. Unset = no analytics at all.
+      - key: VITE_ANALYTICS_DOMAIN
+        sync: false

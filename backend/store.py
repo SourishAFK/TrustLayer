@@ -421,11 +421,16 @@ def save_lead(lead: dict, ip_hash: str) -> int:
 
 
 def lead_counts() -> list[dict]:
-    """Sign-ups per audience lane, most first, with how many would pay for a full check."""
+    """Sign-ups per audience lane, most first, with what each would pay for a full check."""
     try:
         with _get_pool().connection() as conn:
             return conn.execute(
-                "SELECT audience, count(*) AS signups, count(*) FILTER (WHERE would_pay = 'yes') AS would_pay, "
+                "SELECT audience, count(*) AS signups, "
+                "count(*) FILTER (WHERE would_pay = 'no') AS pay_no, "
+                "count(*) FILTER (WHERE would_pay = 'up-to-50') AS pay_up_to_50, "
+                "count(*) FILTER (WHERE would_pay = '50-200') AS pay_50_200, "
+                "count(*) FILTER (WHERE would_pay = '200-plus') AS pay_200_plus, "
+                "count(*) FILTER (WHERE would_pay IS NULL) AS pay_unanswered, "
                 "max(created_at) AS latest FROM leads GROUP BY audience ORDER BY signups DESC"
             ).fetchall()
     except Exception as exc:  # noqa: BLE001

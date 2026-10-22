@@ -54,6 +54,7 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     scrollbar-color: #2a2f3b var(--color-bg);
+    overflow-x: clip; /* phones widen the page from html, so clip here as well as on body */
   }
   body {
     min-height: 100svh;

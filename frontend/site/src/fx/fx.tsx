@@ -110,12 +110,16 @@ export function VerdictChip({ verdict, label, className = '' }: { verdict: Verdi
   return <span className={`chip ${v.cls} ${className}`}><Icon />{label ?? v.label}</span>;
 }
 
-export function Cta({ href, children, variant = 'primary', size, cursor, className = '' }: {
+export type Track = { event: string; audience?: string; place?: string };
+
+export function Cta({ href, children, variant = 'primary', size, cursor, className = '', track }: {
   href: string; children: ReactNode; variant?: 'primary' | 'ghost'; size?: 'sm'; cursor?: string; className?: string;
+  track?: Track;
 }) {
   const look = variant === 'primary' ? 'btn-primary' : 'btn-ghost glass beam';
   return (
-    <a href={href} data-magnetic data-cursor={cursor} className={`btn ${look} ${size === 'sm' ? 'btn-sm' : ''} ${className}`}>
+    <a href={href} data-magnetic data-cursor={cursor} data-track={track?.event} data-audience={track?.audience} data-place={track?.place}
+      className={`btn ${look} ${size === 'sm' ? 'btn-sm' : ''} ${className}`}>
       <span className="relative z-[2]">{children}</span>
       <Arrow className="arrow relative z-[2] h-4 w-4" />
     </a>

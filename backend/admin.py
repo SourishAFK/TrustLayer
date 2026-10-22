@@ -100,19 +100,25 @@ def cmd_usage(args: argparse.Namespace) -> None:
     print()
 
 
+PAY_LABELS = {"no": "no, just curious", "up-to-50": "up to $50", "50-200": "$50-200", "200-plus": "$200+"}
+
+
 def cmd_leads(args: argparse.Namespace) -> None:
-    """Website sign-ups per audience lane (which group wants this most), then the latest ones."""
+    """Website sign-ups per audience lane and what each would pay for a full check, then the latest ones."""
     counts = store.lead_counts()
     if not counts:
         print("No sign-ups yet.")
         return
-    print(f"\n{'AUDIENCE':<16} {'SIGN-UPS':>8} {'WOULD PAY':>9}  LATEST")
+    print("\nWould pay for a full check:")
+    print(f"{'AUDIENCE':<16} {'SIGN-UPS':>8} {'NO':>5} {'<=$50':>6} {'$50-200':>8} {'$200+':>6} {'NO ANSWER':>10}  LATEST")
     for r in counts:
-        print(f"{r['audience']:<16} {r['signups']:>8} {r['would_pay']:>9}  {r['latest']:%Y-%m-%d %H:%M}")
+        print(f"{r['audience']:<16} {r['signups']:>8} {r['pay_no']:>5} {r['pay_up_to_50']:>6} {r['pay_50_200']:>8} "
+              f"{r['pay_200_plus']:>6} {r['pay_unanswered']:>10}  {r['latest']:%Y-%m-%d %H:%M}")
     print(f"\nLatest {args.recent}:")
     for r in store.recent_leads(args.recent):
+        pay = PAY_LABELS.get(r["would_pay"], r["would_pay"] or "-")
         print(f"  {r['created_at']:%Y-%m-%d %H:%M}  {r['audience']:<14} {r['name']} <{r['email']}>"
-              f"  {r['company'] or ''}  would pay: {r['would_pay'] or '-'}")
+              f"  {r['company'] or ''}  would pay: {pay}")
     print()
 
 

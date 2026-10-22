@@ -57,6 +57,20 @@
   to the normal one over forms, buttons and messages. The build warns when `SITE_URL`
   is missing, since link previews then have no image.
 
+### Second review round
+
+- Fixed: on a 390px phone with animations running, the home page still widened to 426px.
+  The cause was the fanned report pages in "What you get": their 3D spread reached past
+  the screen edge only while animating, so the reduced-motion test missed it. The fan is
+  narrower on phones, the section clips sideways, and `html` clips as well as `body`. The
+  width test now runs with animations on and real phone emulation, after the intro and
+  after scrolling to the bottom, and checks that the viewport itself stays 390px wide
+  (it fails on the old code with 426).
+- "Would you pay for a full check?" now asks for a price: No, just curious / Up to $50 /
+  $50–200 / $200+. `admin leads` breaks the answers down by audience.
+- Optional cookie-free analytics (Plausible), off unless `VITE_ANALYTICS_DOMAIN` is set:
+  pageviews, scroll depth, and clicks on the audience buttons.
+
 ### Known gaps
 
 - "Revenue grew from $10M to $30M, a 2x increase" is not caught: extraction splits the

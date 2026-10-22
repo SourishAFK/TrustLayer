@@ -34,7 +34,7 @@ function AudienceSection({ id, tone, kicker, pitch, body, stats, audience, visua
             ))}
           </dl>
           <div data-reveal className="mt-12">
-            <Cta href={`/check/?for=${audience}`} cursor="Free">Get a free check</Cta>
+            <Cta href={`/check/?for=${audience}`} cursor="Free" track={{ event: 'Audience CTA', audience, place: 'section' }}>Get a free check</Cta>
           </div>
         </div>
         <div className="mt-16 lg:col-span-7 lg:mt-0">

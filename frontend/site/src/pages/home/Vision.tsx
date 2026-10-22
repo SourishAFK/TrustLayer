@@ -82,7 +82,7 @@ export function FinalCta() {
         <ul className="mt-16 grid gap-3 md:grid-cols-3">
           {lanes.map(l => (
             <li key={l.href} data-reveal>
-              <a href={l.href} data-tilt data-cursor="Free check"
+              <a href={l.href} data-tilt data-cursor="Free check" data-track="Audience CTA" data-audience={l.href.split('=')[1]} data-place="closing"
                 className={`glass beam spotlight group flex h-full flex-col justify-between gap-12 rounded-3xl p-7 ${l.tone}`}>
                 <span>
                   <span className="t-title block">{l.title}</span>

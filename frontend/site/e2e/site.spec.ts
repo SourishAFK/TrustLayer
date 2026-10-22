@@ -11,10 +11,21 @@ async function fillLead(page: Page) {
   await page.getByLabel('Your name').fill('Asha Rao');
   await page.getByLabel('Work email').fill('asha@bank.example');
   await page.getByLabel('What should we check?').fill('Our loan bot answers fee questions.');
-  await page.getByText('Maybe', { exact: true }).click();
+  await page.getByText('$50–200', { exact: true }).click();
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: /Get my free check/ }).click();
 }
+
+test('analytics stays off unless VITE_ANALYTICS_DOMAIN is set at build time', async ({ page, context }) => {
+  await page.goto('/');
+  await expect(page.locator('script[src*="plausible"]')).toHaveCount(0);
+  expect(await page.evaluate(() => typeof window.plausible)).toBe('undefined');
+  expect(await context.cookies()).toEqual([]);
+  // The three audience buttons carry their tags for when it is switched on.
+  for (const tag of ['product-teams', 'documents', 'support-bots']) {
+    await expect(page.locator(`#${tag} a[data-track="Audience CTA"][data-audience="${tag}"]`)).toHaveCount(1);
+  }
+});
 
 test('home sends each audience to its own tagged check page, and lists its sources', async ({ page }) => {
   await page.goto('/');
@@ -38,7 +49,7 @@ test('a sign-up is sent with its audience and where the visitor came from', asyn
   await fillLead(page);
   await expect(page.getByRole('status')).toContainText("You're on the list");
   expect(body).toMatchObject({
-    audience: 'support-bots', name: 'Asha Rao', email: 'asha@bank.example', consent: true, website: '', would_pay: 'maybe',
+    audience: 'support-bots', name: 'Asha Rao', email: 'asha@bank.example', consent: true, website: '', would_pay: '50-200',
     source: { page: '/check/?for=support-bots&utm_source=linkedin', utm_source: 'linkedin' },
   });
 });
@@ -77,7 +88,7 @@ test('when the sign-up server is down, the lead is never lost', async ({ page, c
   await expect(alert.getByRole('button', { name: 'Copied' })).toBeVisible();
   const copied = await page.evaluate(() => navigator.clipboard.readText());
   expect(copied).toContain('Email: asha@bank.example');
-  expect(copied).toContain('Would pay for a full check: maybe');
+  expect(copied).toContain('Would pay for a full check: $50–200');
 });
 
 test('the demo streams a check and shows each verdict with its proof', async ({ page }) => {
@@ -148,20 +159,38 @@ test('no text runs off the side of a phone screen', async ({ browser }) => {
   await page.close();
 });
 
+// Motion on: the fanned report pages only overflowed while animating. On a phone, overflow
+// makes the browser widen the whole page (innerWidth grows past 390), so that is what we check.
 for (const [width, height] of [[390, 844], [1440, 900]]) {
-  test(`nothing scrolls sideways at ${width}px, and the menu fits`, async ({ browser }) => {
-    const phone = width < 500; // phones widen the page to fit overflow, which is how the menu got cut off
-    const page = await browser.newPage({ viewport: { width, height }, isMobile: phone, hasTouch: phone, reducedMotion: 'reduce' });
+  test(`the page stays ${width}px wide with animations running, top to bottom`, async ({ browser }) => {
+    test.setTimeout(120_000);
+    const phone = width < 500;
+    const context = await browser.newContext({ viewport: { width, height }, isMobile: phone, hasTouch: phone, reducedMotion: 'no-preference' });
+    const page = await context.newPage();
+    const measure = () => page.evaluate(() => ({
+      inner: window.innerWidth, scroll: document.documentElement.scrollWidth,
+      nav: document.querySelector('nav[aria-label="Main"]')!.getBoundingClientRect().right,
+    }));
     for (const path of ['/', '/check/', '/demo/', '/report/sample/']) {
       await page.goto(path);
-      const box = await page.evaluate(() => ({
-        scroll: document.documentElement.scrollWidth, inner: window.innerWidth,
-        nav: document.querySelector('nav[aria-label="Main"]')!.getBoundingClientRect().right,
-      }));
-      expect(box.scroll, `${path} page width`).toBeLessThanOrEqual(box.inner);
-      expect(box.nav, `${path} nav`).toBeLessThanOrEqual(box.inner);
+      await page.waitForTimeout(3500); // intro curtain and hero animation are running
+      for (const stage of ['after the intro', 'after scrolling to the bottom']) {
+        if (stage !== 'after the intro') {
+          await page.evaluate(async () => {
+            for (let y = 0; y <= document.documentElement.scrollHeight; y += 400) {
+              window.scrollTo(0, y);
+              await new Promise(resolve => setTimeout(resolve, 40));
+            }
+          });
+          await page.waitForTimeout(1500);
+        }
+        const box = await measure();
+        expect(box.inner, `${path} ${stage}: viewport`).toBe(width);
+        expect(box.scroll, `${path} ${stage}: page`).toBeLessThanOrEqual(width);
+        expect(box.nav, `${path} ${stage}: menu`).toBeLessThanOrEqual(width);
+      }
     }
-    await page.close();
+    await context.close();
   });
 }
 

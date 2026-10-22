@@ -2,6 +2,7 @@
 
 import json
 import threading
+from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 import pytest
@@ -13,7 +14,7 @@ with patch("dotenv.load_dotenv", return_value=False):
     from backend.verification.contracts import Providers
 
 LEAD = {"audience": "documents", "name": "Asha Rao", "email": "asha@lawfirm.example", "company": "Rao & Co",
-        "message": "Our associates use AI for first drafts.", "consent": True, "would_pay": "maybe",
+        "message": "Our associates use AI for first drafts.", "consent": True, "would_pay": "50-200",
         "source": {"utm_source": "linkedin", "page": "/check/?for=documents"}}
 
 
@@ -37,14 +38,14 @@ def test_a_lead_is_stored_with_its_audience_and_nothing_extra(client):
     assert response.status_code == 201 and response.json() == {"ok": True}
     saved, visitor = store.save_lead.call_args.args
     assert saved["audience"] == "documents" and saved["email"] == "asha@lawfirm.example"
-    assert saved["would_pay"] == "maybe"
+    assert saved["would_pay"] == "50-200"
     assert "consent" not in saved and "website" not in saved and len(visitor) == 16
 
 
 @pytest.mark.parametrize("change", [
     {"email": "not-an-email"}, {"email": "x@localhost"}, {"consent": False}, {"name": "   "},
     {"audience": "everyone"}, {"link": "javascript:alert(1)"}, {"source": {"cookie": "x"}}, {"extra": 1},
-    {"would_pay": "definitely"},
+    {"would_pay": "maybe"}, {"would_pay": "$1M"},
 ])
 def test_invalid_leads_are_rejected(client, change):
     assert client.post("/v1/leads", json={**LEAD, **change}).status_code == 422
@@ -118,3 +119,20 @@ def test_a_bad_daily_limit_setting_closes_the_demo(client, monkeypatch):
     monkeypatch.setenv("TRUSTLAYER_PUBLIC_DEMO", "true")
     monkeypatch.setenv("TRUSTLAYER_DEMO_DAILY_LIMIT", "lots")
     assert client.post("/v1/demo/verify/stream", json={"response_text": "2 + 2 = 4."}).status_code == 429
+
+
+def test_admin_leads_shows_what_each_audience_would_pay(capsys, monkeypatch):
+    with patch("dotenv.load_dotenv", return_value=False):
+        from backend import admin
+    from datetime import datetime, timezone
+    when = datetime(2026, 10, 22, 9, 30, tzinfo=timezone.utc)
+    monkeypatch.setattr(store, "lead_counts", Mock(return_value=[
+        {"audience": "support-bots", "signups": 4, "pay_no": 1, "pay_up_to_50": 0, "pay_50_200": 2,
+         "pay_200_plus": 1, "pay_unanswered": 0, "latest": when}]))
+    monkeypatch.setattr(store, "recent_leads", Mock(return_value=[
+        {"created_at": when, "audience": "support-bots", "name": "Asha Rao", "email": "asha@bank.example",
+         "company": "Rao & Co", "would_pay": "200-plus"}]))
+    admin.cmd_leads(SimpleNamespace(recent=5))
+    out = capsys.readouterr().out
+    assert "$50-200" in out and "support-bots" in out and "would pay: $200+" in out
+    assert "    4     1      0        2      1          0" in out
